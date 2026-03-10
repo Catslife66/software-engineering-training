@@ -59,7 +59,3 @@ def max_sum_subarray_k(arr, k):
 
 For a fixed window of size k:
 new_window_sum = old_window_sum - outgoing + incoming
-
-# Variable-size Sliding Window
-
-Problem: Find the smallest length of a contiguous subarray whose sum is greater than or equal to S.

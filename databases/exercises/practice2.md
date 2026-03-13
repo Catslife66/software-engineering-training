@@ -53,11 +53,11 @@ INNER JOIN products
 ON products.product_id = orders.product_id;
 ```
 
+(Both queries work no matter select from table orders or customers)
+
 **Important SQL Engineering Habit**
 FROM table
-we normally start from the table that represents the main entity of the query.
-
-Instead of query from customers, query from orders
+engineers often choose the _table representing the main subject of the query_.
 
 ## Exercise 10
 

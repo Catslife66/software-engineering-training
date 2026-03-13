@@ -67,7 +67,7 @@ You will see it again in:
 - Graph algorithms
 - Caching
 
-## Hash-based lookup\*\*
+## Hash-based lookup
 
 **Hash Map**: key -> value
 Used for:

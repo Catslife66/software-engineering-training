@@ -53,11 +53,6 @@ GROUP BY product_id
 HAVING COUNT(_) > 1;
 ```
 
-_Why the alias doesn't work here_
-SQL processes the query in a conceptual order.
-HAVING happens BEFORE SELECT,
-But the alias total_orders is created in the SELECT step.
-
 ## Exercise 20
 
 Return:

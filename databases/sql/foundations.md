@@ -14,7 +14,6 @@ Each **column** is one attribute of that record.
 SELECT * FROM users;
 
 SELECT name, email FROM users;
-
 ```
 
 ## WHERE

@@ -47,14 +47,21 @@ Steps:
 2️⃣ COUNT applied
 3️⃣ HAVING filters the groups
 
+_Why the alias 'total_orders' doesn't work in HAVING_
+
+SQL processes the query in a conceptual order.
+HAVING happens BEFORE SELECT,
+But the alias total_orders is created in the SELECT step.
+
 **KEY RULE**
 `WHERE` filters rows before grouping
 `HAVING` filters groups after grouping
 
-**Execution order:**
-FROM
-WHERE
-GROUP BY
-HAVING
-SELECT
-ORDER BY
+**Execution Order**
+FROM / JOIN → build the dataset
+WHERE → filter rows
+GROUP BY → create groups
+AGGREGATE → compute summary
+HAVING → filter groups
+SELECT → choose columns
+ORDER BY → sort results

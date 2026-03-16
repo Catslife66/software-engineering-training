@@ -1,9 +1,96 @@
 # Processes vs Threads
 
+## Process
+
+A process is a running instance of a program.
+
+Each process has:
+its own memory
+its own resources
+its own execution environment
+
+Each process is isolated from the others.
+
 The OS does NOT create a new process for each request.
 Creating processes is expensive.
 
 Instead, requests are handled inside the same process.
+
+## Thread
+
+A thread is a smaller unit of execution inside a process.
+A process can have multiple threads.
+
+Example:
+
+```
+Process
+ ├ Thread 1
+ ├ Thread 2
+ └ Thread 3
+```
+
+Threads share:
+
+- memory
+- variables
+- resources
+
+This makes them fast to communicate, but also introduces risks like:
+
+- race conditions
+- deadlocks
+- data corruption
+
+## Real System Examples
+
+Languages and frameworks often use different concurrency models.
+
+1. **Thread per Request**
+   Traditional server frameworks:
+   - Apache HTTP Server
+   - Spring Boot
+   - Django
+
+   Architecture:
+
+   ```
+   Process
+   ├─ Thread 1 → Request 1
+   ├─ Thread 2 → Request 2
+   ├─ Thread 3 → Request 3
+   ├─ Thread 4 → Request 4
+   ```
+
+   Each request runs on its own thread.
+
+   Advantages:
+   - simple model
+   - easy to reason about
+
+   Disadvantages:
+   - threads consume memory
+   - too many threads → server crash
+
+2. **Event Loop (Node.js)**
+   Example runtime:
+   - Node.js
+
+   Architecture:
+
+   ```
+   Single Process
+   Single Main Thread
+         ↓
+      Event Loop
+         ↓
+   Event Queue → Request callbacks
+   ```
+
+   Instead of creating a thread per request, Node uses:
+   - non-blocking I/O
+   - event-driven programming
+     This allows **thousands of concurrent requests**.
 
 ## What Actually Happens When 10,000 Requests Arrive
 
@@ -27,67 +114,6 @@ Incoming Requests
 ```
 
 Requests wait in a queue, and the program processes them.
-
-## Two Main Concurrency Models
-
-Most servers use one of these approaches.
-
-- **Model 1 — Thread per Request**
-
-Many traditional systems do this.
-
-Example servers built with:
-
-- Apache HTTP Server
-- Spring Boot
-- Django
-
-Architecture:
-
-```
-Process
- ├─ Thread 1 → Request 1
- ├─ Thread 2 → Request 2
- ├─ Thread 3 → Request 3
- ├─ Thread 4 → Request 4
-```
-
-Each request runs on its own thread.
-
-Advantages:
-
-- simple model
-- easy to reason about
-
-Disadvantages:
-
-- threads consume memory
-- too many threads → server crash
-
-- **Model 2 — Event Loop (Node.js)**
-
-Node uses a different design.
-
-Example runtime:
-
-- Node.js
-
-Architecture:
-
-```
-Single Process
-Single Main Thread
-        ↓
-     Event Loop
-        ↓
-Event Queue → Request callbacks
-```
-
-Instead of creating a thread per request, Node uses:
-
-- non-blocking I/O
-- event-driven programming
-  This allows _thousands of concurrent requests_.
 
 ### Concurrency
 

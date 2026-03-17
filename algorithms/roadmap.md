@@ -30,3 +30,34 @@
 - How to break down unknown problems
 - How to choose a pattern
 - How to explain your reasoning clearly
+
+**Complexity**
+
+Big-O reasoning
+
+**Core data structures**
+
+- arrays
+- hash maps / sets
+- stacks
+
+**Core patterns**
+
+- two pointers
+- sliding window
+
+**Recursion**
+
+- call stack
+- recursion trees
+
+**Tree algorithms**
+
+- preorder / inorder / postorder
+- computing tree height
+
+**Search algorithms**
+
+- binary search
+
+**Graph Algorithms**

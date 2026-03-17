@@ -110,7 +110,6 @@ Incoming Requests
  Node Event Loop
        ↓
  Your JavaScript Code
-
 ```
 
 Requests wait in a queue, and the program processes them.

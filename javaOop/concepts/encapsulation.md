@@ -1,5 +1,7 @@
 # Encapsulation
 
+> Hide internal data and control how it changes
+
 Bundling data and behavior together while protecting the internal state of the object.
 Encapsulation allows the class to enforce rules.
 

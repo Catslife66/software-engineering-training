@@ -1,13 +1,14 @@
 # Inheritance
 
+> Define common behavior once, reuse it
+
 Inheritance allows classed to reuse and extend behaviour.
 This models an **"is-a"** relationship.
 
 Example:
 
-Parent class:
-
 ```
+// Parent class:
 public class Vehicle {
 
     protected String brand;
@@ -22,11 +23,8 @@ public class Vehicle {
         System.out.println("Brand: " + brand + ", Speed: " + speed);
     }
 }
-```
 
-Child class:
-
-```
+// Child class:
 public class Car extends Vehicle {
 
     public Car(String brand, int speed){
@@ -37,11 +35,8 @@ public class Car extends Vehicle {
         System.out.println("Car is driving");
     }
 }
-```
 
-Second child class:
-
-```
+// Second child class:
 public class Bike extends Vehicle {
 
     public Bike(String brand, int speed){

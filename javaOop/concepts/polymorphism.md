@@ -1,5 +1,7 @@
 # Polymorphism
 
+> One interface, many implementations (Same call, different behavior)
+
 ## Runtime polymorphism
 
 Parent defines default behavior
@@ -7,7 +9,9 @@ Parent defines default behavior
 Child can replace it
 
 Q: Will it call and why?
+
 A) Employee version
+
 B) Manager version
 
 ```
@@ -23,9 +27,11 @@ Key rule:
 
 Polymorphism works for **methods**, but not for **fields**.
 
-Example:
+Example 1:
 
 ```
+// Full codes in 'exercises/person' folder
+
 Employee e = new Manager("Lily", 35000);
 e.displayInfo(); // ✅
 ((Manager) e).manageTeam(); // ✅
@@ -51,6 +57,7 @@ Manager object in memory
 ```
 
 👉🏻 **Why displayInfo() works (polymorphism)**
+
 Java checks:
 
 - Step 1 — Compile time
@@ -68,9 +75,11 @@ Java checks:
   ✔ Run Manager’s version
 
 👉🏻 **Why ((Manager) e).manageTeam() works**
+
 Java checks:
 
 - Step 1 - Compile time
+
   You cast to Manager
 
   👉 Does Manager have manageTeam()?
@@ -86,6 +95,7 @@ Java checks:
   ✔ Run Manager’s version
 
 👉🏻 **Why e.manageTeam() does NOT work**
+
 Java checks:
 
 - Step 1 — Compile time
@@ -96,7 +106,7 @@ Java checks:
 
   So Java stops you immediately.
 
-Example:
+Example 2:
 
 ```
 Employee e = new Developer("Alice", 30000);
@@ -104,6 +114,7 @@ Employee e = new Developer("Alice", 30000);
 ```
 
 👉🏻 **Why casting can crash here**
+
 Java checks:
 
 - Runtime

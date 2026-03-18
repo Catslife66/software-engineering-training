@@ -2,7 +2,7 @@
 
 Abstraction means:
 
-> Hide how something works, and only expose what it does.
+> Hide how something works, and only expose what it does. (Define WHAT must be done, not HOW)
 
 ## Abstraction in Java
 
@@ -54,15 +54,17 @@ It lets you define **WHAT must be done**, without defining **HOW it is done**
 An interface is like a contract.
 
 > It defines "What a class MUST do".
+> It allows one method to handle many implementations
 
 Example:
 
 ```
+// Step 1 — Interface (contract)
 public interface Payment {
-
     void pay(double amount);
 }
 
+// Step 2 — Implementations (HOW)
 public class CreditCardPayment implements Payment {
 
     @Override
@@ -70,7 +72,6 @@ public class CreditCardPayment implements Payment {
         System.out.println("Paid by credit card: " + amount);
     }
 }
-
 public class PayPalPayment implements Payment {
 
     @Override
@@ -78,20 +79,40 @@ public class PayPalPayment implements Payment {
         System.out.println("Paid via PayPal: " + amount);
     }
 }
-```
 
-### Why interfaces matter
-
-Now you can write:
-
-```
-public void processPayment(Payment payment){
-    payment.pay(100);
+// Step 3 — Service
+public class PaymentService {
+    public void processPayment(Payment payment){
+        payment.pay(100);
+    }
 }
 
-processPayment(new CreditCardPayment());
-processPayment(new PayPalPayment());
+// Step 4 — Usage
+public class Main {
+    public static void main(String[] args){
+
+        PaymentService service = new PaymentService();
+
+        service.processPayment(new CreditCardPayment());
+        service.processPayment(new PayPalPayment());
+    }
+}
+
 ```
+
+👉🏻 Why is this better?
+
+```
+processPayment(Payment payment)
+
+// instead of
+// processCreditCard(...)
+// processPayPal(...)
+```
+
+It’s better because processPayment(Payment payment) works with any implementation of Payment, so we don’t need separate methods for each type. This makes the system extensible and easier to maintain.
+
+### Why interfaces matter
 
 This is the foundation of:
 
@@ -99,6 +120,46 @@ This is the foundation of:
 - dependency injection
 - Spring Boot
 - scalable systems
+
+👉🏻 **Service** = controls workflow
+
+👉🏻 **Interface** = defines capability
+
+👉🏻 **Class** = provides implementation
+
+Visual model
+
+```
+Main
+ ↓
+Service (PaymentService)
+ ↓
+Interface (Payment)
+ ↓
+Implementation (CreditCardPayment / PayPalPayment)
+```
+
+### This is real software engineering
+
+This pattern is used everywhere:
+
+In Spring Boot:
+
+```
+Controller → Service → Interface → Implementation
+```
+
+In Django (conceptually):
+
+```
+View → Service logic → Model / backend
+```
+
+### Loose coupling
+
+Add new feature WITHOUT changing existing code
+
+Your code does NOT depend on concrete classes.
 
 ## Abstract class vs Interface
 

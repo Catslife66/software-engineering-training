@@ -53,3 +53,16 @@ public class Bike extends Vehicle {
     }
 }
 ```
+
+## Method Overriding
+
+A child class provides its own version of a method from the parent class.
+
+**@Override**
+This tells Java: “I am overriding a parent method.”
+
+Benefits:
+
+- catches mistakes
+- improves readability
+- required in good practice

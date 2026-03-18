@@ -28,6 +28,7 @@ And they connect directly to:
 ### DFS (Depth-First Search)
 
 > "go deep first"
+
 > You are in a maze → pick a path → go as far as possible → dead end → backtrack
 
 Uses a stack. Because DFS **goes as deep as possible first**, and stacks naturally support that behavior.
@@ -65,6 +66,7 @@ def dfs(node):
 ### BFS (Breadth-First Search)
 
 > "expand evenly"
+
 > You are flooding the maze with water → it spreads everywhere evenly → first time it reaches goal = shortest path
 
 Uses a queue. Because BFS explores nodes **level by level**.
@@ -198,6 +200,7 @@ parent[child] = parent
 ## Key Principle
 
 BFS marks visited when **ENQUEUING (adding)**
+
 DFS marks visited when **VISITING (popping/processing)**
 
 This is a classic distinction.

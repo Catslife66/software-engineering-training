@@ -2,13 +2,24 @@
 
 > One interface, many implementations (Same call, different behavior)
 
+## Method Overriding
+
+A child class provides its own version of a method from the parent class.
+
+**@Override**
+This tells Java: “I am overriding a parent method.”
+
+Benefits:
+
+- catches mistakes
+- improves readability
+- required in good practice
+
 ## Runtime polymorphism
 
-Parent defines default behavior
+Parent defines default behavior, child can replace it.
 
-Child can replace it
-
-Q: Will it call and why?
+**Q: Will it call and why?**
 
 A) Employee version
 

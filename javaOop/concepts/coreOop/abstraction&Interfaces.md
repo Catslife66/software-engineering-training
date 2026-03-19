@@ -110,7 +110,7 @@ processPayment(Payment payment)
 // processPayPal(...)
 ```
 
-It’s better because processPayment(Payment payment) works with any implementation of Payment, so we don’t need separate methods for each type. This makes the system extensible and easier to maintain.
+It’s better because processPayment(Payment payment) works with any implementation of Payment, so new payment type can be added without changing the existing method. This makes the system more flexible, easier to extend, and easier to maintain.
 
 ### Why interfaces matter
 
@@ -130,13 +130,13 @@ This is the foundation of:
 Visual model
 
 ```
-Main
+Main / Controller
  ↓
-Service (PaymentService)
+Service (PaymentService - business logic)
  ↓
-Interface (Payment)
+Interface (Payment - abstraction)
  ↓
-Implementation (CreditCardPayment / PayPalPayment)
+Implementation (CreditCardPayment / PayPalPayment - actual behaviour)
 ```
 
 ### This is real software engineering

@@ -34,6 +34,8 @@ Operating System
 ↑
 Processes
 ↑
+Threads / Event Loop
+↑
 Your Application
 ↑
 Users
@@ -53,3 +55,9 @@ Machine Instructions
    ↓
 CPU Executes Them
 ```
+
+## Key idea
+
+Your program NEVER talks directly to hardware.
+
+It always goes through the OS.

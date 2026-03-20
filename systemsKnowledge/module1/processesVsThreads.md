@@ -2,7 +2,7 @@
 
 ## Process
 
-A process is a running instance of a program.
+A process is a running program with its own memory.
 
 Each process has:
 its own memory

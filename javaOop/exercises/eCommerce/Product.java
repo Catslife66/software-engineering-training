@@ -9,6 +9,10 @@ public class Product {
         setPrice(price);
     }
 
+    public String getName(){
+        return name;
+    }
+
     public double getPrice(){
         return price;
     }

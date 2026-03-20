@@ -171,8 +171,16 @@ Your code does NOT depend on concrete classes.
 
 ### Mental model
 
-Interface = contract
-Class = implementation
+Abstract class = shared structure (shared data + shared logic)
+Interface = shared behaviour contract only
+
+👉🏻 Use an **abstract class** when multiple classes share common state or implementation.
+
+shared state(fields) OR shared implementation(methods)
+
+👉🏻 Use an **interface** when you only need to define a contract for behavior without sharing data.
+
+a contract (no shared data)
 
 ### Example together
 

@@ -4,7 +4,7 @@
 
 Concurrency means:
 
-> multiple tasks making progress
+> multiple tasks in progress
 
 Example:
 
@@ -33,6 +33,9 @@ Your CPU switches rapidly between processes:
 Process A → 5ms
 Process B → 5ms
 Process C → 5ms
+
+Process A → Process B → Process C
+(switched rapidly)
 ```
 
 This is called **CPU scheduling**.

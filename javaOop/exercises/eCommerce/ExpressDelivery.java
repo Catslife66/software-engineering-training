@@ -1,6 +1,6 @@
 package javaOop.exercises.eCommerce;
 
-public class ExpressDelivery extends Delivery{
+public class ExpressDelivery implements Delivery{
 
     @Override
     public double calculateFee(){

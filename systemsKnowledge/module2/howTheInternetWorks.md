@@ -16,6 +16,7 @@ You will learn:
 ## step 1 - Domain Name vs IP Address
 
 Humans use domain names. But computers communicate using IP addresses.
+
 An IP address is like a network address for a computer.
 
 Your computer must translate the domain name into an IP address before connecting.
@@ -127,9 +128,9 @@ Browser renders page
 Think of the internet like a global postal system.
 
 ```
-IP address = street address
-routers = sorting centers
-packets = envelopes
+IP address = street address -> identifies machine
+routers = sorting centers -> forward packets
+packets = envelopes -> units of data
 ```
 
 Each packet is forwarded until it reaches the destination.

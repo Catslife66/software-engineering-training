@@ -59,3 +59,9 @@ Heap memory is:
 - managed by garbage collection
 
 In languages like JavaScript or Java, the runtime automatically cleans unused heap memory.
+
+## Key Insight
+
+Stack = temporary execution
+
+Heap = long-lived data

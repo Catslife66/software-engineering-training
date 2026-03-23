@@ -65,7 +65,7 @@ def is_valid_parenthesses(s):
             if pairs[char] != top:
                 return False
 
-    return len(Stack) == 0
+    return len(stack) == 0
 ```
 
 Time complexity: O(n)

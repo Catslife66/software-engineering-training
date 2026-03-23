@@ -110,17 +110,23 @@ Here is the full simplified pipeline:
 ```
 User types URL
       ↓
-DNS finds IP address
-      ↓
-Browser connects to server
-      ↓
-HTTP request sent
-      ↓
-Server processes request
-      ↓
-HTTP response returned
-      ↓
-Browser renders page
+(If needed) DNS lookup → get IP
+   ↓
+TCP connection established
+   ↓
+HTTPS request sent
+   ↓
+Request travels through routers
+   ↓
+Backend server receives request
+   ↓
+Server processes logic (DB query)
+   ↓
+Server returns response (JSON)
+   ↓
+Response travels back through internet
+   ↓
+Browser receives and uses data
 ```
 
 ## Mental Model

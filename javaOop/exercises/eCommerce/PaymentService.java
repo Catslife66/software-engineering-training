@@ -1,7 +1,13 @@
 package javaOop.exercises.eCommerce;
 
 public class PaymentService {
-    public void pay(Payment payment, double amount){
-        payment.process(amount);
+    private PaymentStrategy paymentStrategy;
+
+    public PaymentService(PaymentStrategy paymentStrategy){
+        this.paymentStrategy = paymentStrategy;
+    }
+    
+    public void pay(double amount){
+        paymentStrategy.process(amount);
     };
 }

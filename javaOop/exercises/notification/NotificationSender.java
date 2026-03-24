@@ -1,5 +1,5 @@
 package javaOop.exercises.notification;
 
-public interface Notification {
+public interface NotificationSender {
     void send(String message);
 }

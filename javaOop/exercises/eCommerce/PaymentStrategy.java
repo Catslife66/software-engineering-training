@@ -1,5 +1,5 @@
 package javaOop.exercises.eCommerce;
 
-public interface Payment {
+public interface PaymentStrategy {
     void process(double amount); 
 } 

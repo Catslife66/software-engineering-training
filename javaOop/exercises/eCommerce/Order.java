@@ -1,27 +1,33 @@
 package javaOop.exercises.eCommerce;
 
 public class Order {
-    private double totalPrice;
+    private double subtotal;
     private String status;
+    private Delivery delivery;
 
-    public Order(double totalPrice, String status){
-        setPrice(totalPrice);
+    public Order(double subtotal, String status, Delivery delivery){
+        setPrice(subtotal);
         setStatus(status);
+        this.delivery = delivery;
     }
     public double getTotalPrice() {
-        return totalPrice;
+        return subtotal + getDeliveryFee();
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setPrice(double totalPrice){
-        if(totalPrice < 0){
+    public Double getDeliveryFee(){
+        return delivery.calculateFee(subtotal);
+    }
+
+    public void setPrice(double subtotal){
+        if(subtotal < 0){
             System.out.println("Price cannot be negative");
             return;
         }
-        this.totalPrice = totalPrice;
+        this.subtotal = subtotal;
     }
 
     public void setStatus(String status){
@@ -33,5 +39,7 @@ public class Order {
         }
         this.status = status;
     }
+
+
 }
 

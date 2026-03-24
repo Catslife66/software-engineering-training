@@ -1,7 +1,13 @@
 package javaOop.exercises.notification;
 
 public class NotificationService {
-    public void nofifyUser(Notification notification){
-        notification.send("Hello");
+    private NotificationSender notificationSender;
+
+    public NotificationService(NotificationSender notificationSender){
+        this.notificationSender = notificationSender;
+    }
+
+    public void nofifyUser(String message){
+        notificationSender.send(message);
     }   
 }

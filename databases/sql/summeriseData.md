@@ -21,6 +21,8 @@ GROUP BY customer_id;
 `GROUP BY` splits rows into groups
 Aggregate functions summarize each group
 
+_Every non-aggregated column in SELECT must be in GROUP BY_
+
 ## Common aggregate functions
 
 | Function | Purpose        |

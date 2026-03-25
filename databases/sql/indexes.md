@@ -132,3 +132,113 @@ Ask: Can the database "jump directly" to the row?
 email → yes → index helps
 
 gender → no → still many rows → index not helpful
+
+## Composite Indexes
+
+Real queries often use multiple columns.
+
+Example:
+
+```
+SELECT *
+FROM orders
+WHERE customer_id = 10
+AND status = 'completed';
+```
+
+We can create:
+
+```
+CREATE INDEX idx_orders_customer_status
+ON orders(customer_id, status);
+```
+
+This is called a **composite index**.
+
+### How it works
+
+The index is ordered like: (customer_id, status)
+
+Example:
+
+```
+| customer_id | status    |
+| ----------- | --------- |
+| 1           | completed |
+| 1           | pending   |
+| 2           | completed |
+| 2           | pending   |
+```
+
+### Important rule
+
+Composite indexes follow a **left-to-right** rule:
+
+```
+INDEX(A, B)
+```
+
+Works well for:
+
+```
+WHERE A = ?
+WHERE A = ? AND B = ?
+```
+
+But NOT for:
+
+```
+WHERE B = ?
+```
+
+Example:
+
+Index: (customer_id, status)
+
+Works well
+
+```
+WHERE customer_id = 10
+WHERE customer_id = 10 AND status = 'completed'
+```
+
+Does NOT work well
+
+```
+WHERE status = 'completed'
+```
+
+Because customer_id is missing and status is low selectivity.
+
+## Golden rules(summary)
+
+**Rule 1 — Equality columns first**
+
+```
+INDEX(A, B)
+WHERE A = ? AND B > ?
+```
+
+→ very efficient
+
+**Rule 2 — Most selective first**
+
+Among equality columns:
+
+```
+higher selectivity → earlier in index
+```
+
+**Rule 3 — Order matters**
+
+```
+INDEX(A, B) ≠ INDEX(B, A)
+```
+
+**Rule 4 — One good composite index > many single indexes**
+
+**Rule 5 — Think like the database**
+
+Ask: How can I narrow the data as early as possible?
+
+> Put the MOST selective column first in a composite index

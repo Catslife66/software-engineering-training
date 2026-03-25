@@ -1,19 +1,20 @@
 package javaOop.exercises.bankAccount;
 
+import java.time.LocalDate;
+
 public class Main {
     public static void main(String[] args){
-        BankAccount account1 = new BankAccount("Alice Brown");
-        BankAccount account2 = new BankAccount("David Dickens");
+        SavingsAccount normalAccount = new SavingsAccount("David Dickens", 100, new MaxDeposit(), new StandardWithdrawal());
+        FixedAccount fixedAccount = new FixedAccount("Lily Brown", 150, LocalDate.of(2026, 12, 31)); 
+        
+        normalAccount.deposit(500);
+        normalAccount.withdraw(50);
+        normalAccount.displayBalance();
 
-        account1.deposit(20);
-        account1.withdraw(50);
-        account1.displayBalance();
-
-
-        account2.deposit(10);
-        account2.withdraw(5);
-        account2.displayBalance();
-
-        System.out.println("Total accounts: " + BankAccount.getTotalAccounts());
+        fixedAccount.deposit(500);
+        fixedAccount.withdraw(50);
+        fixedAccount.displayBalance();
+       
+        System.out.println("Total accounts: " + Account.getTotalAccounts());
     }
 }

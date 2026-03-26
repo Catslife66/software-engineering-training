@@ -33,6 +33,12 @@ _Every non-aggregated column in SELECT must be in GROUP BY_
 | MIN()    | smallest value |
 | MAX()    | largest value  |
 
+COUNT(*) → Counts every row, including NULL values
+
+COUNT(column) → Counts only non-NULL values
+
+COUNT(DISTINCT column) → Counts unique values, remove duplicates, ignore NULL
+
 ## HAVING
 
 When we want to filter the groups themselves.

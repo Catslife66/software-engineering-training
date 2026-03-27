@@ -100,10 +100,21 @@ A queue improves systems by:
 - smoothing traffic spikes
 - moving non-critical work out of the request path
 
-## A continuously growing queue
+## Question practice
 
-A continuously growing queue indicates that the system cannot process jobs fast enough.
-The job arrival rate is higher than the processing rate.
+Question: What does it mean when a queue keeps growing continuously?
+
+Answer:
+```
+// core idea
+A growing queue indicates that the rate of incoming jobs exceeds the rate at which they are processed.
+
+// how it works
+This happens when the system’s processing capacity (workers or downstream services) cannot keep up with the workload.
+
+// what happens in real systems
+As a result, jobs accumulate, increasing latency, creating backpressure, and potentially leading to system overload or failure.
+```
 
 This is a **performance and capacity problem**, not just normal behavior.
 
@@ -128,4 +139,23 @@ too few workers
 slow job processing
 downstream service bottleneck
 too many retries
+```
+
+
+### A Simple Framework
+
+**1. Direct Answer**
+
+Yes / No / Core idea
+
+**2. Why (Mechanism)**
+
+Explain how it works
+
+**3. Impact (System effect)**
+
+What happens in real systems
+
+```
+cause + mechanism + consequence
 ```

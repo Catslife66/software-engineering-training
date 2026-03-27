@@ -122,3 +122,21 @@ Common strategies:
 
 3. Cache invalidation
     DB update → delete cache entry
+
+
+## Question practice
+
+Question: Why does caching reduce database load?
+
+Answer:
+
+```
+// core idea
+Caching stores frequently accessed data in a fast storage layer.
+
+// Why it happens
+This allows requests to be served directly from the cache instead of querying the database, reducing the number of database operations. So cache absorbs repeated requests and unique requests go to database.
+
+// What it leads to
+As a result, database load is reduced, improving system performance and preventing the database from becoming a bottleneck or overloaded.
+```

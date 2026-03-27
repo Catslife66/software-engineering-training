@@ -33,3 +33,35 @@
 19. Authentication
 20. Encryption basics
 21. HTTPS and certificates
+
+## Phase 6 
+
+1. System Design Practice
+
+    You will practice questions like:
+
+    - Design a URL shortener
+    - Design a messaging system
+    - Design an e-commerce system
+
+    Here you will:
+
+    - apply all concepts together
+    - structure answers
+    - think like an engineer
+
+2. Deep Dive Layer
+
+    We revisit topics but deeper:
+
+    - Caching → cache invalidation strategies
+    - Queues → exactly-once vs at-least-once
+    - Databases → consistency models
+
+3. Communication Training (Critical)
+
+    We will train:
+
+    - How to explain clearly in interviews
+    - How to structure answers
+    - How to speak like an engineer

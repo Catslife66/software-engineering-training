@@ -73,3 +73,19 @@ Add back to rotaion
 ## Key insight
 Load balancing = scalability + fault tolerance
 
+
+## Question practice
+
+Question: Why does load balancing improve system reliability?
+
+Answer:
+```
+// core idea
+Load balancing distributes incoming traffic across multiple servers and monitors their health.
+
+// how it works
+By spreading requests, it prevents any signle server from becoming overloaded and by removing unhealthy or slow servers from rotation, it avoids sending traffic to failing instances.
+
+// what it leads to
+As a result, the system remains available and resilient, continuing to server requests even when some severs fail.
+``` 

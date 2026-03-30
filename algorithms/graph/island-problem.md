@@ -1,6 +1,6 @@
 # Graph Patterns
 
-## Pattern 1: “Grid = Graph”
+## “Grid = Graph”
 
 **"Grid + BFS/DFS = Connected Components"**
 

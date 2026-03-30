@@ -125,58 +125,6 @@ Possible DFS traversal: A → B → D → E → C → F
 
 BFS traversal: A → B → C → D → E → F
 
-### Find the shortest path
-
-```
-from collections import deque
-
-def bfs_shortest_path(grid, start, goal):
-
-    queue = deque([(start, [start])])
-    visited = set([start])
-
-    while queue:
-        node, path = queue.popleft()
-
-        if node == goal:
-            return path
-
-        for neighbor in get_neighbors(grid, node):
-            if neighbor not in visited:
-                visited.add(neighbor)
-                queue.append((neighbor, path + [neighbor]))
-
-    return path
-
-def get_neighbors(grid, node):
-    rows = len(grid)
-    cols = len(grid[0])
-
-    r, c = node
-
-    directions = [
-        (-1, 0),  # up
-        (1, 0),   # down
-        (0, -1),  # left
-        (0, 1)    # right
-    ]
-
-    neighbors = []
-
-    for dr, dc in directions:
-        new_r = r + dr
-        new_c = c + dc
-
-        # Check bounds
-        if 0 <= new_r < rows and 0 <= new_c < cols:
-
-            # Check not a wall
-            if grid[new_r][new_c] != '#':
-                neighbors.append((new_r, new_c))
-
-    return neighbors
-```
-
 ### Example comparison
 
 Shortest path length only

@@ -145,6 +145,7 @@ We don’t actually need the whole array.
 ```
 # identifying recurrence
 # building solution step-by-step
+# couting DP
 
 def climb_stairs(n):
 

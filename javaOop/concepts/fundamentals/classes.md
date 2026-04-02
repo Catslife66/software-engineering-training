@@ -2,7 +2,7 @@
 
 ## What is a class?
 
-A class is a blueprint.
+**A class is a blueprint.**
 
 It defines:
 
@@ -20,7 +20,7 @@ It is the template.
 
 ## What is an object?
 
-An object is a real instance created from a class.
+**An object is a real instance created from a class.**
 
 If Car is the blueprint, then:
 

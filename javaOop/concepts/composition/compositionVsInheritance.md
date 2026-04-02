@@ -1,5 +1,10 @@
 # Composition vs Inheritance
 
+```
+**HAS-A** relationship
+Object contains behavior instead of inheriting it
+```
+
 | Inheritance     | Composition         |
 | --------------- | ------------------- |
 | fixed behavior  | flexible behavior   |

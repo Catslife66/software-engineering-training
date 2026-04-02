@@ -9,8 +9,9 @@ The class controls how its internal state changes. External code cannot modify t
 
 In practice this means:
 
-- fields are private
-- access is controlled through methods
+- fields are private (`private` fields)
+- access is controlled through methods (getters/setters)
+- validation inside methods
 
 ```
 public class BankAccount {

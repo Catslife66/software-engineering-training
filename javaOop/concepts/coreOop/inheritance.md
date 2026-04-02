@@ -3,7 +3,7 @@
 > Define common behavior once, reuse it
 
 Inheritance allows classed to reuse and extend behaviour.
-This models an **"is-a"** relationship.
+This models an **"IS-A"** relationship.
 
 Example:
 

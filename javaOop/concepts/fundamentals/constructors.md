@@ -4,9 +4,15 @@
 
 A constructor is a special method used when an object is created.
 
-Its job is to initialise the object.
+Its job is to initialise objects into a valid state.
 
 A constructor is a special method used to initialize an object when it is created, while methods define behaviors that objects can perform after creation.
+
+Key ideas:
+
+- same name as class
+- no return type
+- can overload
 
 ## Why do constructors matter?
 

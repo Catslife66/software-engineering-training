@@ -19,6 +19,8 @@ The 5 principles are:
 
 > A class should have **one reason to change**.
 
+One class -> one responsibility
+
 That means:
 
 - one clear responsibility
@@ -122,6 +124,8 @@ public class PaymentService {
 
 > A subclass should be usable wherever its parent class is expected, without breaking correct behavior.
 
+Child must behave like parent.
+
 Example:
 
 ```
@@ -141,9 +145,11 @@ Ask: Can this child truly behave like the parent in every expected use case?
 
 If the answer is no, inheritance may be wrong.
 
-## I — Interface Segregation Principle
+## I — Interface Segregation Principle (ISP)
 
 > A class should not be forced to implement methods it does not need.
+
+Small focused interfaces
 
 Example:
 
@@ -214,7 +220,7 @@ That gives:
 - fewer exceptions
 - clearer interfaces
 
-## D — Dependency Inversion Principle(DIP)
+## D — Dependency Inversion Principle (DIP)
 
 > High-level modules should not depend on low-level modules.
 >

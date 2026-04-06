@@ -33,7 +33,7 @@ _Every non-aggregated column in SELECT must be in GROUP BY_
 | MIN()    | smallest value |
 | MAX()    | largest value  |
 
-COUNT(*) → Counts every row, including NULL values
+COUNT(\*) → Counts every row, including NULL values
 
 COUNT(column) → Counts only non-NULL values
 
@@ -73,3 +73,15 @@ AGGREGATE → compute summary
 HAVING → filter groups
 SELECT → choose columns
 ORDER BY → sort results
+
+## Core mental model
+
+```
+FROM / JOIN → build data
+WHERE       → filter rows
+GROUP BY    → group rows
+AGG         → calculate
+HAVING      → filter groups
+SELECT      → show
+ORDER BY    → sort
+```

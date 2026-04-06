@@ -105,8 +105,8 @@ same password → different hash
 
 Examples:
 
-- SHA-256
-- bcrypt
+- SHA-256 -> very fast
+- bcrypt -> intentionally slow
 
 ## Important Note
 
@@ -152,3 +152,49 @@ Salt adds a random value to each password before hashing.
 This ensures that even if two users have the same password, their hashes will be different.
 
 As a result, it prevents attackers from using precomputed tables (rainbow tables) and makes large-scale attacks much harder.
+
+**4️⃣ If hashing protects passwords in the database, how does the server know the user entered the correct password during login?**
+
+The server does not store the original password, only its hash.
+
+When a user logs in, the server hashes the input password using the same algorithm (and salt) as before.
+
+It then compares the newly generated hash with the stored hash.
+
+If the two hashes match, the password is correct, and the user is authenticated.
+
+### Correct Mental Model
+
+```
+Signup:
+password → hash → store
+Login:
+input password → hash → compare with stored hash
+```
+
+### Why This Works
+
+Same input → same hash
+
+So:
+
+```
+correct password → matching hash ✅
+wrong password → different hash ❌
+```
+
+Where Salt Fits In
+
+Actually, it’s:
+
+```
+hash(password + salt)
+```
+
+And the salt is stored with the hash.
+
+So login becomes:
+
+```
+input password + stored salt → hash → compare
+```

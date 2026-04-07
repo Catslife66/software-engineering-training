@@ -1,10 +1,42 @@
 # Sliding Window Pattern
 
+Recognition signal:
+
+- subarray
+- window size k
+- continuous elements
+
+Think:
+
+```
+Sliding window
+```
+
 ## Fixed sliding window
 
 Problem: Find the maximum sum of any 3 consecutive elements.
 Array: [2, 1, 5, 1, 3, 2]
 We want the best sum of a window of size 3.
+
+**Key idea:**
+
+```
+new_sum = old_sum - outgoing + incoming
+```
+
+Instead of recompute sum in each loop
+
+**Efficient approach:**
+
+```
+1. compute first window sum
+2. slide the window:
+    subtract left element
+    add new right element
+3. update max
+```
+
+**Step by step:**
 
 ```
 Start:
@@ -126,3 +158,7 @@ The key idea is:
 
 - each element enters the window once
 - each element leaves the window once
+
+1. set max_sum: sum first k size of subarray
+2. loop through the array from k+1 element and sum k size of subarray
+3. compare max sum in each loop and set max to max_sum

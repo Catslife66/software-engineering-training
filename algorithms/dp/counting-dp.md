@@ -1,6 +1,11 @@
-# DP (Bottom-up)
+# Counting DP (Bottom-up)
 
 > count ways -> use +
+
+Examples:
+
+- climbing stairs
+- unique paths
 
 ## Climbing Stairs
 

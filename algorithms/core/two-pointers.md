@@ -1,4 +1,4 @@
-# Two Pointers Pattern
+# Two Pointers (sorted arrays)
 
 This pattern works when **You process an array from two positions simultaneously.**
 
@@ -6,7 +6,27 @@ This pattern works when **You process an array from two positions simultaneously
 
 Array: [1, 2, 3, 4, 6]
 Target: 6
+
 Question: Find two numbers that add up to 6.
+
+**Pattern:**
+
+```
+1. left = 0, right = n-1
+2. while left < right:
+    sum = nums[left] + nums[right]
+
+    if sum == target:
+        return [left, right]
+
+    elif sum > target:
+        right -= 1
+
+    else:
+        left += 1
+```
+
+**Step by step:**
 
 ```
 Start:
@@ -41,7 +61,9 @@ Space: O(1)
 - Container with most water
 - Merging arrays
 
-**Python Implementation:**
+## Code implementation
+
+**Python:**
 
 ```
 def has_pair_with_sum(arr, target):
@@ -80,3 +102,5 @@ Typical use cases:
 - remove duplicates
 - check palindrome
 - merge sorted arrays
+
+Two pointers relies on monotonic behavior (ordered values)

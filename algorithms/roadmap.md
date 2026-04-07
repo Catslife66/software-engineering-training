@@ -31,33 +31,66 @@
 - How to choose a pattern
 - How to explain your reasoning clearly
 
-**Complexity**
+## Your Review Plan (2-week cycle)
 
-Big-O reasoning
+1. Complexity & Thinking
 
-**Core data structures**
+   Goal:
+   - Understand Big-O deeply
+   - Recognize patterns of time complexity
 
-- arrays
-- hash maps / sets
-- stacks
+   Practice:
+   - Compare O(n), O(n²), O(log n)
+   - Trace loops manually
 
-**Core patterns**
+2. Arrays & Hash Maps
 
-- two pointers
-- sliding window
+   Patterns:
+   - duplicate detection
+   - frequency counting
+   - lookup optimization
 
-**Recursion**
+   Key idea:
+   - trade space for time
 
-- call stack
-- recursion trees
+3. Two Pointers & Sliding Window
 
-**Tree algorithms**
+   Patterns:
+   - sorted array → two pointers
+   - subarray problems → sliding window
 
-- preorder / inorder / postorder
-- computing tree height
+   Key signals:
+   - "sorted"
+   - "subarray"
+   - "continuous"
 
-**Search algorithms**
+4. Stack & Recursion
+   - Stack:
+     - parentheses
+     - undo / reverse logic
+   - Recursion:
+     - base case
+     - call stack
+     - tree thinking
 
-- binary search
+5. Graphs (BFS / DFS)
 
-**Graph Algorithms**
+   Patterns:
+   - islands (connected components)
+   - shortest path (BFS)
+   - multi-source BFS
+
+   Key questions:
+   - what are nodes?
+   - what are neighbors?
+
+6. Dynamic Programming
+
+   Sub-patterns:
+   - Fibonacci / stairs
+   - House robber
+   - Grid DP
+   - Obstacle handling
+
+   Core framework:
+   - State → Transition → Base case → Operation

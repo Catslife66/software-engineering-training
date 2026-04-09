@@ -2,6 +2,8 @@
 
 > One interface, many implementations (Same call, different behavior)
 
+> Polymorphism allows the same method call to behave differently depending on the object type. It enables flexibility and supports OCP.
+
 ## Method Overriding
 
 A child class provides its own version of a method from the parent class.

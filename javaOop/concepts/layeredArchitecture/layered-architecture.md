@@ -15,6 +15,8 @@ Controller → Service → Repository
 **1. Controller (entry point)**
 Receives requests from outside (user / API)
 
+> Controller = presentation layer
+
 Example:
 
 ```
@@ -46,9 +48,11 @@ public class UserController {
 }
 ```
 
-**2. Service (business logic — most important)**
+**2. Service (business logic)**
 
 Contains the real logic of the system
+
+> Service = business logic layer
 
 Example:
 

@@ -114,13 +114,13 @@ Best answer: 2
 Walkthrough
 
 ```
-[2] sum = 2, too small, expand
-[2, 1] sum = 3, too small, expand
+[2] sum = 2, less than target, expand
+[2, 1] sum = 3, less than target, expand
 [2, 1, 5] sum = 8, valid
 
 shrink from left:
 length = 3 → min = 3, remove 2, window becomes
-[1, 5] sum = 6, too small, expand
+[1, 5] sum = 6, less than target, expand
 
 [1, 5, 2] sum = 8, valid
 shrink from left, length = 3 → min = 3, remove 1, window becomes
@@ -158,7 +158,3 @@ The key idea is:
 
 - each element enters the window once
 - each element leaves the window once
-
-1. set max_sum: sum first k size of subarray
-2. loop through the array from k+1 element and sum k size of subarray
-3. compare max sum in each loop and set max to max_sum

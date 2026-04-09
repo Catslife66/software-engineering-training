@@ -222,7 +222,7 @@ That gives:
 
 ## D — Dependency Inversion Principle (DIP)
 
-> High-level modules should not depend on low-level modules.
+> High-level modules (the logic) should not depend on low-level modules (the tools).
 >
 > Both should depend on abstractions.
 

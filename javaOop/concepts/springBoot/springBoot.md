@@ -96,3 +96,59 @@ public class UserService {
 - easier testing
 - flexible design
 - cleaner code
+
+## Spring Flow
+
+```
+HTTP Request
+   ↓
+@RestController
+   ↓
+@Service
+   ↓
+@Repository
+   ↓
+Database
+```
+
+## CHECKPOINT
+
+In spring boot
+
+```
+@RestController
+public class WishlistController {
+
+    private WishlistService service;
+
+    public WishlistController(WishlistService service) {
+        this.service = service;
+    }
+
+}
+```
+
+❓How does WishlistService get assigned WITHOUT writing new?
+
+**Answer:**
+
+Spring Boot uses its IoC container to create and manage objects. Instead of manually creating objects with new, Spring automatically instantiates the WishlistService and injects it into the WishlistController through dependency injection, typically via constructor injection.
+
+### Behind the scene
+
+```
+1. Spring scans @Service → creates WishlistService object
+2. Spring scans @RestController → creates WishlistController
+3. Sees constructor needs WishlistService
+4. Injects it automatically
+```
+
+❓Why is **constructor injection preferred** over:
+
+```
+@Autowired
+private WishlistService service;
+```
+
+**Answer:**
+Constructor injection is preferred because it makes **dependencies explicit(clearer)**, **supports immutability(safer)**, and improves **testability(testable)**. It also guarantees that all required dependencies are provided when the object is created, preventing invalid states.

@@ -65,3 +65,35 @@ It is important in real systems because it ensures _data integrity_ and prevents
 **Answer:**
 
 Making fields public is dangerous because it breaks encapsulation and data integrity. External code can modify the object’s internal state directly without enforcing business rules, which can lead to invalid or inconsistent data.
+
+### Qustion 6 - spring boot design:
+
+> Imagine this endpoint:
+>
+> POST /users/{userId}/wishlist/{propertyId}
+>
+> Describe the flow step-by-step:
+>
+> What does the Controller do?
+>
+> What does the Service do?
+>
+> What does the Repository do?
+>
+> What gets returned?
+
+1. Controller
+
+The controller receives the HTTP request, extracts parameters like `userId` and `propertyId`, and delegates the request to the service layer. It does not contain business logic.
+
+2. Service
+
+The service handles the business logic. It validates that the user and property exist, checks for duplicate wishlist entries, and if all conditions are met, creates a new wishlist item and calls the repository to persist it.
+
+3. Repository
+
+The repository is responsible for data access. It communicates with the database to save and retrieve wishlist data.
+
+4. Response
+
+The service returns a structured result, and the controller converts it into an HTTP response. If successful, it returns a success response; otherwise, it returns an appropriate error response.

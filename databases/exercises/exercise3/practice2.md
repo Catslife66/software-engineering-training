@@ -55,17 +55,17 @@ Step 3 → compare each customer to that average
 
 ```
 WITH customer_totals AS (
-SELECT c.customer_id, c.name AS customer_name, SUM(i.quantity) AS total_items
-FROM customers c
-JOIN orders o ON o.customer_id = c.customer_id
-JOIN order_items i ON i.order_id = o.order_id
-GROUP BY c.customer_id, c.name
+    SELECT c.customer_id, c.name AS customer_name, SUM(i.quantity) AS total_items
+    FROM customers c
+    JOIN orders o ON o.customer_id = c.customer_id
+    JOIN order_items i ON i.order_id = o.order_id
+    GROUP BY c.customer_id, c.name
 )
 SELECT customer_name, total_items
 FROM customer_totals
 WHERE total_items > (
-SELECT AVG(total_items)
-FROM customer_totals
+    SELECT AVG(total_items)
+    FROM customer_totals
 );
 ```
 
@@ -94,3 +94,5 @@ SELECT ...
 FROM grouped_data
 WHERE value > (SELECT AVG(value) FROM grouped_data);
 ```
+
+SQL requires multi-level aggregation to be done in separate query layers (subquery or CTE)

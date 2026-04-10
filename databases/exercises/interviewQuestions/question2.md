@@ -52,24 +52,3 @@ WHERE ct.total_items > (
 )
 ORDER BY total_items DESC;
 ```
-
-orders
-
-| order_id | customer_id |
-| -------- | ----------- |
-| 1        | 1           |
-| 2        | 1           |
-| 3        | 2           |
-| 4        | 2           |
-| 5        | 3           |
-
-order_items
-
-| order_id | product_id | quantity |
-| -------- | ---------- | -------- |
-| 1        | 10         | 2        |
-| 1        | 11         | 1        |
-| 2        | 10         | 3        |
-| 3        | 12         | 1        |
-| 4        | 12         | 2        |
-| 5        | 13         | 10       |

@@ -178,6 +178,7 @@ Observability → understand system behavior
 ```
 
 1️⃣ Why does scaling introduce consistency problems?
+
 Scaling introduces distributed systems, where data is stored and processed across multiple nodes.
 
 Due to network delays and failures, it is difficult to keep all nodes perfectly synchronized at all times.
@@ -185,6 +186,7 @@ Due to network delays and failures, it is difficult to keep all nodes perfectly 
 As a result, systems must choose between waiting for consistency (which reduces availability) or responding quickly with potentially stale data, creating a consistency vs availability tradeoff.
 
 2️⃣ Why is a single database dangerous in a scaled system?
+
 A single database becomes a bottleneck in a scaled system because all requests depend on it.
 
 As traffic increases, the database can become overloaded, slowing down or failing under heavy load.
@@ -192,6 +194,7 @@ As traffic increases, the database can become overloaded, slowing down or failin
 As a result, it acts as a single point of failure, where a database outage can bring down the entire system.
 
 3️⃣ Why do we need observability in distributed systems?
+
 In distributed systems, a single request can pass through multiple services, making issues difficult to diagnose.
 
 Observability provides visibility through logs (what happened), metrics (system health), and tracing (request flow).

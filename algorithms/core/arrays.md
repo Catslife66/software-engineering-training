@@ -209,7 +209,10 @@ Internally like:
 15 → true
 ```
 
-So a set is basically: hash map where the value doesn't matter
+So a set is basically: hash map where the value doesn't matter.
+
+Set lookup = O(1)
+Map lookup = O(1)
 
 ## General rule
 

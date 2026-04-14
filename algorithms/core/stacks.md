@@ -43,6 +43,24 @@ Example:
 "{[(])}" → invalid
 ```
 
+Step by step:
+
+```
+1. create empty stack
+2. loop through each character:
+    if it's an opening bracket:
+        push to stack
+    if it's a closing bracket:
+        if stack is empty → invalid
+        else:
+            check if top of stack matches
+            if not → invalid
+            if yes → pop
+3. after loop:
+    if stack is empty → valid
+    else → invalid
+```
+
 **Python Implementation**
 
 ```

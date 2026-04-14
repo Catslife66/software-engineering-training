@@ -150,5 +150,57 @@ Spring Boot uses its IoC container to create and manage objects. Instead of manu
 private WishlistService service;
 ```
 
+### Breakdown
+
+**1. Dependencies are explicit**
+
+```
+public WishlistController(WishlistService service)
+```
+
+👉 You can clearly see what this class depends on.
+
+**2. Prevents invalid objects**
+
+With constructor injection:
+
+```
+Object CANNOT exist without its dependencies
+```
+
+👉 safer design
+
+**3. Supports immutability**
+
+```
+private final WishlistService service;
+```
+
+👉 dependency cannot change after creation
+
+**4. Better for testing**
+
+You can easily do:
+
+```
+new WishlistController(mockService)
+```
+
+👉 no Spring needed
+
+### Field injection problems
+
+```
+@Autowired
+private WishlistService service;
+```
+
+Problems:
+
+- hidden dependencies ❌
+- harder to test ❌
+- cannot make field final ❌
+- object may exist in incomplete state ❌
+
 **Answer:**
 Constructor injection is preferred because it makes **dependencies explicit(clearer)**, **supports immutability(safer)**, and improves **testability(testable)**. It also guarantees that all required dependencies are provided when the object is created, preventing invalid states.

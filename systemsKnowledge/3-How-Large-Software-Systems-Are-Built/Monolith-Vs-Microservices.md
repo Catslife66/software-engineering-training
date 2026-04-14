@@ -1,12 +1,23 @@
 # Monolith vs Microservices
 
-**Monolith** 👉🏻 You deploy everything together
+## Monolith
+
+👉🏻 You deploy everything together
 
 ```
 Client → One App → Database
 ```
 
-**Microservices** 👉🏻 You deploy services independently
+**Key characters**
+
+- single codebase with shared database
+- deployed and scaled as one unit
+- changes requrie full redeploy
+- failures impact the entire system
+
+## Microservices\*\*
+
+👉🏻 You deploy services independently
 
 ```
 Client
@@ -18,9 +29,18 @@ Payment Service
 Search Service
 ```
 
+**Key characters**
+
+- independently deployable services
+- each service owns its data store
+- services scale indenpendently
+- requires distributed observability and service coordination
+
 Microservices = independent services that enable scalability, flexibility, and isolation
 
 ## What Problems Monoliths Struggle With
+
+A monolith is usually one codebase, one database, and one deployment. For a small team, that’s often the simplest way to build and ship quickly. The problem arises when the codebase grows. A tiny fix in the cart code requires redeploying the whole app, and one bad release can take down everything with it.
 
 1. Scaling specific parts
 
@@ -56,6 +76,10 @@ Microservices = independent services that enable scalability, flexibility, and i
    This increases risk.
 
 ## What Microservices Solve
+
+Microservices try to solve the problems Monoliths struggle with by breaking the system into separate services. Product, Cart, and Order run on their own, scale separately, and often manage their own data. That means you can ship changes to Cart without affecting the rest of the system.
+
+But now you are dealing with multiple moving parts. You generally need service discovery, distributed tracing, and request routing between services.
 
 1. Independent scaling
    ```

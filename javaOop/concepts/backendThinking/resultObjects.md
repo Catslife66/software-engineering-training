@@ -70,3 +70,12 @@ Frontend → Controller → Service → Repository
                                ↓
 Controller → HTTP Response → Frontend
 ```
+
+```
+Service → returns Result (with code)
+Controller:
+    if success → 200
+    if USER_NOT_FOUND → 404
+    if DUPLICATE → 409
+    if INVALID → 400
+```

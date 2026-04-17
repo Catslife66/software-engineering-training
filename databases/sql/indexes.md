@@ -219,7 +219,7 @@ INDEX(A, B)
 WHERE A = ? AND B > ?
 ```
 
-→ very efficient
+→ very efficient, narrows the result well, a common lookup pattern
 
 **Rule 2 — Most selective first**
 
@@ -242,3 +242,11 @@ INDEX(A, B) ≠ INDEX(B, A)
 Ask: How can I narrow the data as early as possible?
 
 > Put the MOST selective column first in a composite index
+
+## Trade-offs
+
+| Benefit          | Cost                 |
+| ---------------- | -------------------- |
+| fast reads       | slower writes        |
+| efficient search | extra storage        |
+| better joins     | maintenance overhead |

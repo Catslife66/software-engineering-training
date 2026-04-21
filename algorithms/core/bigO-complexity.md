@@ -69,3 +69,17 @@ Whenever you solve an algorithm problem, ask:
 When we say an algorithm **scales well**, we mean:
 
 > Performance does not degrade too badly as the input becomes very large.
+
+## Golden pattern
+
+```
+Hashing → duplicates / lookup
+Two pointers → sorted arrays
+Sliding window → subarrays / substrings
+Stack → nested / matching
+Recursion → break into smaller problems
+Tree → combine left & right
+BFS → shortest path
+DFS → explore / islands
+DP → reuse overlapping subproblems
+```

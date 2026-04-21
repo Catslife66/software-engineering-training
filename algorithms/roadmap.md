@@ -43,54 +43,91 @@
    - Compare O(n), O(n²), O(log n)
    - Trace loops manually
 
-2. Arrays & Hash Maps
+2. Arrays (Hashing + Two Pointers)
 
-   Patterns:
+   Focus
+   - Set vs Map
+   - Two Sum (both versions)
+   - Remove duplicates / uniqueness
+
+   Practice
    - duplicate detection
-   - frequency counting
-   - lookup optimization
+   - two sum
+   - remove duplicates (order preserved)
 
-   Key idea:
-   - trade space for time
+   Key question to ask yourself:
+   - What information do I need to store?
 
-3. Two Pointers & Sliding Window
+3. Sliding Window
 
-   Patterns:
-   - sorted array → two pointers
-   - subarray problems → sliding window
+   Focus
+   - fixed-size window
+   - variable-size window
 
-   Key signals:
-   - "sorted"
-   - "subarray"
-   - "continuous"
+   Practice
+   - max sum subarray (k)
+   - smallest subarray ≥ S
+   - longest substring without repeat
+
+   Key question
+   - When do I expand? When do I shrink?
 
 4. Stack & Recursion
-   - Stack:
-     - parentheses
-     - undo / reverse logic
-   - Recursion:
-     - base case
-     - call stack
-     - tree thinking
 
-5. Graphs (BFS / DFS)
+   Focus
+   - valid parentheses
+   - recursion mindset
+   - base case vs recursive step
 
-   Patterns:
-   - islands (connected components)
-   - shortest path (BFS)
-   - multi-source BFS
+   Practice
+   - valid parentheses
+   - factorial / sum recursion
+   - trace recursion tree
 
-   Key questions:
-   - what are nodes?
-   - what are neighbors?
+   Key question
+   - What is the smaller problem?
 
-6. Dynamic Programming
+5. Trees
 
-   Sub-patterns:
-   - Fibonacci / stairs
-   - House robber
-   - Grid DP
-   - Obstacle handling
+   Focus
+   - preorder / inorder / postorder
+   - recursive tree thinking
 
-   Core framework:
-   - State → Transition → Base case → Operation
+   Practice
+   - traversal (write by hand)
+   - height of tree
+   - simple tree problems
+
+   Key question
+   - Do I need children first or not?
+
+6. Graphs (BFS / DFS)
+
+   Focus
+   - BFS vs DFS
+   - islands
+   - shortest path
+
+   Practice
+   - number of islands
+   - shortest path grid
+   - simple BFS traversal
+
+   Key question
+   - Is this shortest path or just exploration?
+
+7. Dynamic Programming
+
+   Focus
+   - 1D DP (stairs, house robber)
+   - 2D DP (grid)
+
+   Practice
+   - climbing stairs
+   - house robber
+   - min path sum
+   - unique paths
+
+   Key question
+   - What is my state?
+   - What is my transition?

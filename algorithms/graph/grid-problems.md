@@ -173,3 +173,19 @@ For islands:
 4. revisiting / recounting / loops
 5. count, size, or max size
 ```
+
+## Clean approach
+
+```
+1. loop through every cell (i, j)
+
+2. if cell is land (1) AND not visited:
+       count += 1   ← new island found
+       run BFS/DFS from (i, j)
+
+3. BFS/DFS will:
+       explore all connected land
+       mark them as visited
+
+4. continue scanning grid
+```

@@ -1,4 +1,4 @@
-## Problem
+## Problem 1
 
 You are given:
 
@@ -47,4 +47,67 @@ expand → [2,4,3] → sum 9 → valid, min = 3
 shrink → [4,3] → sum 7 → valid, min = 2
 shrink → [3] → sum 3
 Answer = 2
+```
+
+## Question 2
+
+You are given a string:
+
+s = "eceba"
+
+❓ Question
+
+Find the length of the longest substring that contains at most 2 distinct characters.
+
+## Solution
+
+```
+1. Pattern:
+   Variable-size sliding window + Hash Map
+
+2. Why:
+   We are looking for the longest contiguous substring with a dynamic condition:
+   at most 2 distinct characters. That suggests a sliding window that expands
+   and shrinks as needed.
+
+3. Approach:
+
+- Use a hash map to store character frequencies in the current window
+- Expand the window with the right pointer
+- If the window has more than 2 distinct characters, shrink from the left
+- While shrinking, decrement the frequency of the left character
+- If a character’s count becomes 0, remove it from the map
+- Track the maximum valid window length
+
+4. Walkthrough:
+   "e" → valid
+   "ec" → valid
+   "ece" → valid, max = 3
+   "eceb" → invalid (3 distinct), shrink to "eb"
+   "eba" → invalid (3 distinct), shrink to "ba"
+   Final answer = 3
+```
+
+## Code implement
+
+```
+def length_of_longest_substring_two_distinct(s):
+left = 0
+max_length = 0
+freq = {}
+
+    for right in range(len(s)):
+        char = s[right]
+        seen[char] = seen.get(char, 0) + 1
+
+        while len(freq) > 2:
+            left_char = s[left]
+            freq[left_char] -= 1
+            if freq[left_char] == 0:
+                del freq[left_char]
+            left += 1
+
+        max_length = max(max_length, right - left + 1)
+
+    return max_length
 ```

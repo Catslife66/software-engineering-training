@@ -63,3 +63,48 @@ Approach:
 ```
 
 Result: [1, 2, 3]
+
+## Question 4
+
+## Problem
+
+You are given an array:
+
+```
+nums = [1, 2, 3, 4]
+target = 5
+```
+
+❓ Question
+
+```
+Return all UNIQUE pairs of numbers that sum to target.
+```
+
+✅ Expected output
+
+```
+[[1, 4], [2, 3]]
+```
+
+## Solution
+
+```
+1. Pattern: Hashing (Set)
+
+2. Why:
+We need to find pairs that sum to target efficiently in an unsorted array.
+Hashing allows O(1) lookup for complements.
+
+3. Approach:
+- Use a set to store seen numbers
+- For each number:
+    - compute needed = target - num
+    - if needed is in seen → add pair
+    - otherwise add num to seen
+- ensure uniqueness if needed
+
+4. Walkthrough:
+[1,2,3,4]
+→ pairs: [2,3], [1,4]
+```

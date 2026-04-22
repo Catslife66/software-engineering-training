@@ -227,6 +227,12 @@ RequestBody
 
 Request and response data often have different purposes from domain objects, so forcing them to share the same structure reduces flexibility and can leak sensitive fields. DTOs keeps the API contract separate from internal models, which improves safety, maintainability, and design clarity.
 
+DTO protects:
+
+- input shape
+- allowed fields
+- system boundaries
+
 Example:
 
 Request body

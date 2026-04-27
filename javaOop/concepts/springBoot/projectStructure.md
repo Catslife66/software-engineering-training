@@ -304,3 +304,7 @@ For internal business and persistence logic
 **One sentence to remember**
 
 DTOs protect the boundary of your system.
+
+```
+A DTO defines the structure of data exchanged with clients, while an entity represents the internal domain model; using DTOs prevents exposing internal data and keeps the API contract decoupled from the system’s internal design.
+```

@@ -61,10 +61,11 @@ Answer these step by step:
 
 ### Model
 
+```
 public class User {
-private String id;
-private String email;
-private String password;
+    private String id;
+    private String email;
+    private String password;
 
     public User(String email, String password) {
         this.email = email;
@@ -80,12 +81,14 @@ private String password;
     }
 
 }
+```
 
 ### DTOs
 
+```
 public class UserInDTO {
-private String email;
-private String password;
+    private String email;
+    private String password;
 
     public String getEmail() {
         return email;
@@ -96,9 +99,11 @@ private String password;
     }
 
 }
+```
 
 ### Result
 
+```
 public class Result {
 private Boolean success;
 private String code;
@@ -127,30 +132,27 @@ private String message;
     public String getMessage(){
         return message;
     }
-
 }
+```
 
 ### Repository
 
-// Handling querying user info from database and creating user data to database
-
+```
 @Repository
 public interface UserRepository {
-User findByEmail(String email);
-void save(User user);
+    User findByEmail(String email);
+    void save(User user);
 }
+```
 
 ### Service
 
-// Validate user input and check if user email is been registered
-// Return success outcome when the checks are through and user instance is created
-// Return failure outcome when the checks are failed
-
+```
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserServive(
         UserRepository userRepository
@@ -184,21 +186,42 @@ private final UserRepository userRepository;
             return Result.failure("USER_CONFLICT", "This email has been registered.")
         }
 
-        User user = new User(email, password)
+        String hashedPassword = passwordService.hash(password);
+        User user = new User(email, hashedPassword);
+
         userRepository.save(user)
 
         retrun Result.success("You are registered successfully.")
     }
-
 }
+
+public interface PasswordService {
+    String hash(String rawPassword);
+    boolean matches(String rawPassword, String hashedPassword);
+}
+
+@Service
+public class BCryptPasswordService implements PasswordService {
+    @Override
+    public String hash(String rawPassword) {
+        // BCrypt encode here
+        return "...";
+    }
+
+    @Override
+    public boolean matches(String rawPassword, String hashedPassword) {
+        // BCrypt match here
+        return true;
+    }
+}
+```
 
 ### Controller
 
-// Handle receiving requests and returning responses
-
+```
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.\*;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -231,13 +254,16 @@ public class UserController {
     }
 
 }
+```
 
 ### Request body format
 
+```
 {
 "email": "abc@example.com",
 "password": "abcd1234"
 }
+```
 
 ## CHECKPINTS
 
@@ -260,4 +286,10 @@ UserInDTO is used to define the structure of incoming request data, while User r
 
 ```
 I would usually return only Result for a registration endpoint if the client only needs confirmation of success or failure. If the client needs the created user data immediately, I would return a UserOutDTO, but never the internal User entity.
+```
+
+> Why should we return UserOutDTO instead of User if we decide to return user data?
+
+```
+We should return a UserOutDTO instead of the User entity because it prevents exposing internal data such as passwords or roles, and it decouples the API response from the internal domain model. This allows us to control exactly what is returned to the client and makes the system more secure and maintainable.
 ```

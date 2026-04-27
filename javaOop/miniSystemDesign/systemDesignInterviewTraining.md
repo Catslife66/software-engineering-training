@@ -8,9 +8,9 @@
 
 **Answer:**
 
-Inheritance represents an “is-a” relationship, where a subclass extends a parent class and inherits its properties and behavior. It is useful when there is a clear hierarchical relationship and shared identity.
+**Inheritance** represents an “is-a” relationship, where a subclass extends a parent class and inherits its properties and behavior. It is useful when there is a clear hierarchical relationship and shared identity.
 
-Composition represents a “has-a” relationship, where a class contains other objects to achieve behavior. It allows more flexibility because behavior can be changed at runtime by swapping components.
+**Composition** represents a “has-a” relationship, where a class contains other objects to achieve behavior. It allows more flexibility because behavior can be changed at runtime by swapping components.
 
 I would use inheritance when the relationship is stable and truly hierarchical, such as a Manager being an Employee. I would use composition when behavior may vary or change, such as an OrderService using a Notification interface to support different notification types.
 
@@ -24,7 +24,7 @@ In general, composition is preferred over inheritance because it leads to more f
 
 **Answer:**
 
-Polymorphism in Java allows the same method call to behave differently depending on the object type. It is typically achieved through method overriding and interfaces.
+**Polymorphism** in Java allows the same method call to behave differently depending on the object type. It is typically achieved through method overriding and interfaces.
 
 For example, an OrderService may depend on a Notification interface. Different implementations like EmailNotification or SMSNotification can provide their own version of the send() method. When the service calls notification.send(), the actual behavior is determined at runtime based on the object passed in.
 
@@ -38,9 +38,9 @@ This is useful because it makes the system flexible and extensible. New implemen
 
 **Answer:**
 
-Abstraction focuses on hiding implementation details and exposing only what is necessary. It defines what a class should do without specifying how it does it, typically using interfaces or abstract classes.
+**Abstraction** focuses on hiding implementation details and exposing only what is necessary. It defines what a class should do without specifying how it does it, typically using interfaces or abstract classes.
 
-Encapsulation focuses on protecting an object’s internal state by restricting direct access to its data and controlling it through methods like getters and setters.
+**Encapsulation** focuses on protecting an object’s internal state by restricting direct access to its data and controlling it through methods like getters and setters.
 
 For example, an abstract Animal class may define a method makeSound() without implementation, and subclasses like Dog provide their own implementation — this is abstraction.
 

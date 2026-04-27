@@ -98,9 +98,66 @@ freq = {}
 
     for right in range(len(s)):
         char = s[right]
-        seen[char] = seen.get(char, 0) + 1
+        freq[char] = freq.get(char, 0) + 1
 
         while len(freq) > 2:
+            left_char = s[left]
+            freq[left_char] -= 1
+            if freq[left_char] == 0:
+                del freq[left_char]
+            left += 1
+
+        max_length = max(max_length, right - left + 1)
+
+    return max_length
+```
+
+## Question 3
+
+You are given a string:
+
+```
+s = "aabccbb"
+```
+
+Return the length of the longest substring without repeating characters.
+
+```
+1. Pattern: variable-size sliding window
+
+2. Why: Because the question is asking for the longest substring, so we need to use a variable size sliding window to shrink or expand the substring
+
+3. Approach:
+- initialise a hash map to store frequency of the charaters in the substring
+- iterate right through string:
+    if char is not in seen, keep expanding
+    while char is in seen, shrink from the left
+      if a char counts 0, remove from seen
+- Track the max_length from valid substrings
+
+4. Walkthrough:
+
+"a" - valid, seen: {"a": 1}
+"aa" - invalid, shrink to "a"
+"ab" - valid
+"abc" - valid, max = 3
+"abcc" - invalid, shrink to "c"
+"cb" - valid
+"cbb" - invalid, shrink to "b"
+
+5. Final answer: 3
+
+
+def longest_substring_with_unique_char(s):
+    freq = {}
+    left = 0
+    max_length = 0
+
+    for right in range(len(s)):
+        char = s[right]
+        freq[char] = freq.get(char, 0) + 1
+
+        while freq[char] > 1:
             left_char = s[left]
             freq[left_char] -= 1
             if freq[left_char] == 0:

@@ -371,3 +371,27 @@ Client → API → Cache → DB fallback → Redirect
 Analytics:
 Redirect → Queue → Worker
 ```
+
+## CHECKPOINTS
+
+> Why is caching especially effective for a URL shortener?
+
+```
+Caching is especially effective for a URL shortener because the system is read-heavy and many users may request the same short URL repeatedly.
+
+When the short_code → long_url mapping is cached, most redirect requests can be served directly from cache instead of querying the database every time.
+
+As a result, redirects become faster, database load is reduced, and the cache acts as a buffer that protects the database during traffic spikes.
+```
+
+> Why should click analytics be processed through a queue instead of synchronously during redirect?
+
+```
+Click analytics should be processed through a queue because it is not part of the critical path for redirecting the user.
+
+If analytics were processed synchronously, each redirect would require additional work such as database writes, increasing latency and slowing down the user experience.
+
+By sending analytics events to a queue, the system can return the redirect response immediately, while workers process analytics asynchronously in the background.
+
+As a result, the redirect remains fast and responsive, while analytics are still reliably captured and processed at scale.
+```

@@ -45,17 +45,23 @@ At a high level:
 
 1. How many rows will match?
 
+```
 Few rows → index attractive
 Many rows → scan may be better
+```
 
 2. Is the index aligned with the query?
 
+```
 Good match → useful
 Wrong order / wrong column → less useful
+```
 
 3. Does the query need all columns?
 
-If SELECT \*, the database may still need to visit the table after using the index
+```
+If SELECT *, the database may still need to visit the table after using the index
+```
 
 4. Table size
 

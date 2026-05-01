@@ -392,3 +392,90 @@ Reads 5 rows instead of thousands
 ### Pattern 4 — LIMIT
 
 → combine WHERE + ORDER BY in index
+
+## EXPLAIN vs EXPLAIN ANALYZE
+
+`EXPLAIN`
+
+Shows the database’s estimated plan.
+
+```
+EXPLAIN
+SELECT *
+FROM orders
+WHERE customer_id = 10;
+```
+
+It tells you what the database thinks will happen.
+
+`EXPLAIN ANALYZE`
+
+Actually runs the query and shows the real execution result.
+
+```
+EXPLAIN ANALYZE
+SELECT *
+FROM orders
+WHERE customer_id = 10;
+```
+
+It tells you:
+
+- estimated rows
+- actual rows
+- actual time
+- whether the planner guessed correctly
+
+**Why this matters**
+
+Sometimes the planner estimates badly.
+
+Example:
+
+```
+estimated rows: 10
+actual rows: 500,000
+```
+
+That means the database made a plan based on a wrong assumption.
+
+This can cause slow queries.
+
+### Key things to look for
+
+1. Estimated rows vs actual rows
+
+Bad:
+
+```
+rows=10 actual rows=100000
+```
+
+The planner underestimated badly.
+
+2. Sequential scan on large table
+
+Bad if the table is huge and the query should be selective.
+
+```
+Seq Scan on orders
+```
+
+3. Sort step
+
+Can be expensive.
+
+```
+Sort
+```
+
+Maybe an index can avoid it.
+
+4. Filter after index scan
+
+Means the index only helped partly.
+
+```
+Index Cond: customer_id = 10
+Filter: status = 'completed'
+```

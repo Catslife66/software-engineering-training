@@ -348,6 +348,7 @@ UserRepository should not contain password verification logic because it is resp
 > What is the difference between authentication and authorization?
 
 ```
-Authentication is verifying who the user is.
-Authorization is deciding what the authenticated user is allowed to do.
+Authentication is the process of verifying a user’s identity, usually by checking credentials such as email and password, and then issuing a token if valid.
+
+Authorization is the process of determining what an authenticated user is allowed to access or do.
 ```

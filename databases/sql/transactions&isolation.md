@@ -164,7 +164,7 @@ Two users click “buy” at the same time.
 
 Solution: transaction + row lock
 
-Use SELECT ... FOR UPDATE inside a transaction:
+Use **SELECT ... FOR UPDATE** inside a transaction:
 
 ```
 BEGIN;

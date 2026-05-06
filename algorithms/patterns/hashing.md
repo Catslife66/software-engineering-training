@@ -6,6 +6,8 @@ If I give you:
 
 👉🏻 Find if duplicates exist.
 
+**Solution**
+
 ```
 Pattern: Hashing (Set)
 
@@ -28,6 +30,8 @@ nums = [3, 2, 4]
 target = 6
 ```
 
+**Solution**
+
 ```
 Pattern: Hashing (Map)
 Approach:
@@ -48,6 +52,8 @@ nums = [1, 2, 2, 3]
 
 Return all unique elements (no duplicates, keep order)
 
+**Solution**
+
 ```
 Pattern: Hashing (Set)
 Approach:
@@ -65,8 +71,6 @@ Approach:
 Result: [1, 2, 3]
 
 ## Question 4
-
-## Problem
 
 You are given an array:
 
@@ -87,7 +91,7 @@ Return all UNIQUE pairs of numbers that sum to target.
 [[1, 4], [2, 3]]
 ```
 
-## Solution
+**Solution**
 
 ```
 1. Pattern: Hashing (Set)
@@ -107,4 +111,59 @@ Hashing allows O(1) lookup for complements.
 4. Walkthrough:
 [1,2,3,4]
 → pairs: [2,3], [1,4]
+```
+
+## Question 5
+
+```
+nums = [1, 2, 3, 1]
+k = 3
+```
+
+Question
+
+```
+Return True if there are two distinct indices i and j such that:
+nums[i] == nums[j] AND |i - j| <= k
+```
+
+**Solution**
+
+```
+1. Pattern:
+Hash Map
+
+2. Why:
+We need to check both value equality and index distance.
+A map allows O(1) lookup of previous indices.
+
+3. Approach:
+- Use a map to store the last seen index of each number
+- Iterate through the array:
+    - If number exists in map:
+        - check if current index - last index <= k
+        - if yes → return True
+    - Update the index in the map ❗️important
+- Return False if no valid pair is found
+
+4. Walkthrough:
+[1,2,3,1], k=3
+→ 1 at 0 → store
+→ 2 at 1 → store
+→ 3 at 2 → store
+→ 1 at 3 → 3-0 = 3 ≤ k → True
+```
+
+**Correct idea**
+
+Instead of:
+
+```
+store first occurrence only
+```
+
+We should:
+
+```
+update the index every time
 ```

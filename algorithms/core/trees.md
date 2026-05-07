@@ -54,6 +54,19 @@ process right subtree
 
 Which is naturally recursive.
 
+## Memerise this
+
+```
+def f(node):
+    if node is None:
+        return base_value
+
+    left = f(node.left)
+    right = f(node.right)
+
+    return combine(left, right, node)
+```
+
 ## First Tree Algorithm Pattern
 
 The most important starting point is **Tree Traversal**.
@@ -127,6 +140,16 @@ Exxample:
 1. Preorder Traversal: A → B → D → E → C → F
 2. Inorder Traversal: D → B → E → A → C → F
 3. Postorder Traversal: D → E → B → F → C → A
+
+## Quick intuition trick
+
+Remember this:
+
+| Traversal | Use case intuition    |
+| --------- | --------------------- |
+| Preorder  | build / copy tree     |
+| Inorder   | sorted order (BST)    |
+| Postorder | compute from children |
 
 ## One Beautiful Insight (important)
 
@@ -212,12 +235,251 @@ Postorder is used for:
 
 Because you need child results first.
 
-## Quick intuition trick
+## Sum of Tree
 
-Remember this:
+Return the sum of all node values
 
-| Traversal | Use case intuition    |
-| --------- | --------------------- |
-| Preorder  | build / copy tree     |
-| Inorder   | sorted order (BST)    |
-| Postorder | compute from children |
+**1. What does f(node) represent?**
+
+```
+Sum of all values in the subtree rooted at this node
+```
+
+**2. Base case?**
+
+```
+if node is null → return 0
+```
+
+**3. Recursive formula?**
+
+```
+return node.val + f(node.left) + f(node.right)
+```
+
+## Count Nodes
+
+Return the number of nodes in a binary tree
+
+**1. What does f(node) represent?**
+
+```
+f(node) = number of nodes in subtree rooted at node
+```
+
+**2. Base case?**
+
+```
+if node is null → return 0
+```
+
+**3. Recursive formula?**
+
+```
+return 1 + f(node.left) + f(node.right)
+```
+
+## Same Tree (structure + values)
+
+Given two binary trees, return True if they are identical - two trees have the **same structure** and the **same values**.
+
+**1. What does f(node1, node2) represent?**
+
+```
+Whether the two subtrees rooted at node1 and node2 are identical
+```
+
+**2. Base cases?**
+
+```
+if node1 is None and node2 is None:
+    return True
+
+if node1 is None or node2 is None:
+    return False
+
+if node1.val != node2.val:
+    return False
+```
+
+**3. Recursive formula?**
+
+```
+return f(node1.left, node2.left) and f(node1.right, node2.right)
+```
+
+## Path Sum I
+
+Given a binary tree and a target sum,
+return True if there exists a root-to-leaf path
+where the sum equals target.
+
+**1. What does f(node, target) represent?**
+
+```
+Is there a root-to-leaf path starting from this node
+such that the path sum equals target?
+
+Path Sum = "Can I reach a leaf where remaining target becomes 0?"
+```
+
+At each node:
+
+```
+remaining target = target - node.val
+```
+
+**2. Base cases**
+
+```
+- if node is null → return False
+- if node is leaf → return target == node.val
+```
+
+**3. Recursive formula:**
+
+```
+return f(left, target - node.val) OR f(right, target - node.val)
+```
+
+Example:
+
+```
+        5
+       / \
+      4   8
+     /   / \
+    11  13  4
+   /  \
+  7    2
+```
+
+target = 22
+
+Step by step:
+
+```
+Start: f(5, 22)
+
+Go left: f(4, 17)
+
+Go left: f(11, 13)
+
+Go right: f(2, 2)
+
+Now: leaf node AND target == node.val → True
+```
+
+## Path Sum II
+
+Return ALL root-to-leaf paths where sum = target
+
+**1. What does f(node, target, path) represent?**
+
+```
+Explore all root-to-leaf paths starting from this node,
+while tracking the remaining target and the current path.
+```
+
+So path stores:
+
+```
+the nodes chosen so far on the current route
+```
+
+**2. Backtracking pattern**
+
+```
+add node to path
+explore left and right
+remove node from path
+```
+
+Example:
+
+```
+        5
+       / \
+      4   8
+     /   / \
+    11  13  4
+   /  \
+  7    2
+```
+
+target = 22
+
+Step by step:
+
+```
+Step 1 — Start
+node = 5
+path = []
+target = 22
+
+Step 2 — Go left (4)
+path = [5, 4]
+target = 13
+
+Step 3 — Go left (11)
+path = [5, 4, 11]
+target = 2
+
+
+Step 4 — Go left (7)
+path = [5, 4, 11, 7]
+target = -5 ❌
+
+👉 Leaf but not valid → stop
+
+Backtrack
+remove 7
+path = [5, 4, 11]
+
+Step 5 — Go right (2)
+path = [5, 4, 11, 2]
+target = 0 ✅
+
+👉 Leaf + valid → save path
+
+result = [[5, 4, 11, 2]]
+
+Backtrack again
+remove 2 → [5, 4, 11]
+remove 11 → [5, 4]
+remove 4 → [5]
+
+Step 6 — Go right (8)
+path = [5, 8]
+target = 9
+
+Step 7 — Go left (13)
+path = [5, 8, 13]
+target = -4 ❌
+
+👉 invalid → backtrack
+
+Step 8 — Go right (4)
+path = [5, 8, 4]
+target = 5
+
+Step 9 — Go left (5)
+path = [5, 8, 4, 5]
+target = 0 ✅
+
+👉 valid path
+
+result = [
+  [5, 4, 11, 2],
+  [5, 8, 4, 5]
+]
+
+```
+
+## Formular
+
+| Problem | Formula                   |
+| ------- | ------------------------- |
+| Height  | `1 + max(left, right)`    |
+| Sum     | `node.val + left + right` |
+| Count   | `1 + left + right`        |

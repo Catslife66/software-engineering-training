@@ -77,7 +77,7 @@ If not found, return -1.
 
 ```
 1. Pattern: Binary search (modified)
-2. Why: because the array is sorted and the time complexity must be O(log n)
+2. Why: because the array is sorted and there might be an earlier occurrence on the left
 3. Approach:
     - left = 0, right = n - 1
     - result = -1
@@ -115,4 +115,41 @@ left > right
 
 
 5. Final answer: 1
+```
+
+## Question 3
+
+```
+nums = [1, 3, 5, 7]
+target = 6
+
+Return the index where target should be inserted
+```
+
+Solution:
+
+```
+Step 1: left = 0, right = 3, mid = 1 -> 3 < 6, move left = mid + 1
+Step 2: left = 2, right = 3, mid = 2 -> 5 < 6, move left = mid + 1
+Step 3: left = 3, right = 3, mid = 3 -> 7 > 6, move right = mid - 1
+Step 4: left = 3, right = 2, right < left, stop, return left
+Final result: return 3
+```
+
+Key insight (VERY important)
+
+```
+When target is NOT found → return left
+```
+
+Because left is the insertion position
+
+## Key patterns
+
+```
+nums[mid] == target:
+
+Find ANY → return immediately
+Find FIRST → result = mid, move right = mid - 1
+Find LAST → result = mid, move left = mid + 1
 ```

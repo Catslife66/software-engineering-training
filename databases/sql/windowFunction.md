@@ -46,11 +46,11 @@ FROM salaries;
 **Result**
 
 | employee | department | salary | avg_salary |
-| -------- | ---------- | -----: | ---------: |
-| Alice    | Eng        |    100 |        110 |
-| Bob      | Eng        |    120 |        110 |
-| Carol    | HR         |     80 |         85 |
-| David    | HR         |     90 |         85 |
+| -------- | ---------- | ------ | ---------- |
+| Alice    | Eng        | 100    | 110        |
+| Bob      | Eng        | 120    | 110        |
+| Carol    | HR         | 80     | 85         |
+| David    | HR         | 90     | 85         |
 
 **Key Idea**
 
@@ -77,10 +77,10 @@ Example:
 salaries
 
 | employee_id | name  | department | salary |
-| ----------- | ----- | ---------- | -----: |
-| 1           | Alice | Eng        |    120 |
-| 2           | Bob   | Eng        |    120 |
-| 3           | Carol | HR         |     90 |
+| ----------- | ----- | ---------- | ------ |
+| 1           | Alice | Eng        | 120    |
+| 2           | Bob   | Eng        | 120    |
+| 3           | Carol | HR         | 90     |
 
 Goal:
 
@@ -167,3 +167,56 @@ ROW_NUMBER() → pick ONE (with tie-break)
 RANK()       → keep ALL ties
 DENSE_RANK() → keep ALL ties, best for "Nth highest"
 ```
+
+### LAG()
+
+> look at previous row inside a window partition - peeks at another row in the same partition
+
+LAG() very common for:
+
+- compare current vs previous sales
+- detect changes
+- calculate growth
+- identify trends
+- find consecutive events
+
+Example: sales growth
+
+You can do:
+
+```
+amount - LAG(amount)
+```
+
+to calculate:
+
+```
+difference from previous sale
+```
+
+**Mental model**
+
+```
+LAG(column, N)
+```
+
+means "give me the value from N rows earlier"
+
+### LEAD() - opposite of LAG()
+
+```
+LAG() = look backward
+LEAD() = look forward
+
+LEAD(amount, 1)
+
+means look 1 row forward
+```
+
+## Important window-function family
+
+| Category             | Functions                          |
+| -------------------- | ---------------------------------- |
+| Ranking              | `ROW_NUMBER`, `RANK`, `DENSE_RANK` |
+| Running calculations | `SUM OVER`, `AVG OVER`             |
+| Row comparison       | `LAG`, `LEAD`                      |

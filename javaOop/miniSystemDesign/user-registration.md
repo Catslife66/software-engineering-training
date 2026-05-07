@@ -59,7 +59,7 @@ Answer these step by step:
    - password rules
    - duplicate email
 
-### Model
+## Model
 
 ```
 public class User {
@@ -83,7 +83,7 @@ public class User {
 }
 ```
 
-### DTOs
+## DTOs
 
 ```
 public class UserInDTO {
@@ -101,7 +101,7 @@ public class UserInDTO {
 }
 ```
 
-### Result
+## Result
 
 ```
 public class Result {
@@ -135,7 +135,7 @@ private String message;
 }
 ```
 
-### Repository
+## Repository
 
 ```
 @Repository
@@ -145,7 +145,7 @@ public interface UserRepository {
 }
 ```
 
-### Service
+## Service
 
 ```
 import org.springframework.stereotype.Service;
@@ -216,7 +216,7 @@ public class BCryptPasswordService implements PasswordService {
 }
 ```
 
-### Controller
+## Controller
 
 ```
 import org.springframework.http.HttpStatus;
@@ -256,7 +256,7 @@ public class UserController {
 }
 ```
 
-### Request body format
+## Request body format
 
 ```
 {

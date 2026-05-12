@@ -511,13 +511,13 @@ remove node from path
 Example:
 
 ```
-        5
-       / \
-      4   8
-     /   / \
-    11  13  4
-   /  \
-  7    2
+                5
+              /   \
+             4     8
+            /     / \
+           11    13  4
+          /  \       / \
+         7    2     5   1
 ```
 
 target = 22
@@ -746,3 +746,63 @@ right = f(node.right)
 ```
 
 then combine.
+
+## Covered Patterns
+
+**✅ Bottom-up recursion**
+
+Examples:
+
+- height
+- count nodes
+- max value
+- leaf count
+- sum leaf nodes
+
+Pattern:
+
+```
+left result + right result + combine
+```
+
+**✅ Decision recursion**
+
+Examples:
+
+- contains target
+- same tree
+- symmetric tree
+- all positive
+
+Pattern:
+
+```
+OR / AND recursion
+```
+
+**✅ Top-down recursion**
+
+Examples:
+
+- path sum
+- left leaf tracking
+- path building
+
+Pattern:
+
+```
+pass information downward
+```
+
+**✅ Backtracking basics**
+
+Examples:
+
+- Path Sum II
+- collect all paths
+
+Pattern:
+
+```
+choose → explore → undo
+```

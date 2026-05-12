@@ -235,6 +235,22 @@ Postorder is used for:
 
 Because you need child results first.
 
+## Maximum value
+
+Return the maximum value in a binary tree
+
+```
+1. What does f(node) represent?
+maximum value in the subtree rooted at this node
+
+2. Base case?
+if node is None:
+    return -infinity
+
+3. Recursive formula?
+return max(node.val, f(node.left), f(node.right))
+```
+
 ## Sum of Tree
 
 Return the sum of all node values
@@ -277,6 +293,103 @@ if node is null → return 0
 
 ```
 return 1 + f(node.left) + f(node.right)
+```
+
+## Numbers of leaf nodes
+
+Return the number of LEAF nodes in a binary tree
+
+A leaf node means:
+
+```
+node.left is None AND node.right is None
+```
+
+```
+1. What does f(node) represent?
+number of leaf nodes in the subtree rooted at this node
+
+2. Base case?
+if node is None -> return 0
+
+3. Recursive formula?
+count = 1 if node.left is None and node.right is None else 0
+return count + f(node.left) + f(node.right)
+
+```
+
+## Node contains target
+
+Problem
+
+Return True if a binary tree contains a value target
+
+Example:
+
+target = 7
+
+Return:
+
+True if any node has value 7
+
+```
+1. What does f(node, target) represent?
+whether the subtree rooted at this node contains target
+
+2. Base case?
+if node is None → False
+if node.val == target → True
+
+3. Recursive formula?
+return f(node.left, target) OR f(node.right, target)
+```
+
+## Minimum height of a tree
+
+Problem
+
+Return the minimum depth of a binary tree
+
+Minimum depth:
+
+```
+shortest path from root to ANY leaf
+```
+
+```
+1. What does f(node) represent?
+minimum depth of a subtree rooted in this node
+
+2. Base case?
+if node is None:
+    return 0
+
+if node is leaf:
+    return 1
+
+3. Recursive formula?
+
+if node.left is None:
+    return 1 + f(node.right)
+
+if node.right is None:
+    return 1 + f(node.left)
+
+return 1 + min(f(node.left), f(node.right))
+```
+
+**KEY IDEA**
+
+For minimum depth:
+
+```
+ONLY real paths to leaves count
+```
+
+Missing child:
+
+```
+does NOT count as a valid path
 ```
 
 ## Same Tree (structure + values)
@@ -478,8 +591,158 @@ result = [
 
 ## Formular
 
-| Problem | Formula                   |
-| ------- | ------------------------- |
-| Height  | `1 + max(left, right)`    |
-| Sum     | `node.val + left + right` |
-| Count   | `1 + left + right`        |
+| Type               | Example                |
+| ------------------ | ---------------------- |
+| Value recursion    | height, sum, count     |
+| Decision recursion | path sum, same tree    |
+| Path recursion     | path sum II            |
+| Backtracking       | add → explore → remove |
+
+| Problem Type     | Formula                   |
+| ---------------- | ------------------------- |
+| Sum              | `left + right + node.val` |
+| Count            | `1 + left + right`        |
+| Height           | `1 + max(left, right)`    |
+| Exists?          | `left or right`           |
+| Both must match? | `left and right`          |
+
+## What TYPE of value does this recursion return?
+
+**Case 1 — Sum problem**
+
+```
+f(node) returns a NUMBER
+```
+
+So when node is None:
+
+```
+must return a valid number
+```
+
+For sum: 0
+
+because: 0 is neutral for addition
+
+Example
+
+```
+return f(left) + f(right)
+```
+
+If one side is None:
+
+```
+0 + something
+```
+
+**Case 2 — Maximum problem**
+
+```
+f(node) returns a maximum value
+```
+
+For None:
+
+```
+return -infinity
+```
+
+because: None should never become maximum
+
+**Case 3 — Boolean decision problem**
+
+```
+f(node) returns True/False
+```
+
+For None: Depends on meaning.
+
+Example: Contains target
+
+```
+None subtree does NOT contain target
+```
+
+So: return False
+
+Example: Same tree
+
+```
+both None means identical
+```
+
+So: return True
+
+**Case 4 — Void recursion / traversal**
+
+Sometimes recursion returns NOTHING.
+
+Example:
+
+```
+collect paths into result
+```
+
+Then:
+
+```
+if node is None:
+    return
+```
+
+because: function does not return a value
+
+**Cheat sheet**
+
+| Problem Type      | Return on None     |
+| ----------------- | ------------------ |
+| Sum               | `0`                |
+| Count             | `0`                |
+| Max               | `-∞`               |
+| Min               | `+∞` (sometimes)   |
+| Boolean exists    | `False`            |
+| Boolean all-valid | `True` (sometimes) |
+| Void traversal    | `return`           |
+
+## Base Case & Recursive Step
+
+**Base case**
+
+```
+STOP recursion
+```
+
+Base cases answer:
+
+```
+“When should recursion end immediately?”
+```
+
+Usually:
+
+- null node
+- leaf node
+- found answer
+- invalid state
+
+**Recursive step**
+
+```
+CONTINUE recursion
+```
+
+Recursive steps answer:
+
+```
+“How do I reduce the problem into smaller subproblems?”
+```
+
+Usually:
+
+```
+left = f(node.left)
+right = f(node.right)
+```
+
+then combine.

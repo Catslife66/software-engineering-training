@@ -16,7 +16,7 @@ Eample:
 
 → True
 
-## Solution
+**Solution**
 
 ```
 1. Pattern:
@@ -60,7 +60,7 @@ Symmetry means the left and right subtrees must be mirror images, so we recursiv
 - is_mirror(root.left, root.right) → True
 ```
 
-## Code implementation
+**Code implementation**
 
 ```
 def is_symmetric(root):
@@ -141,7 +141,7 @@ Expected output
 ["1->2->5", "1->3"]
 ```
 
-Solution:
+**Solution**:
 
 ```
 1. What does f(node, path) represent?
@@ -160,7 +160,7 @@ node.left is None and node.right is None
 → add the completed path to result
 ```
 
-Code implementation:
+**Code implementation**:
 
 ```
 def binary_tree_paths(root):
@@ -184,4 +184,226 @@ def binary_tree_paths(root):
 
     dfs(root, "")
     return result
+```
+
+## Problem 3
+
+Question:
+
+```
+Given a binary tree,
+return True if there exists a root-to-leaf path
+where the path values form the string target.
+```
+
+Example:
+
+```
+target = "124"
+```
+
+Path:
+
+```
+1 → 2 → 4
+```
+
+Solution:
+
+```
+1. What does f(node, path) represent?
+whether there is a root-to-leaf path starting from this node where the path string so far can become target.
+
+2. Base cases?
+if node is None:
+    return False
+
+new_path = path + str(node.val)
+
+if node is a leaf:
+    return new_path == target
+
+3. Recursive formula?
+return f(node.left, new_path) OR f(node.right, new_path)
+```
+
+## Problem 4
+
+Return the sum of all LEAF nodes
+
+```
+1. What does f(node) represent?
+   sum of leaf node values in subtree rooted at this node
+
+2. Base case?
+
+if node is None -> return 0
+
+if node.left is None and node.right is None:
+return node.val
+
+3. Recursive formula?
+
+return f(node.left) + f(node.right)
+```
+
+## Problem 5
+
+Return the number of nodes that have EXACTLY ONE child
+
+Example:
+
+```
+    1
+   / \
+  2   3
+ /
+4
+```
+
+Nodes with exactly one child: 2
+
+Answer: 1
+
+```
+1. f(node):
+number of nodes with exactly one child in subtree rooted at node
+
+2. Base case:
+if node is None:
+    return 0
+
+3. Recursive formula:
+current = 1 if exactly one child else 0
+
+    (node.left is not None and node.right is None)
+    or
+    (node.left is None and node.right is not None)
+a cleaner way: (node.left is None) != (node.right is None)
+
+return current + f(node.left) + f(node.right)
+```
+
+## Problem 6
+
+Return the number of EVEN-valued nodes in a binary tree
+
+Example:
+
+```
+      5
+     / \
+    2   8
+   /
+  4
+```
+
+Even-valued nodes:
+
+```
+2, 8, 4
+```
+
+Answer: 3
+
+```
+1. What does f(node) represent?
+numbers of even-valued nodes in subtree rooted at this node
+
+2. Base case?
+if node is None -> return 0
+
+3. Recursive formula?
+
+count = 1 if node.val % 2 == 0 else 0
+return count + f(node.left) + f(node.right)
+```
+
+## Problem 7
+
+Return the number of nodes GREATER than target
+
+Example:
+
+target = 5
+
+```
+1. What does f(node, target) represent?
+number of nodes with value greater than target in subtree rooted at this node
+
+2. Base case?
+if node is None -> return 0
+
+3. Recursive formula?
+count = 1 if node.val > target else 0
+return count + f(node.left, target) + f(node.right, target)
+```
+
+## Problem 8
+
+Return True if ALL node values are positive
+
+```
+1. What does f(node) represent?
+whether all values in the subtree rooted at this node are positive
+
+2. Base case?
+if node is None:
+    return True
+
+if node.val <= 0:
+    return False
+
+3. Recursive formula?
+return f(node.left) and f(node.right)
+```
+
+## Problem 9
+
+Return the SUM of all LEFT leaf nodes
+
+A left leaf means:
+
+```
+- it is a leaf
+- AND it is the left child of its parent
+```
+
+Example:
+
+```
+      3
+     / \
+    9   20
+       /  \
+      15   7
+```
+
+Left leaves:
+
+```
+9 and 15
+```
+
+Answer: 24
+
+```
+1. What does f(node, isLeft) represent?
+sum the values in the left leaf in subtree rooted at this node
+
+2. Base cases?
+if node is None -> return 0
+
+3. Recursive formula?
+count = node.val if (
+    node.left is None
+    and node.right is None
+    and isLeft
+) else 0
+
+return (
+    count
+    + f(node.left, True)
+    + f(node.right, False)
+)
 ```

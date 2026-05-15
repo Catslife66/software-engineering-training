@@ -51,6 +51,10 @@ RIGHT JOIN keeps ALL rows from the RIGHT table.
 
 Everything from both, even if no match (not all databases support FULL JOIN).
 
+## CROSS JOIN
+
+creates all possible combinations - table A & table B
+
 ## NULL
 
 NULL means: **no value / unknown / missing data**

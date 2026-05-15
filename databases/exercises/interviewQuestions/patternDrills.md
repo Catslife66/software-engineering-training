@@ -217,12 +217,14 @@ Where:
 - previous_amount = previous sale amount for the same salesperson
 - if no previous row → NULL
 
+```
 SELECT salesperson, sale_date, amount,
-LAG(amount) OVER (
-PARTITION BY salesperson
-ORDER BY sale_date ASC
-) AS previous_amount
+    LAG(amount) OVER (
+        PARTITION BY salesperson
+        ORDER BY sale_date ASC
+    ) AS previous_amount
 FROM sales;
+```
 
 ### Drill 2D — Difference from Previous Row
 
@@ -387,7 +389,7 @@ orders
 | 4        | 2           | completed |    150 |
 | 5        | 3           | cancelled |    300 |
 
-### Drill
+### Drill A
 
 Return:
 
@@ -417,4 +419,56 @@ SELECT c.customer_id, c.completed_total,
         ORDER BY c.completed_total
     ) AS rank
 FROM customer_amount c;
+```
+
+### Drill B
+
+**Dataset**
+
+transactions
+
+| transaction_id | user_id | type       | amount |
+| -------------- | ------- | ---------- | -----: |
+| 1              | 1       | deposit    |    100 |
+| 2              | 1       | withdrawal |     50 |
+| 3              | 1       | deposit    |    200 |
+| 4              | 2       | deposit    |    300 |
+| 5              | 2       | withdrawal |    100 |
+| 6              | 3       | withdrawal |     50 |
+
+Return:
+
+| user_id | deposit_total | rank |
+
+Where:
+
+- deposit_total = total deposited amount only
+- rank users by deposit_total descending
+- keep ties
+- exclude users with deposit_total = 0
+
+```
+WITH total AS (
+    SELECT user_id,
+        SUM(
+            CASE
+                WHEN type = 'deposit'
+                THEN amount
+                ELSE 0
+            END
+        ) AS deposit_total
+    FROM transactions
+    GROUP BY user_id
+),
+ranked AS (
+    SELECT user_id, deposit_total,
+        RANK() OVER (
+            ORDER BY deposit_total DESC
+        ) AS rank
+    FROM total
+    WHERE deposit_total > 0
+)
+SELECT user_id, deposit_total, rank
+FROM ranked
+ORDER BY rank, user_id;
 ```

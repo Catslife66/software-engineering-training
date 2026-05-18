@@ -1,4 +1,4 @@
-## Problem 1
+## Problem 1 - Tree Structure
 
 You are given a binary tree.
 
@@ -119,7 +119,7 @@ step 2 - is_mirror(none, 3)
 
 ```
 
-## Problem 2
+## Problem 2 - Return ALL Root-to-Leaf Path as Strings
 
 Given a binary tree:
 
@@ -145,7 +145,8 @@ Expected output
 
 ```
 1. What does f(node, path) represent?
-Explore all root-to-leaf paths starting from this node, while carrying the current path so far.
+Explore all root-to-leaf paths starting from node,
+while path stores current route from root to this node.
 
 2. Base case?
 If node is null → return
@@ -186,7 +187,7 @@ def binary_tree_paths(root):
     return result
 ```
 
-## Problem 3
+## Problem 3 - Return whether a root-to-leaf path forms a string target exists
 
 Question:
 
@@ -227,7 +228,7 @@ if node is a leaf:
 return f(node.left, new_path) OR f(node.right, new_path)
 ```
 
-## Problem 4
+## Problem 4 - Sum leaf nodes
 
 Return the sum of all LEAF nodes
 
@@ -247,7 +248,7 @@ return node.val
 return f(node.left) + f(node.right)
 ```
 
-## Problem 5
+## Problem 5 - Count nodes
 
 Return the number of nodes that have EXACTLY ONE child
 
@@ -284,7 +285,7 @@ a cleaner way: (node.left is None) != (node.right is None)
 return current + f(node.left) + f(node.right)
 ```
 
-## Problem 6
+## Problem 6 - count nodes
 
 Return the number of EVEN-valued nodes in a binary tree
 
@@ -319,7 +320,7 @@ count = 1 if node.val % 2 == 0 else 0
 return count + f(node.left) + f(node.right)
 ```
 
-## Problem 7
+## Problem 7 - count nodes
 
 Return the number of nodes GREATER than target
 
@@ -339,7 +340,7 @@ count = 1 if node.val > target else 0
 return count + f(node.left, target) + f(node.right, target)
 ```
 
-## Problem 8
+## Problem 8 - Return wethere all node values are positive
 
 Return True if ALL node values are positive
 
@@ -358,7 +359,7 @@ if node.val <= 0:
 return f(node.left) and f(node.right)
 ```
 
-## Problem 9
+## Problem 9 - Sum LEFT leaf nodes
 
 Return the SUM of all LEFT leaf nodes
 

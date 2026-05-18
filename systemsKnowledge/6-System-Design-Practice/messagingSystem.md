@@ -39,11 +39,27 @@ What matters most?
 5. Secure communication
 ```
 
+## The Core Problem
+
+At the simplest level:
+
+```
+User A sends message → User B receives message
+```
+
+But real systems become difficult because:
+
+- users can be offline
+- multiple servers exist
+- network failures happen
+- messages can duplicate
+- traffic can spike
+
 ## Key Components
 
 **1. WebSocket Gateway**
 
-Keeps users connected in real time.
+Keeps users connected in real time - provide realtime communication
 
 ```
 userId → connectionId/serverId
@@ -86,7 +102,7 @@ This is not permanent data. It just helps route messages.
 
 **3. Database**
 
-Stores durable message history.
+Stores durable message history - guarantee messages are not lost
 
 ```
 message_id
@@ -99,7 +115,7 @@ status
 
 This is the source of truth.
 
-**4. Pub/Sub or Message Broker**
+**4. Pub/Sub (Message Broker)**
 
 Used to deliver messages between WebSocket servers -> communication between servers
 
@@ -145,7 +161,7 @@ Suppose User A sends “hello” to User B.
 4. Message service checks User A belongs to the chat
 5. Message is saved in DB
 6. Server sends ACK to User A: "message saved"
-7. Server checks if User B is online with Redis presence store: WS Server 2
+7. Server checks if User B is online with Redis presence store: User B -> WS Server 2
 8. If online:
    WS server 1 publish message event through broker
    WS server 2 receives the event
@@ -156,7 +172,7 @@ Suppose User A sends “hello” to User B.
    notification service sends push notification
 ```
 
-When User B Is ONLINE
+When User B Is **ONLINE**
 
 1. Save message to DB
 2. Find receiver in Redis
@@ -175,7 +191,7 @@ Pub/Sub sends event to WS Server 3
 WS Server 3 pushes message to User B
 ```
 
-When User B Is OFFLINE
+When User B Is **OFFLINE**
 
 1. Save message to DB
 2. No realtime delivery
@@ -240,8 +256,8 @@ Receiver reconnects → fetch missed messages from DB
 This is the key idea:
 
 ```
-Database = durability
-Pub/Sub = realtime delivery
+Database = storage
+Pub/Sub = transport
 ```
 
 The database makes sure messages are not lost.
@@ -442,7 +458,7 @@ first send → save message
 retry same ID → return existing message, no duplicate
 ```
 
-## Acknowledgement flow
+## Acknowledgement Flow
 
 Messaging systems usually use ACKs.
 

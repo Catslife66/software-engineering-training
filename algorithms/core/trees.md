@@ -806,3 +806,9 @@ Pattern:
 ```
 choose → explore → undo
 ```
+
+```
+Path list collected → backtracking
+Numeric value returned → bottom-up recursion
+Numeric/string passed downward → top-down state passing
+```

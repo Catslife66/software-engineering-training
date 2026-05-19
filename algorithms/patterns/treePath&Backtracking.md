@@ -536,3 +536,47 @@ if node is leaf:
 4. Recursive formula?
 return f(node.left) + f(node.right)
 ```
+
+## Drill 10 - Maximum Root-to-Leaf Path Sum
+
+Problem
+
+Return the maximum root-to-leaf path sum.
+
+Example:
+
+```
+        5
+       / \
+      4   8
+     /   / \
+    11  13  4
+```
+
+Possible sums:
+
+```
+5+4+11 = 20
+5+8+13 = 26
+5+8+4 = 17
+```
+
+Answer: 26
+
+Solution:
+
+```
+1. What does f(node) represent?
+maximum root-to-leaf path sum in the subtree rooted at this node
+
+2. Base case?
+if node is None:
+    return 0
+
+if node is leaf:
+    return node.val
+
+3. Recursive formula?
+return node.val + max(f(node.left), f(node.right))
+
+```

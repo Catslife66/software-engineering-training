@@ -408,3 +408,201 @@ return (
     + f(node.right, False)
 )
 ```
+
+## Problem 10 - Top-down and bottom-up question
+
+### drill 1
+
+Return the sum of every root-to-leaf number.
+
+Each root-to-leaf path forms a number.
+
+Example:
+
+```
+    1
+   / \
+  2   3
+```
+
+Path:
+
+```
+1→2 = 12
+1→3 = 13
+```
+
+Answer: 25
+
+Solution:
+
+```
+1. What does f(node, currentNumber) represent?
+Explore all root-to-leaf paths while currentNumber stores the number formed from root to this node.
+
+2. Base case?
+if node is None:
+    return 0
+
+3. Prepare state?
+newNumber = currentNumber * 10 + node.val
+
+4. Leaf case?
+if node is leaf:
+    return newNumber
+
+3. Recursive formula?
+return (f(node.left, newNumber) + f(node.right, newNumber))
+
+4. Top-down or bottom-up?
+BOTH. Because we pass currenNumber downward and return sums upward.
+```
+
+### drill 2
+
+Return ALL root-to-leaf paths whose sum is EVEN.
+
+Example:
+
+```
+        1
+       / \
+      2   3
+     /
+    5
+```
+
+Paths:
+
+```
+1→2→5 = 8 (even)
+1→3 = 4 (even)
+```
+
+Answer: [[1,2,5], [1,3]]
+
+```
+1. What does f(node, currentSum, path) represent?
+explore all root-to-leaf paths starting from node, while currentSum stores sum value from root to this node and path stores current route from root to this node.
+
+2. Base case?
+if node is None:
+    return
+
+3. Prepare state?
+path.append(node.val)
+newSum = currentSum + node.val
+
+4. Leaf condition?
+if node is leaf:
+    if newSum % 2 == 0:
+        result.append(path.copy())
+    path.pop()
+    return
+
+5. Recursive formula?
+f(node.left, newSum, path)
+f(node.right, newSum, path)
+
+6. Cleanup?
+path.pop()
+
+7. Top-down, bottom-up, or backtracking?
+top-down + backtracking
+
+8. Why IS backtracking needed here?
+because path is a shared mutable state
+```
+
+### drill 3
+
+Return True if there exists a root-to-leaf path whose sum is even.
+
+Example:
+
+```
+        1
+       / \
+      2   3
+     /
+    5
+```
+
+Solution:
+
+```
+1. What does f(node, currentSum) represent?
+Determine whether there exists a root-to-leaf path
+starting from this node whose final path sum is even,
+while currentSum stores the sum from root to this node.
+
+2. Base case?
+if node is None:
+    return False
+
+3. Prepare state?
+newSum = currentSum + node.val
+
+4. Leaf condition?
+if node is leaf:
+    if newSum % 2 == 0:
+        return True
+    else:
+        return False
+
+5. Recursive formula?
+return f(node.left, newSum) OR f(node.right, newSum)
+```
+
+### drill 4
+
+Return ALL root-to-leaf paths whose length is ODD.
+
+Example:
+
+```
+        1
+       / \
+      2   3
+     /
+    4
+
+[1,2,4] length = 3 odd ✅
+[1,3]   length = 2 even ❌
+```
+
+Answer: [[1,2,4]]
+
+Solution:
+
+```
+1. What does f(node, path) represent?
+explore all root-to-leaf paths with path length is odd starting from node, while path stores current route from root to this node.
+
+2. Base case?
+if node is None:
+    return
+
+3. Prepare state?
+path.append(node.val)
+
+4. Leaf condition?
+if node is leaf:
+    if len(path) % 2 != 0:
+        result.append(path.copy())
+    path.pop()
+    return
+
+5. Recursive formula?
+f(node.left, path)
+f(node.right, path)
+
+6. Cleanup?
+path.pop()
+
+7. What recursion style(s) are involved?
+top-down path-building + backtracking
+
+8. Why is backtracking needed?
+because path is a shared mutable state.
+```

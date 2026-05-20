@@ -148,6 +148,7 @@ generate all binary strings starting from the current partial string path
 2. Base case?
 if len(path) == 2:
     result.append(path)
+    return
 
 3. What are the recursive choices?
 choice 1 - take "0"
@@ -176,3 +177,311 @@ start f("")
 ```
 
 ## Drill 3 — Binary strings using a list path
+
+Problem
+
+Generate all binary strings of length 2.
+
+Expected output:
+
+["00", "01", "10", "11"]
+
+Solution:
+
+```
+1. What does f(path) represent?
+generate all possible path combinations starting from current point
+
+2. Base case?
+if len(path) == 2:
+    result.append("".join(path))
+    return
+
+3. Recursive choices?
+choice 1 - take 0
+path.append("0")
+f(path)
+path.pop()
+
+choice 2 - take 1
+path.append("1")
+f(path)
+path.pop()
+
+4. Where does path.pop() happen?
+after each child function call pop() to clean up
+
+5. Why is backtracking needed this time?
+because path is a shared mutable state.
+```
+
+## Drill 4 — Generate Parentheses (simplified)
+
+Problem
+
+Generate all valid parentheses with: n = 2
+
+Expected output:
+
+```
+(())
+()()
+```
+
+Solution:
+
+```
+1. What does f(path, openCount, closeCount) represent?
+build valid parentheses from the current partial path
+
+2. Base case?
+if openCount == n and closeCount == n:
+    result.append(path)
+    return
+
+3. When can we add "(" ?
+if openCount < n:
+    f(path + "(", openCount + 1, closeCount)
+
+4. When can we add ")" ?
+if closeCount < openCount:
+    f(path + ")", openCount, closeCount + 1)
+
+5. Do we need backtracking if path is a string?
+no, we dont need backtracking for strings.
+
+6. Is this top-down, bottom-up, or backtracking?
+Backtracking / DFS with constraints. Even though string path does not need pop(), it is still backtracking because we are exploring choices add "(" or add ")" and pruning invalid choices.
+```
+
+Walkthrough:
+
+```
+start f("", 0, 0)
+    add "(" -> f("(", 1, 0)
+        add "(" -> f("((", 2, 0)
+            add ")" -> f("(()", 2, 1)
+                add ")" -> f("(())", 2, 2)
+                    -> "(())" add to result
+
+        add ")" -> f("()", 1, 1)
+            add "(" -> f("()(", 2, 1)
+                add" ")" -> f("()()", 2, 2)
+                    -> "()()" add to result
+```
+
+## Drill 5 - Generate subsets using start
+
+nums = [1, 2, 3]
+
+Generate all subsets, but using this structure:
+
+```
+def f(start, path):
+    result.append(path.copy())
+
+    for i in range(start, len(nums)):
+        path.append(nums[i])
+        f(i + 1, path)
+        path.pop()
+```
+
+Solution:
+
+```
+1. What does f(start, path) represent?
+Explore all subsets that can be built starting from index start,
+while path stores the current subset.
+
+2. Why do we append path to result at the START of the function?
+EVERY path is already a valid subset. So whenever we enter a function call: current path = one complete valid subset. That’s why we append immediately.
+
+3. What does the for loop represent?
+Try every possible next element starting from index start.
+
+4. Why do we call f(i + 1, path)?
+avoid reusing previous elements and ensure subsets grow forward only.
+
+5. Why do we pop?
+undo current choice before trying the next choice
+```
+
+### Compare the two subset styles
+
+**Style A — binary decisions**
+
+```
+take
+skip
+```
+
+Recursion tree explicitly binary.
+
+**Style B — iterative DFS/backtracking**
+
+```
+for i in range(start, ...):
+```
+
+Choose next element dynamically.
+
+## Drill 6 - Combination Sum (simplified)
+
+Problem
+
+```
+nums = [2,3]
+target = 6
+```
+
+We want combinations whose sum equals target.
+
+Valid results:
+
+```
+[2,2,2]
+[3,3]
+```
+
+Notice: we CAN reuse numbers
+
+Solution:
+
+```
+1. What does f(start, remaining, path) represent?
+Explore all combinations starting from index start,
+while path stores the current combination
+and remaining stores the remaining target sum needed.
+
+2. Base case for success?
+if remaining == 0:
+    result.append(path.copy())
+    return
+
+3. Base case for failure?
+if remaining < 0:
+    return
+
+4. What does the for loop represent?
+Try every possible next number choice starting from start.
+
+5. Why do we recurse with f(i, ...) instead of f(i + 1, ...)?
+because we can reuse numbers
+```
+
+Code implementation:
+
+```
+def f(start, remaining, path):
+    # success
+    if remaining == 0:
+        result.append(path.copy())
+        return
+
+    # failure
+    if remaining < 0:
+        return
+
+    # choices
+    for i in range(start, len(nums)):
+        path.append(nums[i])
+        f(i, remaining - nums[i], path)
+        path.pop()
+```
+
+Visual model:
+
+```
+f(...)
+    loop(for each possible choice):
+        choose
+        recurse deeper
+        undo
+        continue next choice
+
+loop controls sibling choices
+recursion controls depth
+
+```
+
+## Drill 7 - Choose TWO numbers
+
+Generate all combinations of length 2
+
+nums = [1,2,3]
+
+Exepected:
+
+```
+[1,2]
+[1,3]
+[2,3]
+```
+
+Walkthrough:
+
+```
+start f(0, [])
+
+loop i = 0:
+    append 1 -> [1]
+    call f(1, [1])
+
+        loop i = 1:
+            append 2 -> [1,2]
+            f(2, [1,2]) -> add [1,2]
+            pop -> [1]
+
+        loop i = 2:
+            append 3 -> [1,3]
+            f(3, [1,3]) -> add [1,3]
+            pop -> [1]
+
+    return to f(0)
+    pop -> []
+
+loop i = 1:
+    append 2 -> [2]
+    call f(2, [2])
+
+        loop i = 2:
+            append 3 -> [2,3]
+            f(3, [2,3]) -> add [2,3]
+            pop -> [2]
+
+    return to f(0)
+    pop -> []
+
+loop i = 2:
+    append 3 -> [3]
+    call f(3, [3])
+    no more choices
+    pop -> []
+```
+
+1. Why do we call f(i, path), not f(i + 1, path)?
+   because we can reuse numbers
+2. Walk through the branch that creates [2,2]
+3. Walk through the branch that creates [2,3]
+
+start f(0, [])
+loop i = 0:
+path.append(nums[0]) -> [2]
+f(0, [2])
+loop i = 0:
+path.append(nums[0]) -> [2, 2]
+f(0, [2, 2]) -> len(path) == 2 -> add [2, 2] to result
+path.pop() -> [2]
+loop i = 1:
+path.append(nums[1]) -> [2, 3]
+f(1, [2, 3]) -> len(path) == 2 -> add [2, 3] to result
+path.pop() -> [2]
+path.pop() -> []
+loop i = 1:
+path.append(nums[1]) -> [3]
+f(1, [3])
+loop i = 1:
+path.append(nums[1]) -> [3, 3]
+f(1, [3, 3]) -> len(path) == 2 -> add [3, 3] to result
+path.pop() -> [3]
+path.pop() -> []

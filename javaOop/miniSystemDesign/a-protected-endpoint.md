@@ -133,3 +133,103 @@ Possible Results
 - profile not found -> 404 PROFILE_NOT_FOUND
 - success -> 200 OK
 - unexpected DB/server failure -> exception / 500
+
+## Authorization (Permissions & Roles)
+
+```
+Authentication = Who are you?
+
+Authorization = What are you allowed to do?
+```
+
+**Scenario**
+
+We now add an admin-only endpoint:
+
+```
+GET /admin/users
+```
+
+**Goal**
+
+```
+Only ADMIN users can access all users
+Normal users should receive 403 FORBIDDEN
+```
+
+JWT now contains role information
+
+Example token claims:
+
+```
+{
+  "userId": "123",
+  "email": "abc@example.com",
+  "role": "ADMIN"
+}
+```
+
+After JWT validation:
+
+```
+Security context now contains:
+- userId
+- email
+- role
+```
+
+### Role checking
+
+In real Spring systems there are two common levels:
+
+**Option A — Security layer authorization**
+
+This is often preferred for simple role checks:
+
+```
+/admin/users requires ADMIN
+```
+
+The security layer can block non-admin users before the controller runs.
+
+In Spring this is often done with method/security rules like:
+
+```
+@PreAuthorize("hasRole('ADMIN')")
+```
+
+or security configuration.
+
+**Option B — Service layer authorization**
+
+This is useful when the rule is more business-specific:
+
+```
+Only the owner agent of this property can edit it
+```
+
+That kind of rule often needs database/domain checks, so service layer makes sense.
+
+So the refined answer is:
+
+```
+Simple role checks → security layer
+Business/domain permission checks → service layer
+```
+
+### Flow refinement
+
+For admin endpoint, the best flow can be:
+
+```
+Client sends JWT
+→ JWT filter validates token
+→ Security context contains userId/role
+→ Authorization rule checks ADMIN role
+→ if not admin: 403 before controller
+→ if admin: controller calls service
+→ service gets all users - userService.getAllUsers()
+→ repository returns users
+→ service maps User entities to UserResponseDTO list
+→ controller returns 200
+```

@@ -34,34 +34,74 @@
 20. Encryption basics
 21. HTTPS and certificates
 
-## Phase 6 
+## Phase 6
 
 1. System Design Practice
 
-    You will practice questions like:
+   You will practice questions like:
+   - Design a URL shortener
+   - Design a messaging system
+   - Design an e-commerce system
 
-    - Design a URL shortener
-    - Design a messaging system
-    - Design an e-commerce system
-
-    Here you will:
-
-    - apply all concepts together
-    - structure answers
-    - think like an engineer
+   Here you will:
+   - apply all concepts together
+   - structure answers
+   - think like an engineer
 
 2. Deep Dive Layer
 
-    We revisit topics but deeper:
+   We revisit topics but deeper:
+   - Caching
+     - cache invalidation
+     - cache consistency
+     - cache stampede
+     - cache-aside
+     - write-through
+     - write-behind
+     - TTL strategy
+     - hot keys
+     - distributed cache
 
-    - Caching → cache invalidation strategies
-    - Queues → exactly-once vs at-least-once
-    - Databases → consistency models
+   - Queue & Delivery Guarantees
+     - at-least-once delivery
+     - at-most-once delivery
+     - exactly-once semantics
+     - dead letter queues
+     - retry strategies
+     - poison messages
+     - backpressure
+     - consumer groups
+     - ordering guarantees
+
+   - Database & Consistency
+     - strong consistency
+     - eventual consistency
+     - read-your-writes
+     - quorum
+     - leader/follower replication
+     - distributed transactions
+     - sagas
+     - split-brain
+   - Distributed Coordination
+     - distributed locking
+     - leader election
+     - coordination services
+     - clock problems
+     - consensus basics
+
+   - Reliability Engineering
+     - circuit breakers
+     - bulkheads
+     - graceful degradation
+     - retry storms
+     - timeouts
+     - health checks
+     - chaos engineering
+     - failure isolation
 
 3. Communication Training (Critical)
 
-    We will train:
-
-    - How to explain clearly in interviews
-    - How to structure answers
-    - How to speak like an engineer
+   We will train:
+   - How to explain clearly in interviews
+   - How to structure answers
+   - How to speak like an engineer

@@ -459,29 +459,117 @@ loop i = 2:
     pop -> []
 ```
 
-1. Why do we call f(i, path), not f(i + 1, path)?
-   because we can reuse numbers
-2. Walk through the branch that creates [2,2]
-3. Walk through the branch that creates [2,3]
+## Drill 8 - Permutations
 
-start f(0, [])
-loop i = 0:
-path.append(nums[0]) -> [2]
-f(0, [2])
-loop i = 0:
-path.append(nums[0]) -> [2, 2]
-f(0, [2, 2]) -> len(path) == 2 -> add [2, 2] to result
-path.pop() -> [2]
-loop i = 1:
-path.append(nums[1]) -> [2, 3]
-f(1, [2, 3]) -> len(path) == 2 -> add [2, 3] to result
-path.pop() -> [2]
-path.pop() -> []
-loop i = 1:
-path.append(nums[1]) -> [3]
-f(1, [3])
-loop i = 1:
-path.append(nums[1]) -> [3, 3]
-f(1, [3, 3]) -> len(path) == 2 -> add [3, 3] to result
-path.pop() -> [3]
-path.pop() -> []
+Problem:
+
+For permutations, we need to choose from any unused number each time.
+
+nums = [1, 2]
+
+Return all permutations:
+
+```
+[1,2]
+[2,1]
+```
+
+Solution:
+
+```
+1. What does f(path, used) represent?
+Generate all permutations from the current state,
+while path stores the current permutation being built
+and used stores which numbers are already chosen.
+
+2. Base case?
+if len(path) == len(nums):
+    result.append(path.copy())
+    return
+
+3. What does the for loop represent?
+try every possible unused number as the next choice
+
+4. When do we add a number to used?
+After choosing a number:
+    path.append(num)
+    used.add(num)
+
+5. When do we remove it from used?
+After recursion finishes:
+    used.remove(num)
+    path.pop()
+
+6. Why do we need used here instead of start?
+permutations allow choosing numbers in ANY order
+```
+
+Code implementation:
+
+```
+def f(path, used):
+
+    if len(path) == len(nums):
+        result.append(path.copy())
+        return
+
+    for num in nums:
+        if num in used:
+            continue
+
+        path.append(num)
+        used.add(num)
+
+        f(path, used)
+
+        used.remove(num)
+        path.pop()
+```
+
+Key points:
+
+```
+Combinations:
+future choices controlled by start index
+
+Permutations:
+future choices controlled by used set
+```
+
+Walkthrough:
+
+```
+start f([], {})
+loop num = 1:
+    num not in used
+    path.append(1) ->[1]
+    used.add(1) -> {1}
+    f([1], {1})
+        loop num = 1:
+            num i used, continue
+        loop num = 2:
+            num not in used
+            path.append(2) -> [1, 2]
+            used.add(2) -> {1, 2}
+            f([1, 2], {1, 2}) -> len(path) == len(nums): add [1, 2] to result
+            used.remove(2) -> {1}
+            path.pop() -> [1]
+    used.remove(1) -> {}
+    path.pop() -> []
+loop num = 2:
+    num not in used
+    path.append(2) -> [2]
+    used.add(2) -> {2}
+    f([2], {2})
+        loop num = 1:
+            num not in used
+            path.append(1) -> [2, 1]
+            used.add(1) -> {2, 1}
+            f([2, 1], {2, 1}) -> len(path) == len(nums): add [2, 1] to result
+            used.remove(1) -> {2}
+            path.pop() -> [2]
+        loop num = 2:
+            num in used, continue
+```
+
+##

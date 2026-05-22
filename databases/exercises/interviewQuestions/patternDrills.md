@@ -375,7 +375,7 @@ or:
 COUNT(CASE WHEN ... THEN 1 END)
 ```
 
-## Mixed Pattern
+## Mixed Pattern 1
 
 **Dataset**
 
@@ -471,4 +471,75 @@ ranked AS (
 SELECT user_id, deposit_total, rank
 FROM ranked
 ORDER BY rank, user_id;
+```
+
+## Mixed Pattern 2
+
+**Dataset**
+
+orders
+
+| order_id | customer_id | amount |
+| -------- | ----------- | -----: |
+| 1        | 1           |    100 |
+| 2        | 1           |    200 |
+| 3        | 2           |     50 |
+| 4        | 2           |     60 |
+| 5        | 3           |    500 |
+| 6        | 4           |     20 |
+
+🎯 Problem
+
+Return:
+
+| customer_id | total_spent | rank |
+
+Where:
+
+- total_spent = total order amount per customer
+- only include customers who spent MORE than the average customer spending
+- rank remaining customers by total_spent descending
+- keep ties
+
+Solution:
+
+```
+WITH total AS (
+  SELECT customer_id,
+         SUM(amount) AS total_spent
+  FROM orders
+  GROUP BY customer_id
+),
+total_avg AS (
+  SELECT AVG(total_spent) AS avg_spent
+  FROM total
+)
+SELECT t.customer_id,
+       t.total_spent,
+       RANK() OVER (
+         ORDER BY t.total_spent DESC
+       ) AS rank
+FROM total t
+CROSS JOIN total_avg a
+WHERE t.total_spent > a.avg_spent
+ORDER BY rank;
+```
+
+OR
+
+```
+WITH total AS (
+  SELECT customer_id, SUM(amount) AS total_spent
+  FROM orders
+  GROUP BY customer_id
+)
+SELECT customer_id,
+       total_spent,
+       RANK() OVER (ORDER BY total_spent DESC) AS rank
+FROM total
+WHERE total_spent > (
+  SELECT AVG(total_spent)
+  FROM total
+)
+ORDER BY rank;
 ```

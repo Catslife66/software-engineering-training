@@ -514,3 +514,32 @@ lost critical data often cannot
 5. DLQ prevents infinite retries
 6. Ordering reduces scalability
 ```
+
+## CHECKPOINT
+
+```
+1. What the queue will do
+
+Because the queue did not receive the ACK, it assumes the webhook processing may have failed.
+As a result, the queue retries delivery of the same webhook event to guarantee the event is eventually processed.
+
+2. Why duplicate processing may happen
+
+The webhook may actually have been processed successfully already, but the ACK was lost due to network failure or consumer crash.
+Since the queue cannot distinguish between:
+- "processing failed"
+and
+- "ACK failed"
+it retries the event, which can cause the same payment event to be processed multiple times.
+
+3. How idempotency prevents damage
+
+Each webhook event contains a unique event ID.
+Before processing, the consumer checks whether this event ID has already been processed and stored.
+If the event already exists, the consumer safely ignores the duplicate retry.
+
+As a result, retries do not create duplicated side effects such as:
+- charging twice
+- deducting inventory twice
+- sending duplicate confirmations
+```

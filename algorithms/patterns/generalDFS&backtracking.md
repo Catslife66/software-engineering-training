@@ -572,4 +572,143 @@ loop num = 2:
             num in used, continue
 ```
 
-##
+## Drill 9 - Combination Sum with pruning
+
+nums = [2,3,5]
+
+target = 8
+
+nums is sorted.
+
+Code implementation:
+
+```
+def f(start, remaining, path):
+
+    if remaining == 0:
+        result.append(path.copy())
+        return
+
+    for i in range(start, len(nums)):
+        if nums[i] > remaining:
+            break
+        path.append(nums[i])
+        f(i, remaining - nums[i], path)
+        path.pop()
+```
+
+## Drill 10 - Backtracking with duplicates
+
+We want
+
+```
+skip duplicate sibling choices
+```
+
+But still allow
+
+```
+duplicate values deeper in recursion
+```
+
+Walkthrough:
+
+```
+Step 1 — Sort first
+
+nums.sort()
+
+Step 2 — Skip duplicate siblings
+
+inside loop:
+
+if i > start and nums[i] == nums[i - 1]:
+    continue
+
+
+nums.sort()
+
+def f(start, path):
+
+    result.append(path.copy())
+
+    for i in range(start, len(nums)):
+        if i > start and nums[i] == nums[i - 1]:
+            continue
+
+        path.append(nums[i])
+        f(i + 1, path)
+        path.pop()
+```
+
+## Drill 11 - Combination Sum II style
+
+```
+nums = [1, 1, 2, 5]
+
+target = 3
+
+Each number can be used once.
+
+Expected result:
+[1,2]
+```
+
+Code implementation:
+
+```
+def f(start, remaining, path):
+    if remaining == 0:
+        result.append(path.copy())
+        return
+
+    for i in range(start, len(nums)):
+
+        if i > start and nums[i] == nums[i - 1]:
+            continue
+
+        if nums[i] > remaining:
+            break
+
+        path.append(nums[i])
+        f(i + 1, remaining - nums[i], path)
+        path.pop()
+```
+
+Walkthrough:
+
+```
+1. At root level, which elements are skipped and why?
+At f(0, 3, [])
+i = 0 -> take first 1, [1]
+i = 1 -> i > start and nums[i] == nums[i-1], so second 1 is skipped
+i = 2 -> take 2, [2]
+i = 3 -> 5 > remaining, break
+
+2. Walk through the branch that creates [1,2].
+start f(0, 3, [])
+    loop i = 0:
+        f(1, 2, [1])
+            loop i = 1:
+                f(2, 1, [1, 1]) -> nums[2]= 2 > remaining = 1, break
+                path.pop() -> [1]
+            loop i = 2:
+                f(3, 0, [1, 2]) -> remaining == 0, add [1, 2] to result
+                path.pop() -> [1]
+            loop i = 3:
+                nums[3] > remaining, break
+            path.pop() -> []
+    loop i = 1:
+        continue
+    loop i = 2:
+        f(3, 1, [2])
+            loop i = 3: -> nums[2] > remaining, break
+    loop i = 2:
+        nums[2] > remaining, break
+
+3. Where does [1,1,2] fail or get pruned?
+at f(2, 1, [1, 1]), because nums[2] = 2 > remaining = 1
+
+4. Where does value 5 get pruned?
+at f(0, 3, []), because 5 > remaining, so break
+```

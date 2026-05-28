@@ -543,3 +543,161 @@ WHERE total_spent > (
 )
 ORDER BY rank;
 ```
+
+## Mixed Pattern 3
+
+**Dataset**
+
+sales
+
+| sale_id | salesperson | product | amount |
+| ------- | ----------- | ------- | -----: |
+| 1       | Alice       | Phone   |    100 |
+| 2       | Alice       | Laptop  |    300 |
+| 3       | Alice       | Phone   |    200 |
+| 4       | Bob         | Tablet  |    150 |
+| 5       | Bob         | Tablet  |    100 |
+| 6       | Bob         | Phone   |    250 |
+
+Problem
+
+Return:
+
+| salesperson | favorite_product | total_sales |
+
+Where:
+
+- favorite_product = product with highest total sales amount per salesperson
+- keep ties
+
+```
+WITH product_totals AS (
+    SELECT salesperson,
+           product,
+           SUM(amount) AS product_sales
+    FROM sales
+    GROUP BY salesperson, product
+),
+ranked AS (
+    SELECT p.salesperson,
+           p.product,
+           p.product_sales,
+           RANK() OVER (
+               PARTITION BY p.salesperson
+               ORDER BY p.product_sales DESC
+           ) AS ra
+    FROM product_totals p
+)
+SELECT salesperson,
+       product AS favorite_product,
+       product_sales AS total_sales
+FROM ranked
+WHERE ra = 1;
+```
+
+## Mixed Pattern 4
+
+**Dataset**
+
+sales
+
+| sale_id | salesperson | product | amount |
+| ------- | ----------- | ------- | -----: |
+| 1       | Alice       | Phone   |    100 |
+| 2       | Alice       | Laptop  |    300 |
+| 3       | Alice       | Phone   |    200 |
+| 4       | Bob         | Tablet  |    150 |
+| 5       | Bob         | Tablet  |    100 |
+| 6       | Bob         | Phone   |    250 |
+| 7       | Bob         | Laptop  |     50 |
+
+Problem
+
+Return:
+
+| salesperson | product | product_sales | rank |
+
+Where:
+
+- calculate total sales per salesperson + product
+- return the top 2 products per salesperson
+- keep ties
+- sort by salesperson ASC, rank ASC
+
+```
+WITH product_totals AS (
+    SELECT salesperson,
+           product,
+           SUM(amount) AS product_sales
+    FROM sales
+    GROUP BY salesperson, product
+),
+ranked AS (
+    SELECT p.salesperson,
+           p.product,
+           p.product_sales,
+           DENSE_RANK() OVER (
+               PARTITION BY p.salesperson
+               ORDER BY p.product_sales DESC
+           ) AS rank
+    FROM product_totals p
+)
+SELECT salesperson, product, product_sales, rank
+FROM ranked
+WHERE rank <= 2
+ORDER BY salesperson ASC, rank ASC;
+```
+
+## Pattern 4 - Consecutive Rows / Streaks
+
+### Drill 1
+
+**Dataset**
+
+logins
+
+| user_id | login_date |
+| ------- | ---------- |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-02 |
+| 1       | 2025-01-03 |
+| 1       | 2025-01-05 |
+| 1       | 2025-01-06 |
+
+Problem
+
+- Find groups of consecutive login dates.
+
+Expected idea:
+
+```
+user_id	streak_group
+Jan 1	group A
+Jan 2	group A
+Jan 3	group A
+Jan 5	group B
+Jan 6	group B
+```
+
+We detect:
+
+where continuity breaks
+
+This is usually solved with:
+
+```
+LAG()
+date difference
+cumulative grouping
+```
+
+First Step
+
+Return:
+
+| user_id | login_date | previous_login | gap_days |
+
+Where:
+
+previous_login = previous login date
+gap_days = difference between current and prev

@@ -1,4 +1,4 @@
-### Phase 1 — SQL foundations
+## Phase 1 — SQL foundations
 
 - What a table really is
 - Rows and columns
@@ -8,20 +8,20 @@
 - simple filtering logic
 - aliases
 
-### Phase 2 — Combining data
+## Phase 2 — Combining data
 
 - `JOIN`
 - one-to-many and many-to-many relationships
 - `NULL`
 - inner vs left join
 
-### Phase 3 — Summarizing data
+## Phase 3 — Summarizing data
 
 - `GROUP BY`
 - aggregate functions: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
 - `HAVING`
 
-### Phase 4 — Database design
+## Phase 4 — Database design
 
 - entities and attributes
 - tables and relationships
@@ -29,7 +29,7 @@
 - normalization
 - schema design tradeoffs
 
-### Phase 5 — Internal database knowledge
+## Phase 5 — Internal database knowledge
 
 - indexes
 - query plans
@@ -37,3 +37,33 @@
 - transactions
 - ACID
 - concurrency problems
+
+---
+
+# Next step
+
+## Phase 1 — More Interview Pattern Fluency
+
+Focus:
+
+- streak problems
+- gaps/islands
+- nested ranking
+- advanced analytics
+- more “aggregate then join back”
+
+## Phase 2 — Real-world Reporting SQL
+
+- cohort analysis
+- retention queries
+- funnels
+- conversion metrics
+- SaaS/business analytics
+
+## Phase 3 — Database Internals (later)
+
+- MVCC
+- locking internals
+- query planner deeper
+- indexing internals
+- storage engines

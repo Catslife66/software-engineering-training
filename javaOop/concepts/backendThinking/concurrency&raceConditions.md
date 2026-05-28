@@ -108,33 +108,70 @@ If another transaction already updated: 0 rows updated
 
 meaning: conflict detected
 
-1. Which locking strategy is better for:
+3. CHECKPOINT
 
-For high-conflict booking, use pessimistic locking or atomic update. Atomic update is often more scalable because it avoids holding long locks.
+- Which locking strategy is better for:
 
-User editing takes a long time. If we used pessimistic locking, one user could lock the property record for several minutes while editing, blocking everyone else. Optimistic locking allows multiple users to edit freely, and only detects conflict when they save.
+  For high-conflict booking, use pessimistic locking or atomic update. Atomic update is often more scalable because it avoids holding long locks.
 
-2. Why is optimistic locking often better for user editing systems?
-   User editing takes a long time. If we used pessimistic locking, one user could lock the property record for several minutes while editing, blocking everyone else. Optimistic locking allows multiple users to edit freely, and only detects conflict when they save.
+  User editing takes a long time. If we used pessimistic locking, one user could lock the property record for several minutes while editing, blocking everyone else. Optimistic locking allows multiple users to edit freely, and only detects conflict when they save.
 
-3. What should backend return when optimistic locking detects conflict?
-   return 409 Conflict
+- What should backend return when optimistic locking detects conflict?
 
-Then frontend can say:
+  return 409 Conflict
 
-This property was updated by someone else. Please refresh and review the latest version.
+  Then frontend can say:
 
-The user may then:
+  This property was updated by someone else. Please refresh and review the latest version.
 
-- reload latest data
-- compare changes
-- reapply their edits
+  The user may then:
+  - reload latest data
+  - compare changes
+  - reapply their edits
 
-Do not silently overwrite newer data.
+  Do not silently overwrite newer data.
 
-4. Where is version checking usually enforced?
+- Where is version checking usually enforced?
 
-In Spring/JPA, this is often handled using a @Version field, but conceptually the database enforces the check.
+  In Spring/JPA, this is often handled using a @Version field, but conceptually the database enforces the check.
+
+4. Mental Model
+
+**Pessimistic locking**:
+
+```
+Lock first
+→ guarantee exclusivity
+→ reduce concurrency
+```
+
+Good for:
+
+- ticket booking
+- inventory
+- payments
+- high-conflict resources
+
+**Optimistic locking:**
+
+```
+Allow concurrent work
+→ detect conflict later
+→ maximize concurrency
+```
+
+Good for:
+
+- dashboards
+- profile editing
+- CMS/admin systems
+- collaborative editing (light conflict)
+
+| Strategy            | Idea                  | Tradeoff                         |
+| ------------------- | --------------------- | -------------------------------- |
+| Atomic update       | one-step DB operation | scalable but limited flexibility |
+| Pessimistic locking | block others early    | safer but slower                 |
+| Optimistic locking  | detect conflict later | scalable but conflicts possible  |
 
 ### Atomic update
 

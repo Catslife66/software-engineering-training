@@ -111,7 +111,7 @@ Only the agent who owns this property can edit it.
 1. Controller
 
 - receives propertyId from path
-- receives update DTO from request body
+- receives propertyUpdate DTO from request body
 - gets authenticated userId from security context
 - calls propertyService.updateProperty(userId, propertyId, request)
 - maps Result to HTTP response
@@ -131,7 +131,7 @@ Only the agent who owns this property can edit it.
 
 3. Repository
 
-- UserRepository.findById(userId)
+- UserRepository.findById(userId) // can skip this
 - PropertyRepository.findById(propertyId)
 - PropertyRepository.save(property)
 

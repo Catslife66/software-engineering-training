@@ -9,7 +9,7 @@ target = 9
 
 Return whether there are two numbers in the array that add up to target.
 
-\*Important detail: The array is sorted.
+Important detail: The array is sorted.
 
 ## Solution
 

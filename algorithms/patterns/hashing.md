@@ -1,4 +1,4 @@
-## Question 1
+## Question 1 - return True if duplicates exist
 
 If I give you:
 
@@ -6,7 +6,7 @@ If I give you:
 
 👉🏻 Find if duplicates exist.
 
-**Solution**
+Solution:
 
 ```
 Pattern: Hashing (Set)
@@ -21,7 +21,7 @@ Approach:
 3. Return False
 ```
 
-## Question 2
+## Question 2 - find sum and return indeces
 
 Find TWO numbers whose sum is target and return their indeces.
 
@@ -30,7 +30,7 @@ nums = [3, 2, 4]
 target = 6
 ```
 
-**Solution**
+Solution:
 
 ```
 Pattern: Hashing (Map)
@@ -46,13 +46,13 @@ Approach:
 
 Answer: [1, 2]
 
-## Question 3
+## Question 3 - return unique elements
 
 nums = [1, 2, 2, 3]
 
 Return all unique elements (no duplicates, keep order)
 
-**Solution**
+Solution:
 
 ```
 Pattern: Hashing (Set)
@@ -70,7 +70,7 @@ Approach:
 
 Result: [1, 2, 3]
 
-## Question 4
+## Question 4 - return all unique pairs
 
 You are given an array:
 
@@ -127,7 +127,7 @@ Return True if there are two distinct indices i and j such that:
 nums[i] == nums[j] AND |i - j| <= k
 ```
 
-**Solution**
+Solution:
 
 ```
 1. Pattern:
@@ -152,6 +152,23 @@ A map allows O(1) lookup of previous indices.
 → 2 at 1 → store
 → 3 at 2 → store
 → 1 at 3 → 3-0 = 3 ≤ k → True
+```
+
+Code implementation:
+
+```
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        seen = {}
+
+        for i, num in enumerate(nums):
+            if num in seen and i - seen[num] <= k:
+                return True
+
+            # Always update to the latest index to maximize the chance of a future match being within distance k
+            seen[num] = i
+
+        return False
 ```
 
 **Correct idea**

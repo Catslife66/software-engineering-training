@@ -13,7 +13,7 @@ whose sum is greater than or equal to target.
 If no such subarray exists, return 0.
 ```
 
-## Solution
+Solution:
 
 ```
 1. Pattern:
@@ -59,7 +59,7 @@ s = "eceba"
 
 Find the length of the longest substring that contains at most 2 distinct characters.
 
-## Solution
+Solution:
 
 ```
 1. Pattern:
@@ -88,7 +88,7 @@ Find the length of the longest substring that contains at most 2 distinct charac
    Final answer = 3
 ```
 
-## Code implement
+Code implement:
 
 ```
 def length_of_longest_substring_two_distinct(s):
@@ -121,6 +121,8 @@ s = "aabccbb"
 ```
 
 Return the length of the longest substring without repeating characters.
+
+Solution:
 
 ```
 1. Pattern: variable-size sliding window

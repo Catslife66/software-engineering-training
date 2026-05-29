@@ -124,11 +124,11 @@ WHERE rn = 1
 
 ### RANK()
 
-> ties share same rank, gaps appear
+> ties share same rank, gaps appear (1, 1, 3...)
 
 ### DENSE_RANK()
 
-> ties share same rank, no gaps
+> ties share same rank, no gaps (1, 1, 2...)
 
 Example:
 

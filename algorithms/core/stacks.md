@@ -76,8 +76,7 @@ def is_valid_parenthesses(s):
         if char in pairs.values():
             stack.append(char)
         else:
-            // if the stack is empty then return false
-            if not in stack:
+            if not stack:
                 return False
             top = stack.pop()
             if pairs[char] != top:

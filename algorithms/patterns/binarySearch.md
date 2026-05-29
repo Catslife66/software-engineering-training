@@ -1,4 +1,4 @@
-## Question 1
+## Question 1 - return index of the target
 
 You are given:
 
@@ -59,7 +59,7 @@ left=2, right=3 → mid=2 → 5 == 5 → return 2
 
 ```
 
-## Question 2
+## Question 2 - return FIRST index of the target
 
 ```
 nums = [1, 2, 2, 2, 3, 4]
@@ -117,7 +117,7 @@ left > right
 5. Final answer: 1
 ```
 
-## Question 3
+## Question 3 - return index where target should be inserted
 
 ```
 nums = [1, 3, 5, 7]

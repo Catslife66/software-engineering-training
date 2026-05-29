@@ -6,7 +6,7 @@ Given a string:
 
 Return True if the string is valid (balanced parentheses), otherwise return False.
 
-## Solution
+Solution:
 
 ```
 1. Pattern:

@@ -518,7 +518,7 @@ lost critical data often cannot
 ## CHECKPOINT
 
 ```
-1. What the queue will do
+1. What the queue will do when ACK is lost
 
 Because the queue did not receive the ACK, it assumes the webhook processing may have failed.
 As a result, the queue retries delivery of the same webhook event to guarantee the event is eventually processed.

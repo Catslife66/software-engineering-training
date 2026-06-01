@@ -5,10 +5,13 @@ A message queue is:
 > A system that stores tasks and processes them asynchronously
 
 Basic Flow
+
 ```
 Producer → Queue → Worker
 ```
+
 Example:
+
 ```
 User signs up
    ↓
@@ -18,13 +21,17 @@ Worker sends email
 ```
 
 ## Why Queues Are Used
+
 **1. Remove work from request path**
 
 Without queue:
+
 ```
 API → DB → send email → return
 ```
+
 With queue:
+
 ```
 API → DB → enqueue job → return
             ↓
@@ -34,6 +41,7 @@ API → DB → enqueue job → return
 **2. Handle traffic spikes**
 
 Example:
+
 ```
 10,000 jobs → queue
 workers process gradually
@@ -42,6 +50,7 @@ workers process gradually
 **3. Improve reliability**
 
 If something fails:
+
 ```
 job stays in queue → retry later
 ```
@@ -49,11 +58,13 @@ job stays in queue → retry later
 ## Real Systems Use
 
 Common tools:
+
 - RabbitMQ
 - Apache Kafka
 - Redis (queues like BullMQ)
 
 ## Important Concepts
+
 **1. Decoupling**
 
 Producer does not depend on worker
@@ -66,8 +77,8 @@ failed job → retry
 
 queue grows → system overloaded
 
-
 ## Tradeoffs
+
 ```
 ✔ scalable
 ✔ reliable
@@ -78,6 +89,7 @@ queue grows → system overloaded
 ```
 
 ## Real Example
+
 ```
 Order placed
    ↓
@@ -105,6 +117,7 @@ A queue improves systems by:
 Question: What does it mean when a queue keeps growing continuously?
 
 Answer:
+
 ```
 // core idea
 A growing queue indicates that the rate of incoming jobs exceeds the rate at which they are processed.
@@ -119,14 +132,19 @@ As a result, jobs accumulate, increasing latency, creating backpressure, and pot
 This is a **performance and capacity problem**, not just normal behavior.
 
 If:
+
 ```
 incoming jobs > processed jobs
 ```
+
 Then:
+
 ```
 queue size keeps increasing → system backlog → delays grow
 ```
+
 Eventually:
+
 ```
 system becomes overloaded
 jobs delayed significantly
@@ -134,13 +152,13 @@ possible memory/resource issues
 ```
 
 Common causes
+
 ```
 too few workers
 slow job processing
 downstream service bottleneck
 too many retries
 ```
-
 
 ### A Simple Framework
 

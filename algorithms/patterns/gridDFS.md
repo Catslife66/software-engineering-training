@@ -71,7 +71,6 @@ if (r, c) in visited:
 
 3. Recursive directions?
 visited.add((r, c))
-
 dfs(r + 1, c)
 dfs(r - 1, c)
 dfs(r, c + 1)
@@ -123,7 +122,7 @@ for r in range(rows):
 
 ## Drill 2 - Largest island size
 
-> DFS returns the size of that island, and outer loop tracks the maximum size.
+> DFS returns the size of that island, and outer loop finds island starts and tracks the maximum size.
 
 Problem
 
@@ -139,13 +138,19 @@ Solution:
 
 ```
 1. What should dfs(r, c) return?
-return size contributed by this cell
+return number of reachable land cells starting from (r,c)
 
 2. Three base cases in the correct order
+// out of bounds contributes 0
 if r < 0 or r >= rows or c < 0 or c >= cols:
     return 0
 
+// water contributes 0
+if grid[r][c] == 0:
+    return 0
+
 3. Recursive step:
+//land contributes 1 + neighbors
 return 1 + dfs(down) + dfs(up) + dfs(right) + dfs(left)
 
 4. dfs code structure
@@ -210,8 +215,7 @@ Solution:
 
 ```
 1. What does dfs(r, c) represent?
-exploring connected region from (r,c)
-and change its original colour to 2
+exploring connected region from (r,c) and change its original colour to 2
 
 2. What is originalColor?
 originalColor = image[sr][sc]
@@ -262,4 +266,68 @@ Key rule:
 ```
 Number of Islands → outer loop scans every cell
 Flood Fill → start from one cell only
+```
+
+## Drill 4 - Island Perimeter
+
+Problem
+
+```
+1 1
+1 0
+```
+
+Return the perimeter of an island
+
+Solution:
+
+```
+1. What dfs(r,c) represent?
+exploring from (0,0),
+visiting all connected land,
+returning number of exposed edges around connected land
+
+2. Which edges contribute to perimeter?
+(0,0) → up + left = 2
+(0,1) → up + right + bottom = 3
+(1,0) → left + bottom + right = 3
+
+3. What should one land cell contribute?
+A land cell itself DOES NOT automatically contribute 4
+Instead DFS asks what happens on each side?
+For each direction up/down/left/right, we check is this edge exposed?
+
+4. What should water contribute?
+contribute 1 side to perimeter
+
+5. What should out-of-bounds contribute?
+contribute 1 side to perimeter
+
+6. Why is perimeter NOT the same as island size?
+Size: count cells
+Perimeter: count exposed edges
+
+7. Why does visited land return 0?
+visited land returns 0 because its perimeter contribution has already been accounted for.
+
+8. What does one valid land cell contribute?
+one land cell contributes the perimeter returned by its four sides.
+Each side asks does this edge touch water or outside?
+If yes +1 perimeter
+```
+
+For size problems:
+
+```
+water = 0
+outside = 0
+land = 1
+```
+
+For perimeter problems:
+
+```
+water = 1
+outside = 1
+land = ask neighbors
 ```

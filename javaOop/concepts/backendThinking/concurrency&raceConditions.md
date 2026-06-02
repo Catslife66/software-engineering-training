@@ -230,3 +230,165 @@ Why service layer alone is NOT enough?
 Because concurrency happens at the data level and two service instances can still run simultaneously.
 
 The final source of truth is: database consistency guarantees
+
+## Deadlocks
+
+Scenario
+
+Imagine two transactions.
+
+```
+Transaction A
+lock User row
+then lock Property row
+
+Transaction B
+lock Property row
+then lock User row
+```
+
+Now:
+
+```
+Transaction A has User lock
+Transaction B has Property lock
+```
+
+Then:
+
+```
+Transaction A waits for Property
+Transaction B waits for User
+```
+
+Result:
+
+```
+A waits for B
+B waits for A
+```
+
+Nobody can continue.
+
+This is called **deadlock**
+
+### What happens when database detects a deadlock?
+
+Most databases detect deadlocks automatically.
+
+```
+database chooses a deadlock victim
+rolls it back
+returns an error
+application may retry
+```
+
+Example:
+
+```
+Transaction A succeeds
+Transaction B rolled back
+```
+
+Then the application can retry B.
+
+### How can we reduce deadlocks?
+
+**Keep transactions short**
+
+Bad:
+
+```
+lock row
+call external API
+send email
+wait 5 seconds
+commit
+```
+
+Good:
+
+```
+lock row
+update row
+commit
+```
+
+Short transactions reduce deadlock opportunities.
+
+**Lock resources in a consistent order**
+
+Everywhere in the system:
+
+```
+User
+→ Property
+```
+
+always.
+
+Transaction A:
+
+```
+lock User
+lock Property
+```
+
+Transaction B:
+
+```
+lock User
+lock Property
+```
+
+Both follow the same order.
+
+Result:
+
+```
+one waits
+other proceeds
+```
+
+No circular waiting.
+
+One of the most powerful deadlock prevention techniques is:
+
+```
+Always acquire locks in the same order.
+```
+
+Many large systems use this rule.
+
+Example
+
+Money transfer:
+
+Bad:
+
+```
+Transfer A→B
+lock A then B
+
+Transfer B→A
+lock B then A
+```
+
+Deadlock risk.
+
+Better:
+
+```
+Always lock lower account ID first.
+```
+
+Example:
+
+```
+lock Account 100
+then Account 200
+```
+
+everywhere.
+
+Deadlock disappears.

@@ -48,7 +48,9 @@ Outside transaction:
 
 ## Transaction management
 
-The service knows which operations must succeed together.
+The service knows which operations must succeed together because they represent one business operation.
+
+Either all related state changes succeed together or all fail together. Otherwise the system can become inconsistent.
 
 So transaction boundary should wrap the service method.
 
@@ -72,6 +74,16 @@ Bad flow:
 ```
 
 If email fails, the system may forget to retry.
+
+The Outbox Pattern solves:
+
+```
+Database commit succeeded
+BUT
+external action failed
+```
+
+Without a durable record, the job can be lost forever.
 
 **Better flow**
 

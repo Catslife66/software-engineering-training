@@ -7,6 +7,7 @@
 ## Concurrency Problem
 
 **1. Lost Update**
+
 Scenario
 
 Balance = 100

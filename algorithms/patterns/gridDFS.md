@@ -120,6 +120,22 @@ for r in range(rows):
             dfs(r, c)
 ```
 
+Pattern:
+
+```
+DFS purpose:
+consume one island
+
+Returns:
+nothing
+
+Outer loop:
+find island starts
+
+Result:
+number of islands
+```
+
 ## Drill 2 - Largest island size
 
 > DFS returns the size of that island, and outer loop finds island starts and tracks the maximum size.
@@ -173,6 +189,20 @@ def dfs(r, c):
         + dfs(r, c + 1)
         + dfs(r, c - 1)
     )
+```
+
+Pattern:
+
+```
+DFS purpose:
+measure one island
+
+Returns:
+size
+
+Outer loop:
+find island starts
+track max
 ```
 
 ## Drill 3 - Flood Fill
@@ -268,6 +298,19 @@ Number of Islands → outer loop scans every cell
 Flood Fill → start from one cell only
 ```
 
+Pattern:
+
+```
+DFS purpose:
+recolor region
+
+Returns:
+nothing
+
+Outer loop:
+none
+```
+
 ## Drill 4 - Island Perimeter
 
 Problem
@@ -316,6 +359,57 @@ Each side asks does this edge touch water or outside?
 If yes +1 perimeter
 ```
 
+Code implementation:
+
+```
+def island_perimeter(grid):
+    rows = len(grid)
+    cols = len(grid[0])
+    visited = set()
+
+    def dfs(r, c):
+        # exposed outside edge
+        if r < 0 or r >= rows or c < 0 or c >= cols:
+            return 1
+
+        # exposed water edge
+        if grid[r][c] == 0:
+            return 1
+
+        # already counted this land cell
+        if (r, c) in visited:
+            return 0
+
+        visited.add((r, c))
+
+        return (
+            dfs(r + 1, c)
+            + dfs(r - 1, c)
+            + dfs(r, c + 1)
+            + dfs(r, c - 1)
+        )
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 1:
+                return dfs(r, c)
+
+    return 0
+```
+
+Pattern:
+
+```
+DFS purpose:
+measure perimeter
+
+Returns:
+perimeter
+
+Outer loop:
+find one land start
+```
+
 For size problems:
 
 ```
@@ -330,4 +424,229 @@ For perimeter problems:
 water = 1
 outside = 1
 land = ask neighbors
+```
+
+## Drill 5 - Boundary-connected land
+
+Problem:
+
+Return how many land cells are **connected to** the boundary of the grid.
+
+Grid:
+
+```
+1 0 1
+1 1 0
+0 1 1
+```
+
+Boundary cells are cells on the outer edge of the grid.
+
+Key idea:
+
+```
+grid:
+
+1    0    1
+|
+1 -- 1    0
+     |
+0    1 -- 1
+
+The center cell (1,1) is not on the boundary.
+
+But can we walk from (1,1) to a boundary land cell?
+
+(1,1)
+↓
+(2,1)
+
+Yes.
+
+Or:
+
+(1,1)
+←
+(1,0)
+
+Yes.
+
+So (1,1) belongs to a land region that touches the boundary.
+
+Therefore:
+
+(1,1)
+is boundary-connected
+
+The kep phrase is "connected to"
+```
+
+Solution:
+
+```
+1. What should the outer loop do?
+Outer loop scans the grid boundary.
+When it finds boundary land that is not visited, start DFS.
+
+2. Which cells should start DFS?
+(0, 0) -> (1,0), (1,1), (2,1), (2,2)
+(0, 2)
+
+3. What should dfs(r,c) represent?
+explores and marks all land connected to this boundary land cell.
+
+4. Should dfs return anything?
+dfs returns number of boundary-connected land cells in this connected region.
+
+5. What should visited prevent?
+visited prevents double-counting and infinite revisits.
+```
+
+Code implementation:
+
+```
+def dfs(r, c):
+    if r < 0 or r >= rows or c < 0 or c >= cols:
+        return 0
+    if grid[r][c] == 0:
+        return 0
+    if (r, c) in visited:
+        return 0
+    visited.add((r, c))
+    return (1 + dfs(r+1, c) + dfs(r-1, c) + dfs(r, c+1) + dfs(r, c-1))
+
+
+count = 0
+for r in range(rows):
+    for c in range(cols):
+        is_boundary = (
+            r == 0 or
+            r == rows - 1 or
+            c == 0 or
+            c == cols - 1
+        )
+        if grid[r][c] == 1 and is_boundary:
+            count += dfs(r, c)
+return count
+```
+
+## Drill 6 - Enclosed land
+
+Question:
+
+Return how many land cells are NOT connected to the boundary.
+
+These are often called **enclaves**.
+
+grid:
+
+```
+0 0 0 0
+0 1 1 0
+0 1 0 0
+0 0 1 0
+```
+
+Key idea:
+
+```
+First Start from boundary land.
+Mark/Remove boundary-connected land.
+Then count remaining land.
+```
+
+Walkthrough:
+
+```
+Step 1:
+
+Start DFS from boundary land.
+
+(3,2) gets marked.
+
+Visited: (3,2)
+
+Step 2:
+
+Scan the whole grid.
+
+Count: land AND not visited
+
+Remaining: (1,1), (1,2), (2,1)
+
+Answer: 3
+```
+
+Key patterns:
+
+```
+boundary DFS = mark land that can escape
+remaining land = enclosed
+```
+
+Solution:
+
+```
+1. What does dfs(r,c) represent?
+exploring connected lands from cell (r, c) and mark them as visited
+
+2. Does dfs return anything?
+No, dfs needs to mark connected lands it has been visited.
+
+3. What does the first boundary scan do?
+mark the lands that are connected from the boundary as visited.
+
+4. What does the second full scan do?
+explore unvisited lands and mark them as visited.
+```
+
+Code implementation:
+
+```
+def dfs(r, c):
+    if r < 0 or r >= rows or c < 0 or c >= cols:
+        return
+
+    if grid[r][c] == 0:
+        return
+
+    if (r, c) in visited:
+        return
+
+    visited.add((r, c))
+
+    dfs(r + 1, c)
+    dfs(r - 1, c)
+    dfs(r, c + 1)
+    dfs(r, c - 1)
+
+for r in range(rows):
+    for c in range(cols):
+        if grid[r][c] == 1:
+            if r == 0 or r == rows - 1 or c == 0 or c == cols -1:
+                dfs(r, c)
+
+count = 0
+for r in range(rows):
+    for c in range(cols):
+        if grid[r][c] == 1 and (r, c) not in visited:
+            count += 1
+
+return count
+```
+
+Pattern:
+
+```
+DFS purpose:
+mark boundary-connected land
+
+Returns:
+nothing
+
+Outer loop:
+start from boundary land
+
+Final count:
+unvisited land cells
 ```

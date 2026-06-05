@@ -40,9 +40,21 @@ Without indexes:
 
 - queries slow down as data grows because FULL TABLE SCAN
 
+```
+1. pull a page into memory and search for the row
+2. pull another page into memory and search for the row
+3. repeat until the row is found
+```
+
 With indexes:
 
 - queries stay fast even with millions of rows
+
+```
+1. first load the index into memory
+2. use it to find out exactly which page has the row
+3. then load just that one page
+```
 
 ## But indexes are not free
 

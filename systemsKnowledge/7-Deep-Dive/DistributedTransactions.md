@@ -62,7 +62,7 @@ Easy.
 Now imagine:
 
 ```
-Order Service      → Order DB
+Order Service     → Order DB
 Inventory Service → Inventory DB
 Payment Service   → Payment DB
 ```
@@ -430,7 +430,7 @@ Charge Payment
 Send Email
 ```
 
-One service controls workflow.
+One service controls workflow and knows which step fails
 
 ### Choreography
 
@@ -571,7 +571,7 @@ Suppose:
 
 ```
 1. Why can't a normal DB rollback solve this?
-A database transaction only controls one database. In a distributed system, each service commits its own local transaction. A normal rollback cannot travel back in time and undo commits in other databases. That's why we need compensation actions, instead of rollback
+A database transaction only controls one database. In a distributed system, each service commits its own local transaction. A normal rollback cannot travel back in time and undo commits in other databases. That's why we need compensation actions, instead of rollback.
 
 2. Why is Saga considered eventually consistent rather than strongly consistent?
 Saga is eventually consistent because each service commits its own local transaction independently.

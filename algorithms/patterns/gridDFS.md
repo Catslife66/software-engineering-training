@@ -369,6 +369,7 @@ def island_perimeter(grid):
 
     def dfs(r, c):
         # exposed outside edge
+        # Did this side of the cell touch outside?
         if r < 0 or r >= rows or c < 0 or c >= cols:
             return 1
 
@@ -424,6 +425,8 @@ For perimeter problems:
 water = 1
 outside = 1
 land = ask neighbors
+
+return perimeter_from_neighbors -> because a land cell itself does not contribute perimeter
 ```
 
 ## Drill 5 - Boundary-connected land
@@ -649,4 +652,23 @@ start from boundary land
 
 Final count:
 unvisited land cells
+```
+
+## Drill 7 - Count water cells touching island
+
+```
+1. What should dfs(r,c) represent?
+Return the number of water cells touching the island
+
+2. Should water return:
+1
+
+3. Should outside-grid return:
+0
+
+4. Should visited cell return:
+0
+
+5. What should one valid land cell contribute?
+asking 4 neighbours
 ```

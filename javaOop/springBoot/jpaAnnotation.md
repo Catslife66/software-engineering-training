@@ -16,16 +16,41 @@ Let's start with Property.
 
 ```
 @Entity
-public class Property {
-
+@Table(name = "viewings")
+public class Viewing {
     @Id
     private UUID id;
 
+    @ManyToOne
+    @JoinColumn(name = "property_id")
+    private Property property;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "request_date_time", nullable = false)
+    private LocalDateTime requestedDateTime;
+
+    @Column(nullable = false)
+    private String status;
+}
+
+@Entity
+@Table(name = "properties")
+public class Property {
+    @Id
+    private UUID id;
+
+    @Column(nullable = false)
     private String title;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    @OneToMany(mappedBy = "property")
+    private List<Viewing> viewings;
 }
 ```
 

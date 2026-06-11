@@ -206,6 +206,36 @@ automatically.
 
 ## What is JPA?
 
+JPA defines the standard API and behavior for ORM in Java.
+
+```
+A Java persistence framework should support:
+
+save entity
+find entity
+delete entity
+relationships
+transactions
+entity lifecycle
+
+@Entity
+@Id
+@ManyToOne
+@OneToMany
+
+Persist Entity
+Remove Entity
+Find Entity
+
+Persistence Context
+Entity Lifecycle
+Dirty Checking
+```
+
+These are rules.
+
+Like an interface.
+
 JPA is:
 
 ```
@@ -236,7 +266,23 @@ This is how Java persistence should work.
 
 But JPA itself does not do the work.
 
+JPA does NOT say:
+
+```
+How SQL is generated
+How objects are tracked
+How dirty checking works internally
+```
+
+Those details are left to implementations.
+
 ## What is Hibernate?
+
+Hibernate says:
+
+```
+I'll implement all those rules. 👆🏻
+```
 
 Hibernate is:
 
@@ -246,19 +292,67 @@ Implementation of JPA
 
 Just like:
 
+```
 UserRepository
+```
 
 may be implemented by:
 
+```
 InMemoryUserRepository
+```
 
 Similarly:
 
+```
 JPA
+```
 
 is implemented by:
 
+```
 Hibernate
+```
+
+So when you write:
+
+```
+@Entity
+public class User {
+}
+```
+
+Hibernate knows:
+
+```
+How to map User to users table
+```
+
+When you write:
+
+```
+userRepository.save(user);
+```
+
+Hibernate knows:
+
+```
+Generate INSERT statement
+```
+
+When you write:
+
+```
+user.setEmail(...)
+```
+
+Hibernate knows:
+
+```
+Track original state
+Detect changes
+Generate UPDATE
+```
 
 **Mental model**
 

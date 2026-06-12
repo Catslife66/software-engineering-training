@@ -488,3 +488,262 @@ FROM order_streaks
 GROUP BY user_id, streak_group
 ORDER BY user_id, streak_start;
 ```
+
+## Drill 6 - Duplicate Logins Per Day
+
+**Dataset**
+
+logins
+
+| user_id | login_date |
+| ------- | ---------- |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-02 |
+| 1       | 2025-01-03 |
+| 1       | 2025-01-05 |
+
+Goal
+
+Return login streaks, but duplicate login dates should count as one day.
+
+Expected output:
+
+| user_id | streak_start | streak_end | streak_length |
+| ------- | ------------ | ---------- | ------------: |
+| 1       | 2025-01-01   | 2025-01-03 |             3 |
+| 1       | 2025-01-05   | 2025-01-05 |             1 |
+
+```
+WITH unique_login AS (
+    SELECT DISTINCT user_id, login_date
+    FROM logins
+),
+login_rn AS (
+    SELECT user_id, login_date,
+           ROW_NUMBER() OVER (
+               PARTITION BY user_id
+               ORDER BY login_date ASC
+           ) AS rn
+    FROM unique_login
+),
+login_groups AS (
+    SELECT user_id,
+           login_date,
+           login_date - rn::int AS streak_group
+    FROM login_rn
+)
+SELECT user_id,
+       MIN(login_date) AS streak_start,
+       MAX(login_date) AS streak_end,
+       COUNT(*) AS streak_length
+FROM login_groups
+GROUP BY user_id, streak_group
+ORDER BY user_id, streak_start;
+```
+
+## Drill 7 - Longest Streak With Duplicate Login Rows
+
+**Dataset**
+
+logins
+
+| user_id | login_date |
+| ------- | ---------- |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-02 |
+| 1       | 2025-01-03 |
+| 1       | 2025-01-05 |
+| 2       | 2025-01-01 |
+| 2       | 2025-01-01 |
+| 2       | 2025-01-03 |
+| 2       | 2025-01-04 |
+| 2       | 2025-01-05 |
+
+Goal
+
+Return the longest login streak per user.
+
+Expected output:
+
+| user_id | streak_start | streak_end | streak_length |
+| ------- | ------------ | ---------- | ------------: |
+| 1       | 2025-01-01   | 2025-01-03 |             3 |
+| 2       | 2025-01-03   | 2025-01-05 |             3 |
+
+```
+WITH unique_login AS (
+    SELECT DISTINCT user_id, login_date
+    FROM logins
+),
+login_rn AS (
+    SELECT user_id, login_date, ROW_NUMBER() OVER (
+        PARTITION BY user_id
+        ORDER BY login_date
+    ) AS rn
+    FROM unique_login
+),
+streak_groups AS (
+    SELECT user_id, login_date, login_date - rn::int AS streak_group
+    FROM login_rn
+),
+streak_lengths AS (
+    SELECT user_id,
+        MIN(login_date) AS streak_start,
+        MAX(login_date) AS streak_end,
+        COUNT(*) AS streak_length
+    FROM streak_groups
+    GROUP BY user_id, streak_group
+),
+streak_rn AS (
+    SELECT user_id,
+           streak_start,
+           streak_end,
+           streak_length,
+           ROW_NUMBER() OVER (
+               PARTITION BY user_id
+               ORDER BY streak_length DESC, streak_start ASC
+           ) AS rn
+    FROM streak_lengths
+)
+SELECT user_id, streak_start, streak_end, streak_length
+FROM streak_rn
+WHERE rn = 1;
+```
+
+## Drill 8 - Find Numbers Appearing at Least 4 Times Consecutively
+
+**Dataset**
+
+logs
+
+| id  | num |
+| --- | --- |
+| 1   | 5   |
+| 2   | 5   |
+| 3   | 5   |
+| 4   | 5   |
+| 5   | 2   |
+| 6   | 2   |
+| 7   | 2   |
+| 8   | 3   |
+
+Goal
+
+Return:
+
+| ConsecutiveNums |
+| --------------- |
+| 5               |
+
+```
+SELECT DISTINCT num AS ConsecutiveNums
+FROM (
+    SELECT id,
+           num,
+           LAG(num, 1) OVER (ORDER BY id) AS lag1,
+           LAG(num, 2) OVER (ORDER BY id) AS lag2,
+           LAG(num, 3) OVER (ORDER BY id) AS lag3
+    FROM logs
+) t
+WHERE num = lag1
+  AND num = lag2
+  AND num = lag3;
+```
+
+## Drill 9 - At Least 3 Consecutive Login Days Using LAG()
+
+**Dataset**
+
+logins
+
+| user_id | login_date |
+| ------- | ---------- |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-02 |
+| 1       | 2025-01-03 |
+| 2       | 2025-01-01 |
+| 2       | 2025-01-03 |
+| 2       | 2025-01-04 |
+| 3       | 2025-01-10 |
+| 3       | 2025-01-11 |
+| 3       | 2025-01-12 |
+
+Goal
+
+Return users who have at least 3 consecutive login days.
+
+Expected output:
+
+| user_id |
+| ------- |
+| 1       |
+| 3       |
+
+```
+SELECT DISTINCT user_id
+FROM (
+    SELECT user_id,
+        login_date,
+        LAG(login_date, 1) OVER (
+            PARTITION BY user_id
+            ORDER BY login_date
+        ) AS prev1,
+        LAG(login_date, 2) OVER (
+            PARTITION BY user_id
+            ORDER BY login_date
+        ) AS prev2
+    FROM logins
+) t
+WHERE login_date - prev1 = 1 AND login_date - prev2 = 2;
+```
+
+## Drill 10 - 3 Consecutive Logins With Duplicates
+
+**Dataset**
+
+logins
+
+| user_id | login_date |
+| ------- | ---------- |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-02 |
+| 1       | 2025-01-03 |
+| 2       | 2025-01-01 |
+| 2       | 2025-01-03 |
+| 2       | 2025-01-04 |
+
+Goal
+
+Return users who have at least 3 consecutive login days.
+
+Expected:
+
+| user_id |
+| ------- |
+| 1       |
+
+```
+WITH prev_logins AS (
+    SELECT user_id,
+           login_date,
+           LAG(login_date, 1) OVER (
+               PARTITION BY user_id
+               ORDER BY login_date
+           ) AS prev1,
+           LAG(login_date, 2) OVER (
+               PARTITION BY user_id
+               ORDER BY login_date
+           ) AS prev2
+    FROM (
+        SELECT DISTINCT user_id, login_date
+        FROM logins
+    ) unique_logins
+)
+SELECT DISTINCT user_id
+FROM prev_logins
+WHERE login_date - prev1 = 1
+  AND login_date - prev2 = 2;
+```

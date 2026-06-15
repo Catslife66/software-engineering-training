@@ -18,6 +18,32 @@ Now:
 TCP/UDP → HOW to send
 ```
 
+Engineer Vocabulary:
+
+```
+connection-oriented
+connectionless
+makes sure data arrives -> reliable delivery
+keeps the order -> ordered delivery
+packet loss
+acknowledgement (ACK)
+retransmission
+data integrity
+latency
+throughput -> How much data can move through the system.
+occasional packet loss
+
+
+```
+
+TCP is a connection-oriented protocol that provides reliable and ordered delivery of data. It uses acknowledgements and retransmissions to recover from packet loss and ensure that data arrives in the correct order.
+
+TCP introduces additional overhead because it maintains connection state and performs retransmissions.
+
+UDP is a connectionless protocol that prioritizes low latency and high throughput over reliability. It does not guarantee delivery, ordering, or retransmission of packets.
+
+Choose TCP for applications such as HTTPS because data integrity and reliable delivery are critical. Choose UDP for use cases such as video streaming, online gaming, or voice calls, where occasional packet loss is acceptable and low latency is more important than perfect reliability.
+
 ## TCP — Reliable Communication
 
 TCP is designed for:
@@ -137,3 +163,11 @@ DNS → UDP → IP
 ```
 
 Different protocols for different needs.
+
+What is the difference between TCP and UDP, and when would you choose one over the other?
+
+TCP is a connection-oriented protocol that provides reliable and ordered delivery of data. It uses acknowledgement - ACK and retransmission to recover from packet loss.
+
+UDP is a connectionless protocol that prioritises low latency and throughput over reliability. It does not garantee delivery, ordering and retransmission.
+
+I'd choose TCP for HTTPS communications because it gurantees an ordering delivery and any packet loss will be retransmitted. While I'd chhose UCP for video streaming because loss packet during transmission can be tolerated and speed is prioritised.

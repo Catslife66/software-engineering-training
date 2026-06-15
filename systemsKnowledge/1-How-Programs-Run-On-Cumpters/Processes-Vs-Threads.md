@@ -1,24 +1,56 @@
 # Processes vs Threads
 
+Engineer Vocabulary:
+
+```
+Process
+Thread
+Execution unit
+Memory space
+Context switching
+Concurrency
+Isolation
+
+isolated execution environment
+shared memory
+efficient concurrency
+
+lightweight
+overhead
+resource consumption
+inter-process communication (IPC) -> communication BETWEEN processes - special mechanisms for exchanging data between processes
+
+expensive -> higher overhead
+```
+
+A process is an isolated execution environment with its own memory space, while a thread is a lightweight execution unit within a process that shares memory with other threads.
+
+Processes provide stronger isolation because each process manages its own resources and memory. Threads, on the other hand, enable efficient concurrency because they can communicate through shared memory without the overhead of inter-process communication.
+
 ## Process
 
-A process is a running program with its own memory.
+> A process is a running program with its own memory.
 
 Each process has:
+
+```
 its own memory
 its own resources
 its own execution environment
+```
 
 Each process is isolated from the others.
 
 The OS does NOT create a new process for each request.
+
 Creating processes is expensive.
 
 Instead, requests are handled inside the same process.
 
 ## Thread
 
-A thread is a smaller unit of execution inside a process.
+> A thread is a unit of execution inside a process.
+
 A process can have multiple threads.
 
 Example:
@@ -47,6 +79,7 @@ This makes them fast to communicate, but also introduces risks like:
 Languages and frameworks often use different concurrency models.
 
 1. **Thread per Request**
+
    Traditional server frameworks:
    - Apache HTTP Server
    - Spring Boot
@@ -73,6 +106,7 @@ Languages and frameworks often use different concurrency models.
    - too many threads → server crash
 
 2. **Event Loop (Node.js)**
+
    Example runtime:
    - Node.js
 
@@ -90,6 +124,7 @@ Languages and frameworks often use different concurrency models.
    Instead of creating a thread per request, Node uses:
    - non-blocking I/O
    - event-driven programming
+
      This allows **thousands of concurrent requests**.
 
 ## What Actually Happens When 10,000 Requests Arrive
@@ -192,6 +227,7 @@ This is why Node servers should avoid things like:
 ## How Real Systems Solve This
 
 1️⃣ **Worker Threads**
+
 Node can spawn worker threads.
 
 Example concept:
@@ -229,6 +265,7 @@ Popular queue systems include:
 - Redis (used for queues like BullMQ)
 
 Example:
+
 User requests report.
 
 ```
@@ -262,9 +299,11 @@ Node1   Node2   Node3   Node4
 
 ## Why Processes Are Preferred Over Threads in Node
 
+```
 Thread → shares memory
 Process → isolated memory
+```
 
 Processes are safer because:
 
-> If one process crashes, others keep running
+If one process crashes, others keep running

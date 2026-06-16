@@ -68,3 +68,27 @@ Used when:
 3. Map to pattern
 4. Plan solution
 5. Code
+
+## Algorithm roadmap
+
+```
+Arrays
+↓
+Hash Maps / Sets
+↓
+Stacks / Queues
+↓
+Recursion
+↓
+Trees
+↓
+DFS / BFS
+↓
+Linked Lists
+↓
+Heap
+↓
+Graphs
+↓
+Dynamic Programming
+```

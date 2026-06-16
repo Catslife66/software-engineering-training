@@ -368,7 +368,6 @@ if node is leaf:
     return 1
 
 3. Recursive formula?
-
 if node.left is None:
     return 1 + f(node.right)
 

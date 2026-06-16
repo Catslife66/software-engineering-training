@@ -15,7 +15,7 @@ JPA = Persistence Rules
 
 Hibernate = Persistence Engine
 
-Spring Data JPA = Convenience Layer
+Spring Data JPA = Convenience Layer -> repository generator
 ```
 
 Without Spring Data JPA

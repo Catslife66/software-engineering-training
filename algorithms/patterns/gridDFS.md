@@ -672,3 +672,184 @@ Return the number of water cells touching the island
 5. What should one valid land cell contribute?
 asking 4 neighbours
 ```
+
+## Drill 8 - Surrounded Regions
+
+Grid:
+
+```
+X X X X
+X O O X
+X X O X
+X O X X
+```
+
+Rule:
+
+```
+Any O completely surrounded by X
+should be changed to X.
+```
+
+Expected result:
+
+```
+X X X X
+X X X X
+X X X X
+X O X X
+```
+
+Solution:
+
+```
+1. What should dfs represent?
+dfs(r,c) = mark this O and all connected O cells as safe - connected to boundary
+
+2. What should visited represent?
+visited = O cells connected to boundary
+unvisited = surrounded
+
+3. Which O cells are unvisited after boundary DFS?
+(1, 1), (1, 2), (2, 2)
+
+4. Which cells get flipped?
+(1, 1), (1, 2), (2, 2)
+```
+
+Code implementation:
+
+```
+def solve(board):
+    rows = len(board)
+    cols = len(board[0])
+    visited = set()
+
+    def dfs(r, c):
+        if r < 0 or r >= rows or c < 0 or c >= cols:
+            return
+        if board[r][c] != 'O':
+            return
+        if (r, c) in visited:
+            return
+
+        visited.add((r, c))
+
+        dfs(r+1, c)
+        dfs(r-1, c)
+        dfs(r, c+1)
+        dfs(r, c-1)
+
+    for r in range(rows):
+        for c in range(cols):
+            is_boundary = (
+                r == 0 or
+                r == rows - 1 or
+                c == 0 or
+                c == cols - 1
+            )
+            if board[r][c] == 'O' and is_boundary:
+                dfs(r, c)
+
+    for r in range(rows):
+        for c in range(cols):
+            if board[r][c] == 'O' and (r, c) not in visited:
+                board[r][c] = "X"
+
+    return board
+```
+
+## Big Checkpoint
+
+### Family 1 — Explore one region
+
+```
+Number of Islands
+Largest Area
+Island Perimeter
+Flood Fill
+```
+
+Start:
+
+```
+one cell
+```
+
+### Family 2 — Boundary-connected
+
+```
+Enclosed Land
+Boundary-connected Cells
+Surrounded regions
+```
+
+Start:
+
+```
+all boundary sources
+```
+
+### Family 3 — Reverse Reachability
+
+```
+Can reach ocean?
+Can reach boundary?
+Pacific Atlantic Water Flow
+```
+
+Start:
+
+```
+the target
+```
+
+and explore backwards.
+
+**Single-source
+**
+Example:
+
+```
+Flood Fill
+```
+
+Start:
+
+```
+(sr, sc)
+```
+
+Question:
+
+```
+What can THIS cell reach?
+```
+
+**Multi-source**
+
+Example:
+
+```
+Boundary-connected land
+```
+
+Start:
+
+```
+all boundary land cells
+```
+
+Question:
+
+```
+What can ANY of these cells reach?
+```
+
+```
+Single-source:
+one starting point
+
+Multi-source:
+a set of starting points
+```

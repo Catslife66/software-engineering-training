@@ -1,4 +1,4 @@
-## Problem 1
+## Question 1
 
 You are given:
 
@@ -49,7 +49,7 @@ shrink → [3] → sum 3
 Answer = 2
 ```
 
-## Question 2
+## Question 2
 
 You are given a string:
 

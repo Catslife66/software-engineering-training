@@ -1,4 +1,4 @@
-# JPQL idea
+# Custom JPQL
 
 JPQL looks like SQL, but it uses entity names and field names, not table names and column names.
 

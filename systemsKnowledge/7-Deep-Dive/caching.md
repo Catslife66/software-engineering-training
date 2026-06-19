@@ -21,6 +21,37 @@ Cache is not a performance topic.
 Cache is a consistency topic disguised as a performance topic.
 ```
 
+**Engineer Vocabulary**
+
+```
+cache hit
+cache miss
+latency
+database load
+cache invalidation
+stale data
+TTL
+cache stampede
+
+frequently accessed data
+fast storage layer
+reduce read pressure
+consistency challenges
+underlying data
+cache consistency
+fall back to the database
+populate the cache
+cache entry
+```
+
+Caching is a technique that stores frequently accessed data in a fast storage layer to reduce database load and improve response latency.
+
+When a request arrives, the application first checks the cache. On a cache hit, data is returned directly from the cache. On a cache miss, the application queries the database and may populate the cache with the result for future requests.
+
+The main benefit of caching is improved performance and reduced read pressure on the database. However, caching introduces consistency challenges because cached data can become stale if the underlying data changes.
+
+Common strategies such as TTL-based expiration, cache invalidation, and cache refresh mechanisms help maintain cache consistency. Systems must also consider failure scenarios such as cache stampedes, where many requests simultaneously fall back to the database after a cache entry expires.
+
 ## 1. Why caching becomes difficult
 
 Let's start with something simple.
@@ -111,7 +142,7 @@ The moment you have copies:
 consistency becomes difficult
 ```
 
-## 2. Cache Invalidation
+## 2. Cache Invalidation - how do we keep cache data correct
 
 One of the famous jokes in software engineering:
 
@@ -150,6 +181,14 @@ remove old cache
 or
 
 update cache
+```
+
+❓Why is cache invalidation considered difficult?
+
+```
+Cache invalidation is difficult because the cache is a copy of the source of truth rather than the source of truth itself. When the underlying data changes in the database, the cache can become stale, creating cache consistency challenges.
+
+The difficulty lies in ensuring that cached data is updated, invalidated, or expired at the correct time without introducing excessive complexity or database load. If invalidation is handled incorrectly, users may receive stale data; if it is too aggressive, many requests may fall back to the database and reduce the benefits of caching.
 ```
 
 ## 3. Cache Aside Pattern

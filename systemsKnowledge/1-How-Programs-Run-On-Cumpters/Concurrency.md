@@ -47,7 +47,10 @@ The switching happens thousands of times per second, creating the illusion that 
 For a backend server, thousands of users may send requests simultaneously.
 
 Example flow:
+
+```
 Users → Internet → Server OS → Process → Application code
+```
 
 Servers handle this using techniques such as:
 

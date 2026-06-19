@@ -31,9 +31,6 @@ retransmission
 data integrity
 latency
 throughput -> How much data can move through the system.
-occasional packet loss
-
-
 ```
 
 TCP is a connection-oriented protocol that provides reliable and ordered delivery of data. It uses acknowledgements and retransmissions to recover from packet loss and ensure that data arrives in the correct order.

@@ -2,7 +2,7 @@
 
 Caching means:
 
-> Store frequently used data in a fast storage layer
+> A cache stores frequently accessed data in a fast storage layer.
 
 So instead of:
 

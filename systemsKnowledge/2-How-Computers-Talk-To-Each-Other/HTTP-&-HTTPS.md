@@ -1,10 +1,25 @@
 # HTTP / HTTPS
 
+Engineer Vocabulary
+
+```
+stateless
+request context
+session
+horizontal scaling
+server-side state
+client state
+```
+
 ## HTTP
 
 HTTP = HyperText Transfer Protocol
 
 It defines how data is transferred between client and server.
+
+HTTP is a stateless protocol, meaning each request contains all the information required for processing. The server does not automatically retain request context between requests.
+
+This property simplifies horizontal scaling because any server instance can handle any incoming request without relying on local server state.
 
 ### Request-Response Model
 
@@ -74,6 +89,14 @@ The server does not "remember" you unless you send:
 
 - cookies
 - tokens (JWT)
+
+```
+HTTP is considered stateless because each request contains all the information required for processing, and the server does not automatically retain request context between requests.
+
+Since requests are independent, servers do not need to rely on local server-side state. This allows a load balancer to distribute incoming requests across multiple server instances.
+
+As a result, statelessness simplifies horizontal scaling because any server can process any request without requiring knowledge of previous requests.
+```
 
 ## HTTPS
 

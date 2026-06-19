@@ -67,3 +67,27 @@ Focus:
 - query planner deeper
 - indexing internals
 - storage engines
+
+Self-Joins
+
+2-3 drills
+
+Latest Row Per Entity
+
+3-4 drills
+
+Advanced Aggregate → Join Back
+
+3-4 drills
+
+Window Function Completion
+
+2-3 drills
+
+Pattern Refresh Round
+
+15-20 mixed questions
+
+Total:
+
+~25-35 drills

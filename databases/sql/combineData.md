@@ -4,6 +4,12 @@
 
 A join connects tables using related columns.
 
+The JOIN condition is simply:
+
+```
+Which pairs should survive?
+```
+
 Example:
 orders.customer_id = customers.customer_id
 
@@ -54,6 +60,43 @@ Everything from both, even if no match (not all databases support FULL JOIN).
 ## CROSS JOIN
 
 creates all possible combinations - table A & table B
+
+Example:
+
+employees
+
+| employee_id | name    | manager_id |
+| ----------- | ------- | ---------- |
+| 1           | Alice   | NULL       |
+| 2           | Bob     | 1          |
+| 3           | Charlie | 1          |
+| 4           | David   | 2          |
+
+```
+FROM employees e1
+CROSS JOIN employees e2
+```
+
+You get:
+
+| e1.name | e2.name |
+| ------- | ------- |
+| Alice   | Alice   |
+| Alice   | Bob     |
+| Alice   | Charlie |
+| Alice   | David   |
+| Bob     | Alice   |
+| Bob     | Bob     |
+| Bob     | Charlie |
+| Bob     | David   |
+| Charlie | Alice   |
+| Charlie | Bob     |
+| Charlie | Charlie |
+| Charlie | David   |
+| David   | Alice   |
+| David   | Bob     |
+| David   | Charlie |
+| David   | David   |
 
 ## NULL
 

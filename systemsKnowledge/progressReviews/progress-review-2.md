@@ -77,23 +77,29 @@ This is one of your biggest opportunities.
 
 You've already noticed:
 
+```
 I understand more than I can explain.
+```
 
 This is true.
 
 We'll train:
 
+```
 30-second explanation
 2-minute explanation
 Interview explanation
 Whiteboard explanation
+```
 
 For example:
 
+```
 Explain caching
 Explain Saga
 Explain load balancing
 Explain eventual consistency
+```
 
 without rambling.
 

@@ -1,5 +1,42 @@
 # Queue & Delivery Guarantees
 
+> A message queue acts as a buffer between producers and consumers.
+
+**Engineer Vocabulary**
+
+```
+asynchronous processing
+producer
+consumer
+decouple
+critical path
+traffic spikes
+backpressure: incoming rate > processing rate
+Bursty workload
+Queue backlog
+delivery guarantees
+At-most-once
+At-least-once
+idempotency
+
+publish messages
+consume message
+durable buffer: durable storage, meaning message survives restart
+downstream service
+absorb traffic spikes
+temporarily unavailable
+temporary failure
+main request path
+at-least-once delivery guarantee
+duplicate message processing
+```
+
+Message queues enable asynchronous processing by decoupling producers from consumers. Instead of performing non-critical work synchronously, producers publish messages to a queue and consumers process them independently.
+
+This helps smooth traffic spikes, absorb backpressure, and improve reliability because temporary failures in downstream services do not immediately impact the main request path.
+
+Message queues often provide at-least-once delivery guarantees, ensuring that messages are eventually processed even if failures occur. However, this introduces the possibility of duplicate message delivery, so consumers typically need to be idempotent.
+
 ## 1. Why queues exist
 
 Queues help:

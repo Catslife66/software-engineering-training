@@ -10,6 +10,10 @@ Basic Flow
 Producer → Queue → Worker
 ```
 
+Producer: creates work
+
+Consumer: processes work
+
 Example:
 
 ```
@@ -68,6 +72,41 @@ Common tools:
 **1. Decoupling**
 
 Producer does not depend on worker
+
+Without queue:
+
+```
+Checkout
+↓
+Email
+```
+
+If Email fails:
+
+```
+Checkout fails
+```
+
+Everything is coupled.
+
+With queue:
+
+```
+Checkout
+↓
+Queue
+↓
+Email
+```
+
+Now:
+
+```
+Checkout succeeds
+Email retries later
+```
+
+Message queues decouple producers from consumers.
 
 **2. Retry mechanism**
 

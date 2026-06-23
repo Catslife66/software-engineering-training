@@ -5,35 +5,73 @@
 **Engineer Vocabulary**
 
 ```
-asynchronous processing
 producer
 consumer
+
+publish messages
+consume messages
+
+asynchronous processing
 decouple
+
 critical path
+main request path
+
+durable buffer
+durable message storage
+persisted message
+
 traffic spikes
+bursty workload
 backpressure: incoming rate > processing rate
-Bursty workload
-Queue backlog
+queue backlog
+
+incoming rate
+processing capacity
+
 delivery guarantees
 At-most-once
 At-least-once
 idempotency
 
-publish messages
-consume message
-durable buffer: durable storage, meaning message survives restart
+failure isolation
 downstream service
-absorb traffic spikes
+
 temporarily unavailable
 temporary failure
-main request path
-at-least-once delivery guarantee
-duplicate message processing
+
+end-to-end latency
+under-provisioned consumers -> not enough workers/resources
+service degradation
+```
+
+```
+End-to-end latency is the total time required for a request or operation to travel through the entire system and produce a result.
+
+A queue backlog is the accumulation of messages waiting to be processed by consumers.
+
+A bursty workload is a traffic pattern characterized by short periods of extremely high activity followed by periods of lower activity.
+100 requests/sec
+100 requests/sec
+10,000 requests/sec
+100 requests/sec
+
+Backpressure is the pressure caused by the mismatch between incoming work and processing capacity.
+
+Incoming > Processing
+↓
+Backpressure occurs
+↓
+Queue Backlog grows
+↓
+End-to-End Latency increase
+↓
+Possible Service Degradation
 ```
 
 Message queues enable asynchronous processing by decoupling producers from consumers. Instead of performing non-critical work synchronously, producers publish messages to a queue and consumers process them independently.
 
-This helps smooth traffic spikes, absorb backpressure, and improve reliability because temporary failures in downstream services do not immediately impact the main request path.
+This helps smooth traffic spikes, manage backpressure, and improve reliability because temporary failures in downstream services do not immediately impact the main request path.
 
 Message queues often provide at-least-once delivery guarantees, ensuring that messages are eventually processed even if failures occur. However, this introduces the possibility of duplicate message delivery, so consumers typically need to be idempotent.
 
@@ -556,12 +594,11 @@ lost critical data often cannot
 
 ```
 1. What the queue will do when ACK is lost
-
 Because the queue did not receive the ACK, it assumes the webhook processing may have failed.
 As a result, the queue retries delivery of the same webhook event to guarantee the event is eventually processed.
 
-2. Why duplicate processing may happen
 
+2. Why duplicate processing may happen
 The webhook may actually have been processed successfully already, but the ACK was lost due to network failure or consumer crash.
 Since the queue cannot distinguish between:
 - "processing failed"
@@ -569,8 +606,8 @@ and
 - "ACK failed"
 it retries the event, which can cause the same payment event to be processed multiple times.
 
-3. How idempotency prevents damage
 
+3. How idempotency prevents damage
 Each webhook event contains a unique event ID.
 Before processing, the consumer checks whether this event ID has already been processed and stored.
 If the event already exists, the consumer safely ignores the duplicate retry.
@@ -579,4 +616,21 @@ As a result, retries do not create duplicated side effects such as:
 - charging twice
 - deducting inventory twice
 - sending duplicate confirmations
+
+
+4. Why are message queues commonly used in microservices architectures?
+Message queues are commonly used in microservices architectures because they decouple producers from consumers and enable asynchronous processing. By removing non-critical work from the critical path, services can respond more quickly and remain isolated from downstream failures.
+
+Message queues act as a durable buffer, allowing messages to remain persisted even when consumers are temporarily unavailable. They also help manage traffic spikes and backpressure by buffering work when the incoming rate exceeds processing capacity.
+
+Most queue systems provide at-least-once delivery guarantees, which improves reliability but introduces the possibility of duplicate message delivery. As a result, consumers are typically designed to be idempotent.
+
+
+5. Why is a growing queue often considered a warning sign?
+A growing queue is typically a warning sign that the incoming rate of work exceeds the processing capacity of consumers.
+
+As messages accumulate, a queue backlog forms, increasing the time required for work to be processed. This increases end-to-end latency and is often a sign of backpressure in the system.
+
+If the backlog continues to grow, it may indicate that consumers are under-provisioned, unhealthy, or unable to keep up with demand, which can eventually lead to service degradation or failures.
+
 ```

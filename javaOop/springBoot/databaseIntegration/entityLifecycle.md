@@ -198,8 +198,6 @@ Managed
 
 modify fields
     ↓
-Dirty
-
 commit
     ↓
 Database updated

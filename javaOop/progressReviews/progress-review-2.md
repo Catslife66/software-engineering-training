@@ -36,6 +36,8 @@ You've now covered:
 
 ✅ Page<T>
 
+✅ Page vs Slice
+
 ## Querying
 
 ✅ JPQL

@@ -135,6 +135,8 @@ private List<Property> properties;
 
 `mappedBy` means:
 
+Hibernate is looking for the field name on the other entity.
+
 ```
 Look at Property.owner
 That side owns the relationship.
@@ -161,6 +163,14 @@ in the database.
 ```
 @OneToMany(mappedBy = "owner")
 private List<Property> properties;
+```
+
+Because "owner" is the field name 👇
+
+```
+@ManyToOne
+@JoinColumn(name = "owner_id")
+private User owner;
 ```
 
 This side is just:

@@ -416,3 +416,158 @@ Page<Property> findByCityAndStatus(
 ```
 
 This is very close to how a real Spring Boot API is written.
+
+## Alternative: Slice
+
+So far we used:
+
+```
+Page<PropertyViewingCountDTO>
+```
+
+A Page gives:
+
+```
+current results
++
+totalElements
++
+totalPages
+```
+
+But to know:
+
+```
+totalElements
+```
+
+Spring often has to run an extra count query.
+
+For simple searches this is fine.
+
+But for complex reports with:
+
+```
+GROUP BY
+HAVING
+LEFT JOIN
+DTO projection
+```
+
+the count query can become expensive.
+
+### Slice
+
+```
+Slice<PropertyViewingCountDTO>
+```
+
+A `Slice` gives:
+
+```
+current results
++
+hasNext
+```
+
+but **does not** calculate total pages.
+
+So it is cheaper.
+
+### Mental model
+
+Page
+
+```
+Tell me:
+- results
+- total number of results
+- total pages
+```
+
+More information, more work.
+
+Slice
+
+```
+Tell me:
+- results
+- whether there is another page
+```
+
+Less information, often faster.
+
+### When to use what?
+
+Use Page when the UI needs:
+
+```
+Page 1 of 25
+Total 493 results
+```
+
+Use Slice when the UI only needs:
+
+```
+Load more
+Next page
+Infinite scroll
+```
+
+### Example
+
+User opens property search.
+
+Frontend requests:
+
+```
+GET /properties?page=0&size=20
+```
+
+Backend returns:
+
+```
+20 properties
+hasNext = true
+```
+
+User scrolls.
+
+↓
+
+Frontend requests:
+
+```
+GET /properties?page=1&size=20
+```
+
+Backend returns:
+
+```
+20 properties
+hasNext = true
+```
+
+User scrolls again.
+
+↓
+
+Eventually:
+
+```
+20 properties
+hasNext = false
+```
+
+Frontend knows:
+
+```
+Stop requesting more data.
+```
+
+No need to know:
+
+```
+totalElements = 12,456
+totalPages = 623
+```

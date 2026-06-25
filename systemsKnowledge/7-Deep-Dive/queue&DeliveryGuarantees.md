@@ -51,6 +51,7 @@ End-to-end latency is the total time required for a request or operation to trav
 A queue backlog is the accumulation of messages waiting to be processed by consumers.
 
 A bursty workload is a traffic pattern characterized by short periods of extremely high activity followed by periods of lower activity.
+
 100 requests/sec
 100 requests/sec
 10,000 requests/sec

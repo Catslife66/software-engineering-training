@@ -13,7 +13,7 @@ You now understand:
 - authorization basics
 - transactional thinking
 
-## Phase 2 — CURRENT
+## Phase 2 — COMPLETE ✅
 
 Backend Workflow & Reliability Engineering
 
@@ -26,9 +26,7 @@ Currently learning:
 - retry safety
 - consistency thinking
 
-## Phase 3 — Real Spring Boot Persistence
-
-This is likely the next big section.
+## Phase 3 — Real Spring Boot Persistence - CURRENT
 
 Topics:
 

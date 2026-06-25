@@ -143,3 +143,46 @@ SELECT customer_id,
 FROM ranking
 WHERE rn = 1;
 ```
+
+##
+
+**Dataset**
+
+| product_id | price | effective_date |
+| ---------- | ----: | -------------- |
+| 1          |    10 | Jan 1          |
+| 1          |    12 | Jan 5          |
+| 1          |    15 | Jan 5          |
+| 2          |    20 | Jan 2          |
+| 2          |    22 | Jan 8          |
+
+Goal
+
+Return the current price of each product.
+
+Rule:
+
+Current = latest effective_date
+If two prices have the same latest date, choose the highest price
+
+| product_id | current_price |
+| ---------: | ------------: |
+|          1 |            15 |
+|          2 |            22 |
+
+```
+WITH ranking AS (
+    SELECT product_id,
+           price,
+           effective_date,
+           ROW_NUMBER() OVER (
+               PARTITION BY product_id
+               ORDER BY effective_date DESC, price DESC
+           ) AS rn
+    FROM products
+)
+SELECT product_id,
+       price AS current_price
+FROM ranking
+WHERE rn = 1;
+```

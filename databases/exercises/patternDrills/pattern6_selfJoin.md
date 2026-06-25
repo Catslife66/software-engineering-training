@@ -228,3 +228,34 @@ FROM customers c1
 JOIN customers c2 ON c1.referred_by = c2.customer_id
 GROUP BY c2.customer_id, c2.customer_name;
 ```
+
+## Drill 9
+
+**Dataset**
+
+employees
+
+| employee_id | name    | manager_id |
+| ----------- | ------- | ---------- |
+| 1           | Alice   | NULL       |
+| 2           | Bob     | 1          |
+| 3           | Charlie | 1          |
+| 4           | David   | 2          |
+| 5           | Eve     | 2          |
+
+Goal:
+
+Return managers who manage at least 2 employees.
+
+| manager_name |
+| ------------ |
+| Alice        |
+| Bob          |
+
+```
+SELECT m.name
+FROM employees e
+JOIN employees m ON e.manager_id = m.employee_id
+GROUP BY m.employee_id, m.name
+HAVING COUNT(e.employee_id) >= 2;
+```

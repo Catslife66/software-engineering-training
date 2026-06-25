@@ -52,6 +52,19 @@ Focus:
 - advanced analytics
 - more “aggregate then join back”
 
+| Pattern                                                 |     Level      |
+| ------------------------------------------------------- | :------------: |
+| GROUP BY / HAVING                                       |   ✅ Strong    |
+| Aggregate → Join Back                                   |   ✅ Strong    |
+| Window Functions                                        |   ✅ Strong    |
+| Ranking                                                 |   ✅ Strong    |
+| Running Totals                                          |   ✅ Strong    |
+| LAG()                                                   |   ✅ Strong    |
+| Consecutive Rows / Streaks                              |   ✅ Strong    |
+| Self Joins                                              |    🟢 Good     |
+| Latest Row Per Entity                                   | 🟡 In progress |
+| Advanced Window Functions (`LEAD`, `FIRST_VALUE`, etc.) |    🔜 Next     |
+
 ## Phase 2 — Real-world Reporting SQL
 
 - cohort analysis
@@ -67,14 +80,6 @@ Focus:
 - query planner deeper
 - indexing internals
 - storage engines
-
-Self-Joins
-
-2-3 drills
-
-Latest Row Per Entity
-
-3-4 drills
 
 Advanced Aggregate → Join Back
 

@@ -220,3 +220,18 @@ means look 1 row forward
 | Ranking              | `ROW_NUMBER`, `RANK`, `DENSE_RANK` |
 | Running calculations | `SUM OVER`, `AVG OVER`             |
 | Row comparison       | `LAG`, `LEAD`                      |
+
+## ROWS BETWEEN
+
+A window function with a ROWS BETWEEN clause allows you to perform calculations on a specific "sliding frame" of rows relative to the row you are currently on.
+
+Instead of looking at the entire table at once, or grouping everything down into a single row, it lets you maintain the individual rows while looking "backward" or "forward" in your data.
+
+Example:
+
+```
+SUM(amount) OVER (
+    ORDER BY visited_on
+    ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+)
+```

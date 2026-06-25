@@ -730,10 +730,14 @@ Then rollback happens automatically.
 Explicitly configure rollback:
 
 ```
-@Transactional(
-    rollbackFor = IOException.class
-)
+@Transactional(rollbackFor = IOException.class)
+public void importProperties() throws IOException {
+    propertyRepository.save(property);
+    throw new IOException();
+}
 ```
+
+IOException is configured for rollback
 
 Now:
 
@@ -773,15 +777,10 @@ is configured.
 public void registerUser() {
 
     try {
-
         userRepository.save(user);
-
         throw new RuntimeException();
-
     } catch (Exception e) {
-
         System.out.println("Error");
-
     }
 }
 ```

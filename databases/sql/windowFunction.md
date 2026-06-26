@@ -66,6 +66,18 @@ means:
 
 ## Most Important Window Function
 
+| Function        | Purpose                  |
+| --------------- | ------------------------ |
+| `ROW_NUMBER()`  | number rows              |
+| `RANK()`        | ranking with gaps        |
+| `DENSE_RANK()`  | ranking without gaps     |
+| `SUM()`         | running/partition totals |
+| `AVG()`         | moving averages          |
+| `LAG()`         | look backward            |
+| `LEAD()`        | look forward             |
+| `FIRST_VALUE()` | first value in window    |
+| `LAST_VALUE()`  | last value in window     |
+
 ### ROW_NUMBER()
 
 > always unique ranking (1, 2, 3…)
@@ -213,6 +225,74 @@ LEAD(amount, 1)
 means look 1 row forward
 ```
 
+### FIRST_VALUE()
+
+What is the first value in this partition?
+
+```
+FIRST_VALUE(amount) OVER (
+    PARTITION BY salesperson
+    ORDER BY sale_date
+)
+```
+
+### LAST_VALUE()
+
+With the default window frame, LAST_VALUE() returns the last value **up to the current row**, not the last value in the whole partition.
+
+orders
+
+| salesperson | sale_date | amount |
+| ----------- | --------- | -----: |
+| Alice       | Jan 1     |    100 |
+| Alice       | Jan 5     |    200 |
+| Alice       | Jan 10    |    150 |
+| Bob         | Jan 2     |     80 |
+| Bob         | Jan 8     |    120 |
+
+```
+LAST_VALUE(amount) OVER (
+    PARTITION BY salesperson
+    ORDER BY sale_date
+)
+```
+
+Returns
+
+| sale_date | amount | last_sale |
+| --------- | -----: | --------: |
+| Jan 1     |    100 |       100 |
+| Jan 5     |    200 |       200 |
+| Jan 10    |    150 |       150 |
+
+**Key idea**
+
+```
+FIRST_VALUE is usually straightforward.
+LAST_VALUE needs an explicit window frame.
+```
+
+To get the true last sale for every row, you must widen the frame:
+
+```
+LAST_VALUE(amount) OVER (
+    PARTITION BY salesperson
+    ORDER BY sale_date
+    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+) AS last_sale
+```
+
+Or to avoid trap, use:
+
+```
+FIRST_VALUE(amount) OVER (
+    PARTITION BY salesperson
+    ORDER BY sale_date DESC
+)
+```
+
+to get the true last value
+
 ## Important window-function family
 
 | Category             | Functions                          |
@@ -234,4 +314,13 @@ SUM(amount) OVER (
     ORDER BY visited_on
     ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
 )
+```
+
+## Interview Tips
+
+```
+1. Do I need a value or a row?
+2. Is there a tie? (One winner or keep ties?)
+3. Where does the ranking restart?
+4. How is the winner decided?
 ```

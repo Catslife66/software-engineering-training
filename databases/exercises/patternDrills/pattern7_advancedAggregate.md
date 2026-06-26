@@ -90,3 +90,58 @@ SELECT product_id, total_sales, rank
 FROM sales_ranking
 WHERE rank <= 2;
 ```
+
+## Drill 3 - Top 2 Products Per Region
+
+Same table
+
+sales
+
+| product_id | region | amount |
+| ---------- | ------ | -----: |
+| 1          | North  |    100 |
+| 1          | South  |    200 |
+| 2          | North  |    500 |
+| 3          | South  |    300 |
+| 4          | North  |     50 |
+
+Goal
+
+| region | product_id | total_sales | rank |
+| ------ | ---------: | ----------: | ---: |
+| North  |          2 |         500 |    1 |
+| North  |          1 |         100 |    2 |
+| South  |          3 |         300 |    1 |
+| South  |          1 |         200 |    2 |
+
+Return top 2 product ranks inside each region.
+
+- calculate total sales per region + product_id
+- rank products within each region
+- keep ties
+
+```
+WITH region_sales AS (
+    SELECT product_id,
+           region,
+           SUM(amount) AS total_sales
+    FROM sales
+    GROUP BY product_id, region
+),
+region_ranking AS (
+    SELECT product_id,
+           region,
+           total_sales,
+           DENSE_RANK() OVER (
+               PARTITION BY region
+               ORDER BY total_sales DESC
+           ) AS rank
+    FROM region_sales
+)
+SELECT product_id,
+       region,
+       total_sales,
+       rank
+FROM region_ranking
+WHERE rank <= 2;
+```

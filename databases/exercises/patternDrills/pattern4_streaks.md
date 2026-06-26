@@ -1,6 +1,39 @@
 # Pattern 4 - Consecutive Rows / Streaks
 
-## Drill 1 - gaps and islands pattern
+## Drill 1 - Gap Between Dates
+
+**Dataset**
+
+logins
+
+| user_id | login_date |
+| ------- | ---------- |
+| 1       | 2025-01-01 |
+| 1       | 2025-01-02 |
+| 1       | 2025-01-05 |
+| 1       | 2025-01-06 |
+
+Return:
+
+| user_id | login_date | days_since_previous |
+
+Where:
+
+- calculate number of days since previous login
+
+```
+SELECT user_id, login_date,
+    (
+        login_date -
+        LAG(login_date) OVER (
+            PARTITION BY user_id
+            ORDER BY login_date ASC
+        )
+    ) AS days_since_previous
+FROM logins;
+```
+
+## Drill 2 - gaps and islands pattern
 
 **Dataset**
 
@@ -214,7 +247,7 @@ GROUP BY user_id, streak_group
 ORDER BY user_id, streak_start;
 ```
 
-## Drill 2 - Longest Login Streak Per User
+## Drill 3 - Longest Login Streak Per User
 
 **Dataset**
 
@@ -289,7 +322,7 @@ FROM streak_ranks
 WHERE rn = 1;
 ```
 
-## Drill 3 - Users With At Least 3 Consecutive Login Days
+## Drill 4 - Users With At Least 3 Consecutive Login Days
 
 **Dataset**
 
@@ -371,7 +404,7 @@ WHERE streak_length >= 3
 ORDER BY user_id;
 ```
 
-## Drill 4 Consecutive Active Days Using `date - row_number`
+## Drill 5 Consecutive Active Days Using `date - row_number`
 
 **Dataset**
 
@@ -439,7 +472,7 @@ GROUP BY user_id, group_key
 ORDER BY user_id, streak_start;
 ```
 
-## Drill 5 - Consecutive Completed Orders
+## Drill 6 - Consecutive Completed Orders
 
 **Dataset**
 
@@ -489,7 +522,7 @@ GROUP BY user_id, streak_group
 ORDER BY user_id, streak_start;
 ```
 
-## Drill 6 - Duplicate Logins Per Day
+## Drill 7 - Duplicate Logins Per Day
 
 **Dataset**
 
@@ -542,7 +575,7 @@ GROUP BY user_id, streak_group
 ORDER BY user_id, streak_start;
 ```
 
-## Drill 7 - Longest Streak With Duplicate Login Rows
+## Drill 8 - Longest Streak With Duplicate Login Rows
 
 **Dataset**
 
@@ -612,7 +645,7 @@ FROM streak_rn
 WHERE rn = 1;
 ```
 
-## Drill 8 - Find Numbers Appearing at Least 4 Times Consecutively
+## Drill 9 - Find Numbers Appearing at Least 4 Times Consecutively
 
 **Dataset**
 
@@ -652,7 +685,7 @@ WHERE num = lag1
   AND num = lag3;
 ```
 
-## Drill 9 - At Least 3 Consecutive Login Days Using LAG()
+## Drill 10 - At Least 3 Consecutive Login Days Using LAG()
 
 **Dataset**
 
@@ -699,7 +732,7 @@ FROM (
 WHERE login_date - prev1 = 1 AND login_date - prev2 = 2;
 ```
 
-## Drill 10 - 3 Consecutive Logins With Duplicates
+## Drill 11 - 3 Consecutive Logins With Duplicates
 
 **Dataset**
 

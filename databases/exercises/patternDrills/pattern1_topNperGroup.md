@@ -13,7 +13,7 @@ sales
 | 5       | David       | South  |    300 |
 | 6       | Eve         | South  |    300 |
 
-## Drill 1A
+## Drill 1 - highest per group keep ties
 
 Return:
 
@@ -36,7 +36,43 @@ SELECT t.region, t.salesperson, t.amount FROM (
 WHERE t.r = 1;
 ```
 
-## Drill 1B
+## Drill 2 - aggragate then highest per group keep ties
+
+Return
+
+| region | salesperson | total_sales |
+
+Where:
+
+- return the top salesperson in each region based on total sales.
+- If totals tie, keep both salespeople.
+
+```
+WITH sales_total AS (
+    SELECT salesperson,
+           region,
+           SUM(amount) AS total_sales
+    FROM sales
+    GROUP BY salesperson, region
+),
+sales_ranking AS (
+    SELECT salesperson,
+           region,
+           total_sales,
+           RANK() OVER (
+               PARTITION BY region
+               ORDER BY total_sales DESC
+           ) AS rank
+    FROM sales_total
+)
+SELECT salesperson,
+       region,
+       total_sales
+FROM sales_ranking
+WHERE rank = 1;
+```
+
+## Drill 3 - highest per group with no ties
 
 Return:
 
@@ -60,7 +96,7 @@ FROM (
 WHERE t.rn = 1;
 ```
 
-## Drill 1C — Second Highest Per Group
+## Drill 4 — Second Highest Per Group
 
 Return:
 
@@ -84,7 +120,7 @@ FROM (
 WHERE t.dr = 2;
 ```
 
-## Drill 1D — Top 2 Per Group
+## Drill 5 — Top 2 Per Group
 
 Return:
 

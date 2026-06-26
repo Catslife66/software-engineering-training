@@ -115,36 +115,3 @@ SELECT salesperson, sale_date, amount,
     ) AS diff_from_previous
 FROM sales;
 ```
-
-## Drill 5 - Gap Between Dates
-
-**Dataset**
-
-logins
-
-| user_id | login_date |
-| ------- | ---------- |
-| 1       | 2025-01-01 |
-| 1       | 2025-01-02 |
-| 1       | 2025-01-05 |
-| 1       | 2025-01-06 |
-
-Return:
-
-| user_id | login_date | days_since_previous |
-
-Where:
-
-- calculate number of days since previous login
-
-```
-SELECT user_id, login_date,
-    (
-        login_date -
-        LAG(login_date) OVER (
-            PARTITION BY user_id
-            ORDER BY login_date ASC
-        )
-    ) AS days_since_previous
-FROM logins;
-```

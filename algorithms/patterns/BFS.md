@@ -215,7 +215,7 @@ Discover D
 → immediately add to queue
 ```
 
-## Drill 1 - Shortest Path in an Unweighted Graph
+## Drill 1 - Shortest Path in an Unweighted Graph (Graph BFS)
 
 ### The Big BFS Shortest-Path Rule
 
@@ -358,7 +358,7 @@ while queue:
             queue.append((neighbor, distance + 1))
 ```
 
-## Drill 2 - Shortest Path in a Grid
+## Drill 2 - Shortest Path in a Grid (Grid Shortest Path)
 
 Grid:
 

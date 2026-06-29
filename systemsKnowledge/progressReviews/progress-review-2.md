@@ -1,185 +1,54 @@
-# Phase A — Master Consolidation
+## Stage 1 — The Engineer's View of Computing
 
-Goal:
+- Processes & Threads
+- Networking
+- HTTP
 
-Turn knowledge into mental models.
+## Stage 2 — Building Large Systems
 
-## Module A1
+- Load Balancing
+- Caching
+- Message Queues
 
-Systems & Architecture Master Map
+## Stage 3 — Reliability
 
-Build one connected picture:
+- Observability
+- Retries
+- Timeouts
+- Circuit breakers
+- Bulkheads
+- Health checks
 
-```
-User Request
-↓
-DNS
-↓
-TCP
-↓
-HTTP
-↓
-Load Balancer
-↓
-API Server
-↓
-Cache
-↓
-Database
-↓
-Queue
-↓
-Other Services
-```
+## Stage 4 — Distributed Systems
 
-Then layer:
+- Replication
+- Consistency
+- Sagas
+- Coordination
+- Leader Election
+- Distributed Locks
 
-```
-Replication
-Scaling
-Observability
-Security
-Reliability
-```
+## Stage 5 — Communication
 
-onto the same picture.
+Architecture explanation
 
-## Module A2
+Apply it to:
 
-Failure Scenarios
+- Messaging
+- E-commerce
+- Payments
+- Authentication
+- Search
+- Notifications
 
-We walk through:
+## stage 6 - Core Infrastructure
 
-```
-Database slow
-Cache down
-Queue backlog
-Replica lag
-Payment failure
-Webhook duplication
-Leader crash
-```
+Core Infrastructure
 
-and identify:
-
-```
-Problem
-Detection
-Mitigation
-Tradeoffs
-```
-
-## Module A3
-
-Engineer Communication Training
-
-This is one of your biggest opportunities.
-
-You've already noticed:
-
-```
-I understand more than I can explain.
-```
-
-This is true.
-
-We'll train:
-
-```
-30-second explanation
-2-minute explanation
-Interview explanation
-Whiteboard explanation
-```
-
-For example:
-
-```
-Explain caching
-Explain Saga
-Explain load balancing
-Explain eventual consistency
-```
-
-without rambling.
-
-# Phase B — Applied Architecture
-
-This is where you start thinking like a system designer.
-
-## Design Progression
-
-Instead of learning concepts:
-
-```
-Design Authentication System
-Design File Upload System
-Design Notification System
-Design Payment System
-Design Search System
-Design Subscription System
-```
-
-We'll focus on:
-
-```
-Requirements
-Tradeoffs
-Failure Modes
-Scaling
-```
-
-not just architecture diagrams.
-
-# Phase C — Connect to Your Full-Stack Projects
-
-This is where things become extremely valuable.
-
-You already built:
-
-```
-FastAPI
-Next.js
-Postgres
-Docker
-AWS
-Stripe
-```
-
-Now we revisit them.
-
-# Phase D — University Preparation Layer
-
-This is where we bridge to your MSc.
-
-Focus:
-
-```
-Databases
-Java
-Software Architecture
-Networking
-Distributed Systems
-```
-
-# Phase E — Interview Readiness
-
-Topics:
-
-```
-Behavioral
-System Design
-Backend Design
-Tradeoffs
-Architecture Discussion
-```
-
-The difference:
-
-Currently:
-
-Learning Mode
-
-Later:
-
-Demonstration Mode
+- Redis
+- Kafka
+- RabbitMQ
+- NGINX
+- PostgreSQL Internals
+- Docker
+- Kubernetes

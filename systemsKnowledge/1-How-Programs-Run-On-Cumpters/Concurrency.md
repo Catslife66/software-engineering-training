@@ -1,5 +1,7 @@
 # Concurrency Fundamentals
 
+Concurrency is the ability of a system to make progress on multiple tasks during the same period of time.
+
 ## Concurrency vs Parallelism
 
 Concurrency means:
@@ -16,7 +18,7 @@ Task C waiting on database
 
 Parallelism means:
 
-> multiple tasks running at the same time
+> Executing multiple tasks simultaneously on different CPU cores.
 
 Example:
 

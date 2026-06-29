@@ -1,6 +1,6 @@
 # Queue & Delivery Guarantees
 
-> A message queue acts as a buffer between producers and consumers.
+> A message queue acts as a durable buffer between producers and consumers.
 
 **Engineer Vocabulary**
 

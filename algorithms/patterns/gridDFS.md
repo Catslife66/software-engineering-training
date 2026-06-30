@@ -326,9 +326,7 @@ Solution:
 
 ```
 1. What dfs(r,c) represent?
-exploring from (0,0),
-visiting all connected land,
-returning number of exposed edges around connected land
+Return the perimeter contributed by the island connected to this cell.
 
 2. Which edges contribute to perimeter?
 (0,0) → up + left = 2
@@ -354,9 +352,7 @@ Perimeter: count exposed edges
 visited land returns 0 because its perimeter contribution has already been accounted for.
 
 8. What does one valid land cell contribute?
-one land cell contributes the perimeter returned by its four sides.
-Each side asks does this edge touch water or outside?
-If yes +1 perimeter
+check its neighbours
 ```
 
 Code implementation:

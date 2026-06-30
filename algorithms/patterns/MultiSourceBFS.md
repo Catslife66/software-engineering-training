@@ -115,7 +115,7 @@ def oranges_rotting(grid):
 
         for dr, dc in [(1,0), (-1,0), (0,1), (0,-1)]:
             nr = r + dr
-            nc = c + dr
+            nc = c + dc
 
             if nr < 0 or nr >= rows or nc < 0 or nc >= cols:
                 continue
@@ -275,4 +275,87 @@ def update_matrix(mat):
             queue.append((nr, nc, d + 1))
 
     return dist
+```
+
+## Drill 4 - Walls and Gates
+
+Grid:
+
+```
+INF  -1   0
+INF INF INF
+-1  INF  -1
+```
+
+Legend:
+
+```
+0   = gate
+-1  = wall
+INF = empty room
+```
+
+Goal:
+
+Fill each empty room with distance to nearest gate.
+
+Solution:
+
+```
+1. What are the starting points?
+All gates
+
+2. Why do we start from gates, not from each room?
+because each gate has the nearest distance to itself which is 0,
+starting from all gates lets distance waves spread outward,
+the first time a room is reached, it came from the nearest gate.
+
+3. What does queue entry (r, c, dist) represent?
+cell at (r, c) is dist steps from the nearest gate
+
+4. Which cells can BFS move into?
+empty rooms
+
+5. What should happen when an INF room is first reached?
+mark it with dist+1
+
+6. What is the final result?
+the original grid updated so each empty room stores distance to nearest gate
+4  -1   0
+3   2   1
+-1  3  -1
+```
+
+Code implementation:
+
+```
+from collections import deque
+
+def walls_and_gates(rooms):
+    rows = len(rooms)
+    cols = len(rooms[0])
+
+    queue = deque()
+
+    for r in range(rows):
+        for c in range(cols):
+            if rooms[r][c] == 0:
+                queue.add((r, c, 0))
+
+    while queue:
+        r, c, dist = queue.popleft()
+
+        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            nr = r + dr
+            nc = c + dc
+
+            if nr < 0 or nr >= rows or nc < 0 or nc >= cols:
+                continue
+            if rooms[nr][nc] != INF:
+                continue
+
+            rooms[nr][nc] = dist + 1
+            queue.append((nr, nc, dist + 1))
+
+    return rooms
 ```

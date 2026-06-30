@@ -19,6 +19,13 @@ How much A can see of B's work
 
 ## 1. Read Uncommitted - Dirty Read
 
+Definition:
+
+```
+Reading another transaction's
+uncommitted changes.
+```
+
 Lowest isolation.
 
 Possible:
@@ -49,7 +56,22 @@ B read fake data.
 
 This is called: **Dirty Read**
 
+Bad because:
+
+```
+That data may never exist.
+```
+
 ## 2. Read Committed - Non-repeatable Read
+
+A non-repeatable read means:
+
+```
+The same transaction reads
+the same row twice
+and gets different values
+because another transaction committed changes.
+```
 
 Most common default in many systems.
 
@@ -80,6 +102,14 @@ Same transaction.
 Different result.
 
 This is **Non-repeatable Read**
+
+Bad because:
+
+```
+Your transaction
+no longer has a stable view
+of the data.
+```
 
 ## 3. Repeatable Read - Phantom Read
 

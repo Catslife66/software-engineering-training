@@ -263,3 +263,86 @@ def bfs(node):
                 queue.append(neighbour)
                 visited.add(neighbour)
 ```
+
+## Connected Components
+
+Imagine this graph:
+
+```
+A ----- B      F ----- G
+
+|       |             |
+
+C       D             H
+
+
+E
+```
+
+This is Number of Islands, but without the grid.
+
+Clean mapping:
+
+```
+Graph connected component = island
+Node = land cell
+Edge = connection between land cells
+Outer loop = scan every possible start
+DFS = consume one connected group
+count += 1 = found a new group
+```
+
+So the structure is:
+
+```
+for node in graph:
+    if node not in visited:
+        count += 1
+        dfs(node)
+```
+
+Key idea:
+
+```
+One DFS explores one connected component.
+One count increment happens per new component.
+```
+
+## Code Skeleton
+
+Concept:
+
+```
+1. What does dfs(node) represent?
+Explore every node in the connected component containing node.
+2. What does visited represent?
+the nodes that have been explored
+3. Why does count += 1 happen before dfs(node)?
+If this node is not visited,
+it cannot belong to any component we've already explored.
+Therefore it must be the first node of a new connected component.
+```
+
+Code:
+
+```
+def count_components(graph):
+    visited = set()
+    count = 0
+
+    def dfs(node):
+        if node in visited:
+            return
+
+        visited.add(node)
+
+        for neighbour in graph[node]:
+            dfs(neighbour)
+
+    for node in graph:
+        if node not in visited:
+            count += 1
+            dfs(node)
+
+    return count
+```

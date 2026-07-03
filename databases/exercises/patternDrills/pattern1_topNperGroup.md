@@ -1,5 +1,9 @@
 # Pattern 1 — Top N Per Group
 
+“Top 2 customers, keep ties” usually means RANK() <= 2, because it keeps ties within the top 2 positions.
+
+“Top 2 spending levels” means DENSE_RANK() <= 2.
+
 **Dataset**
 
 sales

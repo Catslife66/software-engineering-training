@@ -59,3 +59,13 @@ You've now covered:
 ✅ Specifications
 
 ✅ Dynamic Filtering
+
+```
+Checkpoint 1 — Basic CRUD structure
+Checkpoint 2 — Validation + exception handling
+Checkpoint 3 — JPA relationships
+Checkpoint 4 — transactions
+Checkpoint 5 — pagination/specifications
+Checkpoint 6 — optimistic locking
+Checkpoint 7 — security
+```

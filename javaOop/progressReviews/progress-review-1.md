@@ -50,10 +50,20 @@ Topics:
   - custom exceptions
 
 - Spring Security
-  - JWT filter chain
-  - authentication provider
-  - authorization config
-  - security context
+  - Security filter chain
+  - Authentication
+  - Authorization
+  - SecurityContext
+
+- Configuration
+  - application.yml
+  - Profiles
+  - Bean configuration
+
+- Testing
+  - Unit tests
+  - Integration tests
+  - MockMvc
 
 - Production Structure
   - config classes

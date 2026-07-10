@@ -52,18 +52,18 @@ Focus:
 - advanced analytics
 - more “aggregate then join back”
 
-| Pattern                                                 |     Level      |
-| ------------------------------------------------------- | :------------: |
-| GROUP BY / HAVING                                       |   ✅ Strong    |
-| Aggregate → Join Back                                   |   ✅ Strong    |
-| Window Functions                                        |   ✅ Strong    |
-| Ranking                                                 |   ✅ Strong    |
-| Running Totals                                          |   ✅ Strong    |
-| LAG()                                                   |   ✅ Strong    |
-| Consecutive Rows / Streaks                              |   ✅ Strong    |
-| Self Joins                                              |    🟢 Good     |
-| Latest Row Per Entity                                   | 🟡 In progress |
-| Advanced Window Functions (`LEAD`, `FIRST_VALUE`, etc.) |    🔜 Next     |
+| Pattern                   |    Level     |
+| ------------------------- | :----------: |
+| GROUP BY / HAVING         | 🟢 Excellent |
+| Conditional Aggregation   | 🟢 Excellent |
+| Aggregate → Join Back     | 🟢 Excellent |
+| ROW_NUMBER()              | 🟢 Excellent |
+| RANK / DENSE_RANK         | 🟢 Excellent |
+| LAG / LEAD                | 🟢 Excellent |
+| Streaks / Gaps & Islands  |  🟢 Strong   |
+| Latest Row per Entity     | 🟢 Excellent |
+| Self Join                 |   🟢 Good    |
+| Mixed Pattern Recognition | 🟢 Excellent |
 
 ## Phase 2 — Real-world Reporting SQL
 
@@ -80,19 +80,3 @@ Focus:
 - query planner deeper
 - indexing internals
 - storage engines
-
-Advanced Aggregate → Join Back
-
-3-4 drills
-
-Window Function Completion
-
-2-3 drills
-
-Pattern Refresh Round
-
-15-20 mixed questions
-
-Total:
-
-~25-35 drills

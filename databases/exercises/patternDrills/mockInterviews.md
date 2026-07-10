@@ -173,3 +173,57 @@ SELECT salesperson,
        latest_sale - first_sale AS difference
 FROM first_lastest_sales;
 ```
+
+## Drill 4
+
+**Dataset**
+
+transactions
+
+| transaction_id | user_id | type       | amount |
+| -------------: | ------: | ---------- | -----: |
+|              1 |       1 | deposit    |    100 |
+|              2 |       1 | withdrawal |     40 |
+|              3 |       1 | deposit    |     60 |
+|              4 |       2 | withdrawal |     20 |
+|              5 |       2 | deposit    |    200 |
+|              6 |       3 | withdrawal |     50 |
+
+Question
+
+Return each user’s:
+
+| user_id | deposit_total | withdrawal_total | net_amount |
+| ------: | ------------: | ---------------: | ---------: |
+
+Where:
+
+net_amount = deposit_total - withdrawal_total
+
+```
+WITH user_transaction AS (
+  SELECT user_id,
+         SUM(
+             CASE
+                 WHEN type = 'deposit'
+                 THEN amount
+                 ELSE 0
+             END
+         ) AS deposit_total,
+         SUM(
+             CASE
+                 WHEN type = 'withdrawal'
+                 THEN amount
+                 ELSE 0
+             END
+         ) AS withdrawal_total
+  FROM transactions
+  GROUP BY user_id
+)
+SELECT user_id,
+       deposit_total,
+       withdrawal_total,
+       deposit_total - withdrawal_total AS net_amount
+FROM user_transaction
+ORDER BY user_id;
+```

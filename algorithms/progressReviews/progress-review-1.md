@@ -1,62 +1,74 @@
-## Phase 1 — Binary Search
+## Stage 1 — Arrays & Hashing
 
-Current Level: 🟢 Stable Beginner
+After learning those concepts:
 
-You can now reason about:
+- Two Sum
+- Contains Duplicate
+- Valid Anagram
+- Group Anagrams
+- Top K Frequent Elements
 
-- left/right boundary movement
-- first/last occurrence
-- insertion position
-- why loops terminate
-- how equality changes search behavior
+## Stage 2 — Two Pointers
 
-## Phase 2 — Tree Recursion
+Then:
 
-Current Level: 🟢 Strong Beginner
+- Valid Palindrome
+- Two Sum II
+- Squares of a Sorted Array
 
-This was your biggest improvement so far.
+## Stage 3 — Sliding Window
 
-You now understand:
+Then:
 
-### ✅ Bottom-up recursion
+- Best Time to Buy and Sell Stock
+- Longest Substring Without Repeating Characters
+- Permutation in String
 
-Examples:
+## Stage 4 — Stack
 
-- tree height
-- max value
-- sum/count problems
-- min/max depth
-- path sum aggregation
+Then:
 
-### ✅ Top-down recursion
+- Valid Parentheses
+- Min Stack
+- Daily Temperatures
 
-Examples:
+## Stage 5 — Binary Search
 
-- path sum tracking
-- root-to-leaf accumulation
-- currentSum passing
+Then:
 
-### ✅ Backtracking in trees
+- Binary Search
+- Search Insert Position
+- First Bad Version
 
-Examples:
+## Stage 6 — Trees
 
-- collect all paths
-- path filtering
-- path validation
+Then:
 
-### ✅ Important conceptual milestones
+- Maximum Depth of Binary Tree
+- Same Tree
+- Invert Binary Tree
 
-| Concept                        | Status               |
-| ------------------------------ | -------------------- |
-| mutable vs immutable           | 🟢                   |
-| append/pop ownership           | 🟢                   |
-| path.copy() necessity          | 🟢                   |
-| recursion style classification | 🟢 improving         |
-| top-down vs bottom-up          | 🟡 still stabilizing |
-| cleanup timing                 | 🟢                   |
+## Stage 7 — DFS Grid
 
-## Phase 3 — General DFS / Backtracking
+Then:
 
-Current Level: 🟡 Early Intermediate Transition
+- Flood Fill
+- Number of Islands
+- Max Area of Island
+- Island Perimeter
 
-This is where you currently are.
+## Stage 8 — BFS Grid
+
+Then:
+
+- Rotting Oranges
+- 01 Matrix
+- Walls and Gates (if available on your platform)
+
+## Stage 9 — Graphs
+
+- Find if Path Exists in Graph
+- Number of Connected Components (or equivalent)
+- Clone Graph
+- Course Schedule
+- Course Schedule II

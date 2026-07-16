@@ -523,17 +523,81 @@ def dfs(node):
     return clone
 ```
 
-Valid Path
-Base-case return: if current is the target, returns true
-Recursive return: Asking its neighbour if they are reachable to the target  
-Stored information: visited
-Final failure return: false
+## Directed Cycle Detection
 
-Clone Graph
-Base-case return: cloned node
-Recursive return: cloned all neighbouring nodes and attach them to current cloned node
-Stored information: clones
-Final return: the current cloned node
+Imagine this graph:
+
+```
+A → B → C
+    ↑     |
+    └─────┘
+```
+
+- Visited = nodes we've discovered at least once.
+- Call stack = DFS calls that are still active and haven't returned yet.
+
+Walkthrough:
+
+dfs(A)
+
+```
+visited: {A}
+Call Stack:
+
+┌─────────┐
+│ dfs(A)  │
+└─────────┘
+```
+
+dfs(B)
+
+```
+visited: {A, B}
+Call Stack:
+┌─────────┐
+│ dfs(B)  │   ← currently executing
+├─────────┤
+│ dfs(A)  │   ← waiting
+└─────────┘
+```
+
+Both A and B are still "active."
+
+dfs(C)
+
+```
+visited: {A, B, C}
+
+Call stack:
+┌─────────┐
+│ dfs(C)  │ ← running
+├─────────┤
+│ dfs(B)  │
+├─────────┤
+│ dfs(A)  │
+└─────────┘
+
+```
+
+Now C sees an edge: C -> B, Should that immediately tell us we've found a cycle?
+
+Yes, because B is visited and on current call stack
+
+Visualise it
+
+```
+Enter node
+    ↓
+visited.add(node)
+    ↓
+path.add(node)
+    ↓
+Explore neighbours
+    ↓
+path.remove(node)
+    ↓
+Return
+```
 
 ## Undirected Cycle Detection
 
@@ -746,7 +810,8 @@ We added one more invariant.
 | Graph DFS            | DFS       | visited                           |
 | Graph BFS            | BFS       | queue = discovered, not processed |
 | Connected Components | DFS       | outer loop + count                |
-| Cycle Detection      | DFS       | parent                            |
+| Undirected Cycle     | DFS       | parent                            |
+| Directed Cycle       | DFS       | visited + path                    |
 
 ## Your Graph Toolbox
 

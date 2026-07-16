@@ -42,9 +42,9 @@ The order I recommend is:
 - Graph BFS
 - Reachability
 - Connected Components
+- Clone Graph
 - Cycle Detection (Undirected)
 
-⏳ Clone Graph
 ⏳ Directed Cycle Detection
 ⏳ Course Schedule (DFS version)
 

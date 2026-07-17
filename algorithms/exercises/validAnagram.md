@@ -41,3 +41,7 @@ class Solution:
 
         return True
 ```
+
+## What “anagram” means
+
+Two words are anagrams when they contain exactly the same characters with exactly the same frequencies, but possibly in a different order.

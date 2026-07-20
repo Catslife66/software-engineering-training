@@ -27,15 +27,16 @@ if the num is in seen update its value to the latest index
 
 ## 451 — Sort Characters By Frequency (Medium)
 
-Pattern Family:
+Pattern Family: map lookup
 
 What is my dictionary key?
+letter
 
 What is my dictionary value?
+frequency
 
-After counting frequencies...
-
-...what still needs to happen?
+After counting frequencies, what still needs to happen?
+sort the key by their frenquency
 
 I'm stuck at dont know how to reorder the map based on the character frequency.
 Once it's reordered, i just need to concat char\*freq into a full string.

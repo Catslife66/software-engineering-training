@@ -71,6 +71,8 @@ But the meaning of the queue has changed.
 | Graph BFS        | Discovered but unprocessed nodes            |
 | Topological Sort | Nodes whose prerequisites are all satisfied |
 
+## Kahn’s Algorithm
+
 Graph:
 
 ```

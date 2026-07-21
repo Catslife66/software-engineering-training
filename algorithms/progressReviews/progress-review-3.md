@@ -36,7 +36,7 @@ The order I recommend is:
 - Directed vs Undirected
 - Trees are special graphs
 
-### Module 2 — BFS & DFS on General Graphs (Now)
+### Module 2 — BFS & DFS on General Graphs (Completed)
 
 - Graph DFS
 - Graph BFS
@@ -44,9 +44,8 @@ The order I recommend is:
 - Connected Components
 - Clone Graph
 - Cycle Detection (Undirected)
-
-⏳ Directed Cycle Detection
-⏳ Course Schedule (DFS version)
+- Directed Cycle Detection
+- Course Schedule (DFS version)
 
 ### Module 3 — Topological Sort
 

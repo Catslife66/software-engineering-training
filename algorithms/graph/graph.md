@@ -599,6 +599,103 @@ path.remove(node)
 Return
 ```
 
+Solution:
+
+```
+1. What is our state?
+Node
+2. What does dfs(node) represent?
+Checks whether a directed cycle can be found starting from this node.
+3. What is the contract?
+Starting from this node, can I reach a node already on the current DFS path?
+4. What should dfs(node) return?
+True  → a cycle was found
+False → no cycle was found from this node
+5. What information do we need to remember?
+visited → nodes explored at some point
+path    → nodes whose DFS calls are currently active
+6. What is the base case?
+if node in path:
+    return True
+if node in visited:
+    return False
+```
+
+Code skeleton:
+
+```
+def dfs(node):
+    if node in path:
+        return True
+
+    if node in visited:
+        return False
+
+    visited.add(node)
+    path.add(node)
+
+    for neighbour in graph[node]:
+        if dfs(neighbour):
+            return True
+
+    path.remove(node)
+    return False
+```
+
+## Course Schedule
+
+Suppose
+
+```
+numCourses = 4
+prerequisites = [
+    [1, 0],
+    [2, 0],
+    [3, 1]
+]
+```
+
+Code implementation:
+
+```
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        graph = {course: [] for course in range(numCourses)}
+
+        for course, prerequisite in prerequisites:
+            graph[prerequisite].append(course)
+
+        visited = set()
+        path = set()
+
+        # dfs(node) answers: “Is there a cycle?”
+
+        def dfs(node):
+            if node in path:
+                return True
+
+            if node in visited:
+                return False
+
+            visited.add(node)
+            path.add(node)
+
+            for neighbour in graph[node]:
+                if dfs(neighbour):
+                    return True
+
+            path.remove(node)
+            return False
+
+        # canFinish() answers: “Can all courses be completed?”
+
+        for course in range(numCourses):
+            if dfs(course):
+                return False
+
+        return True
+```
+
 ## Undirected Cycle Detection
 
 > Cycle detection is basically DFS plus one extra piece of information.

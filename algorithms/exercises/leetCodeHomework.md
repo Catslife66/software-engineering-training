@@ -60,34 +60,32 @@ Why do I only store the FIRST occurrence?
 
 ## 599 — Minimum Index Sum of Two Lists (Easy)
 
-Pattern Family: hashmap
+```
+class Solution:
+    def findRestaurant(self, list1: List[str], list2: List[str]) -> List[str]:
+        idx_min = float('inf')
+        list1_map = {}
 
-What information belongs in the dictionary?
-word maps to its index
+        for i in range(len(list1)):
+            list1_map[list1[i]] = i
 
-Why only one list goes into the dictionary?
-can access to list2 index of each word by literating a for loop
+        string_list = []
+        for i in range(len(list2)):
+            if list2[i] in list1_map:
+                idx_sum = i + list1_map[list2[i]]
+                if idx_min > idx_sum:
+                    idx_min = idx_sum
+                    # clear out old result
+                    string_list = [list2[i]]
+                elif idx_sum == idx_min:
+                    string_list.append(list2[i])
+
+        return string_list
+```
 
 ## 594 — Longest Harmonious Subsequence
 
 You’ll use frequencies again.
-
-nums = [1,3,2,2,5,2,3,7]
-
-{
-1: 1,
-3: 2,
-2: 3,
-5: 1,
-7: 1
-}
-
-{
-1: 1,
-2: 1,
-3: 1,
-4: 1
-}
 
 Before coding:
 
@@ -97,12 +95,41 @@ Before coding:
 3. After building the dictionary…
    what information are you searching for?
 
-## 359 — Logger Rate Limiter
+I actually used a different method - sliding window. I sorted the list and use left/right arrow to shrink/expand the window.
 
-This is a wonderful hash map design exercise.
+Sliding window
 
-Don’t worry if you can’t submit it (it’s on a design platform rather than the main LeetCode list).
+```
+class Solution:
+    def findLHS(self, nums: List[int]) -> int:
+        sorted_nums = sorted(nums)
 
-Think about:
+        left = 0
+        longest = 0
 
-What should the dictionary store?
+        for right in range(len(sorted_nums)):
+
+            while sorted_nums[right] - sorted_nums[left] > 1:
+                left += 1
+            if sorted_nums[right] - sorted_nums[left] == 1:
+                longest = max(longest, right - left + 1)
+
+        return longest
+```
+
+Hashmap
+
+```
+class Solution:
+    def findLHS(self, nums: List[int]) -> int:
+        freq = {}
+        for num in nums:
+            freq[num] = freq.get(num, 0) + 1
+
+        longest = 0
+        for num in nums:
+            if (num + 1) in freq:
+                longest = max(longest, freq[num] + freq[num+1])
+
+        return longest
+```

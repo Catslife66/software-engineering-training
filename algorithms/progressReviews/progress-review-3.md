@@ -24,10 +24,6 @@ You now understand:
 
 ## Phase 3 — Graph Algorithms (Current)
 
-This is where I’d like to take you next.
-
-The order I recommend is:
-
 ### Module 1 — Graph Representation (Completed)
 
 - Adjacency List
@@ -49,17 +45,12 @@ The order I recommend is:
 
 ### Module 3 — Topological Sort
 
-- Kahn's Algorithm
-- In-degree
 - Dependency Graphs
+- In-degree
+- Kahn’s Algorithm
 - Cycle Detection using Topological Sort
-
-Still to do:
-
-⏳ Implement from memory
-⏳ Solve Course Schedule I
-⏳ Solve Course Schedule II
-⏳ Build Order variations
+- Course Schedule I (detect whether a valid ordering exists)
+- Course Schedule II (produce one valid ordering)
 
 ### Module 4 — Weighted Graphs
 

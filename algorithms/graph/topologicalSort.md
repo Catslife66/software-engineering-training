@@ -71,7 +71,41 @@ But the meaning of the queue has changed.
 | Graph BFS        | Discovered but unprocessed nodes            |
 | Topological Sort | Nodes whose prerequisites are all satisfied |
 
-## Kahn’s Algorithm
+## This is another invariant
+
+**Graph BFS**
+
+Invariant:
+
+```
+Every node in the queue
+has been discovered
+but not processed.
+```
+
+**Topological Sort**
+
+Invariant:
+
+```
+Every node in the queue
+has indegree = 0.
+```
+
+or, in plain English:
+
+```
+Every node in the queue
+has no unfinished prerequisites.
+```
+
+## Kahn’s Algorithm - Course Schedule I
+
+_Can I finish all courses?_
+
+```
+Kahn’s Algorithm repeatedly processes tasks whose dependencies have all been satisfied. Completing a task satisfies one dependency for every task that depends on it, which may make additional tasks ready to process. This continues until no more tasks are ready. If every task is processed, the dependency graph is valid. If some tasks remain, they are waiting on each other through a dependency cycle, so no valid ordering exists.
+```
 
 Graph:
 
@@ -185,68 +219,69 @@ Algorithms
 
 And that's a valid topological ordering.
 
-## This is another invariant
-
-**Graph BFS**
-
-Invariant:
+Kahn’s Algorithm needs three core structures:
 
 ```
-Every node in the queue
-has been discovered
-but not processed.
+1. adjacency list
+2. in-degree count
+3. queue
 ```
 
-**Topological Sort**
-
-Invariant:
-
-```
-Every node in the queue
-has indegree = 0.
-```
-
-or, in plain English:
-
-```
-Every node in the queue
-has no unfinished prerequisites.
-```
-
-## Code Skeleton
+Code Skeleton
 
 ```
 from collections import deque
+from typing import List
 
-def topo_sort(graph):
-    indegree = {}
 
-    for node in graph:
-        indegree[node] = 0
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        graph = [[] for _ in range(numCourses)]
+        indegree = [0] * numCourses
 
-    for node in graph:
-        for neighbour in graph[node]:
-            indegree[neighbour] += 1
+        for course, prerequisite in prerequisites:
+            graph[prerequisite].append(course)
+            indegree[course] += 1
 
-    queue = deque()
+        queue = deque()
 
-    for node in graph:
-        if indegree[node] == 0:
-            queue.append(node)
+        for course in range(numCourses):
+            if indegree[course] == 0:
+                queue.append(course)
 
-    result = []
+        processed = 0
 
-    while queue:
-        node = queue.popleft()
-        result.append(node)
+        while queue:
+            course = queue.popleft()
+            processed += 1
 
-        for neighbour in graph[node]:
-            indegree[neighbour] -= 1
+            for next_course in graph[course]:
+                indegree[next_course] -= 1
 
-            if indegree[neighbour] == 0:
-                queue.append(neighbour)
+                if indegree[next_course] == 0:
+                    queue.append(next_course)
 
-    return result
+        return processed == numCourses
+```
+
+## Course Schedule II
+
+_If I can finish them, what order should I take them?_
+
+Code Invariant
+
+```
+order = []
+
+...
+while queue:
+    course = queue.popleft()
+    order.append(course)
+    processed += 1
+
+...
+
+return order if len(order) == numCourses else []
 ```
 
 ## Cycle Detection in Topological Sort

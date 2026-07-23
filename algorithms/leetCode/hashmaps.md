@@ -1,3 +1,5 @@
+# State Design with HashMaps
+
 ## 290 — Word Pattern (Easy)
 
 Pattern Family: Hash Map / Bidirectional Mapping
@@ -26,19 +28,21 @@ if the num is in seen update its value to the latest index
 
 ## 451 — Sort Characters By Frequency (Medium)
 
-Pattern Family: hash map
+```
+class Solution:
+    def frequencySort(self, s: str) -> str:
+        s_map = {}
+        for char in s:
+            s_map[char] = s_map.get(char, 0) + 1
 
-What is my dictionary key?
-letter
+        sorted_s = sorted(s_map.items(), key=lambda x: x[1], reverse=True)
 
-What is my dictionary value?
-frequency
+        str = ""
+        for char, freq in sorted_s:
+            str += char * freq
 
-After counting frequencies, what still needs to happen?
-sort the key by their frenquency
-
-I'm stuck at dont know how to reorder the map based on the character frequency.
-Once it's reordered, i just need to concat char\*freq into a full string.
+        return str
+```
 
 ## 560 — Subarray Sum Equals K (Medium)
 
@@ -52,11 +56,55 @@ What question am I asking the hash map?
 
 ## 525 — Contiguous Array (Medium)
 
-Pattern Family:
+Given a binary array nums, return the maximum length of a contiguous subarray with an equal number of 0 and 1.
 
-What does my hash map store?
+Example 1:
 
-Why do I only store the FIRST occurrence?
+```
+Input: nums = [0,1]
+Output: 2
+Explanation: [0, 1] is the longest contiguous subarray with an equal number of 0 and 1.
+```
+
+Example 2:
+
+```
+Input: nums = [0,1,0]
+Output: 2
+Explanation: [0, 1] (or [1, 0]) is a longest contiguous subarray with equal number of 0 and 1.
+```
+
+Example 3:
+
+```
+Input: nums = [0,1,1,1,1,1,0,0,0]
+Output: 6
+Explanation: [1,1,1,0,0,0] is the longest contiguous subarray with equal number of 0 and 1.
+```
+
+```
+class Solution:
+    def findMaxLength(self, nums: List[int]) -> int:
+        first_index = {0: -1}
+        longest = 0
+        running_total = 0
+
+        for i, num in enumerate(nums):
+            if num == 0:
+                running_total -= 1
+            else:
+                running_total += 1
+
+            if running_total in first_index:
+                longest = max(
+                    longest,
+                    i - first_index[running_total]
+                )
+            else:
+                first_index[running_total] = i
+
+        return longest
+```
 
 ## 599 — Minimum Index Sum of Two Lists (Easy)
 
@@ -84,18 +132,6 @@ class Solution:
 ```
 
 ## 594 — Longest Harmonious Subsequence
-
-You’ll use frequencies again.
-
-Before coding:
-
-1. What is the dictionary key?
-
-2. What is the dictionary value?
-3. After building the dictionary…
-   what information are you searching for?
-
-I actually used a different method - sliding window. I sorted the list and use left/right arrow to shrink/expand the window.
 
 Sliding window
 

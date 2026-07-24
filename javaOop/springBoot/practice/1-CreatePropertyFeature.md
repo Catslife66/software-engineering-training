@@ -374,6 +374,8 @@ public interface PropertyRepository
 
 ## 6. Controller
 
+| - controller/PropertyController.java
+
 ```
 @RestController
 @RequestMapping("/properties")

@@ -124,7 +124,7 @@ public class GlobalExceptionHandler {
     }
 
     // catch invalid UUID request
-    ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, Object>> handleTypeMismatch(
             MethodArgumentTypeMismatchException exception
     ) {

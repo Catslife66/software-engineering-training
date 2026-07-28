@@ -245,3 +245,9 @@ best_cost = {
 }
 min_heap = []
 ```
+
+## Bellman-Ford
+
+With non-negative weights, any route that continues through another node can only become more expensive.
+
+With a negative edge, a later route can suddenly reduce the cost.

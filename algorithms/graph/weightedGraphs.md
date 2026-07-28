@@ -78,6 +78,33 @@ best_cost = {
 min_heap = [(3, "B"), (100, "B")]
 ```
 
+Concept
+
+```
+Problem:
+Find the minimum-cost path from a start node to every other node.
+
+State:
+best_cost[node]
+The best known cost from the start to every node.
+
+Frontier:
+Discovered nodes whose shortest path has not yet been finalised. / Candidates waiting to be explored.
+
+Data Strucure:
+Priority Queue
+Always gives us the cheapest discovered route next.
+
+Initialisation:
+everyone else = ∞
+
+Update rule:
+update the cost if a cheaper cost
+
+Invariant:
+Once a node leaves the priority queue, no cheaper path to that node can ever be found.
+```
+
 Code Skeleton
 
 ```

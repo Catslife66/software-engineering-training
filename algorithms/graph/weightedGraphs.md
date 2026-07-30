@@ -136,118 +136,87 @@ def dijkstra(graph, start):
     return best_cost
 ```
 
-## Drill
-
-Graph:
-
-```
-        4
-    A ------ B
-    |        |
-  2 |        | 5
-    |        |
-    C ------ D
-      1    8
-```
-
-Adjecency list:
-
-```
-graph = {
-    "A": [("B", 4), ("C", 2)],
-    "B": [("D", 5)],
-    "C": [("B", 1), ("D", 8)],
-    "D": []
-}
-```
-
-Start node:
-
-```
-A
-```
-
-```
-Process A:
-For B:
-best_cost = {
-    "A": 0,
-    "B": 4,
-    "C": ,
-    "D":
-}
-min_heap = [(4, "B")]
-
-For C:
-best_cost = {
-    "A": 0,
-    "B": 4,
-    "C": 2,
-    "D":
-}
-min_heap = [(2, "C"), (4, "B")]
-
-Process C:
-For B:
-best_cost = {
-    "A": 0,
-    "B": 3,
-    "C": 2,
-    "D":
-}
-min_heap = [(3, "B"), (4, "B")]
-
-For D:
-best_cost = {
-    "A": 0,
-    "B": 3,
-    "C": 2,
-    "D": 10
-}
-min_heap = [(3, "B"), (4, "B"), (10, "D")]
-
-Process B:
-best_cost = {
-    "A": 0,
-    "B": 3,
-    "C": 2,
-    "D": 8
-}
-min_heap = [(4, "B"), (8, "D"), (10, "D")]
-
-Process B:
-skip
-best_cost = {
-    "A": 0,
-    "B": 3,
-    "C": 2,
-    "D": 8
-}
-min_heap = [(8, "D"), (10, "D")]
-
-Process D:
-skip
-best_cost = {
-    "A": 0,
-    "B": 3,
-    "C": 2,
-    "D": 8
-}
-min_heap = [(10, "D")]
-
-Process D:
-skip
-best_cost = {
-    "A": 0,
-    "B": 3,
-    "C": 2,
-    "D": 8
-}
-min_heap = []
-```
-
 ## Bellman-Ford
 
 With non-negative weights, any route that continues through another node can only become more expensive.
 
 With a negative edge, a later route can suddenly reduce the cost.
+
+Graph:
+
+```
+        5
+    A ------> B
+    |         |
+   2|         |1
+    |         |
+    v         v
+    C ------> D
+        4
+
+edge list:
+1. B → D
+2. C → D
+3. A → B
+4. A → C
+
+A pass is:
+Read edge 1
+↓
+Read edge 2
+↓
+Read edge 3
+↓
+Read edge 4
+```
+
+Concept
+
+```
+Problem:
+Find the minimum-cost path from a start node to every other node.
+
+Optimisation Objective:
+Minimise total path cost.
+
+State:
+best_cost[node]
+The best known cost from the start to every node.
+
+Initialisation:
+A = 0
+B = ∞
+C = ∞
+D = ∞
+
+Update Rule
+Same relaxation in Dijkstra
+
+
+Termination rule:
+If an entire pass produces no updates,
+all reachable shortest-path costs are settled.
+```
+
+**Why does Bellman-Ford detect negative cycles?**
+
+This is something Dijkstra cannot do.
+
+Graph:
+
+```
+        4
+    A ------> B
+    ^         |
+    |         |
+   -6         | 1
+    |         |
+    |         v
+    C <-------
+        1
+
+Edges:
+A → B = 4
+B → C = 1
+C → A = -6
+```

@@ -548,3 +548,19 @@ Second, making the field private provides encapsulation, but it does not guarant
 
 Because processedOrders++ is a read-modify-write operation rather than one guaranteed atomic operation, thread execution may interleave and cause lost updates. We should therefore decide whether the counter is needed at all, whether it can be stored outside the shared service, or whether concurrent updates require an appropriate thread-safe coordination mechanism.
 ```
+
+```
+Where is the state?
+↓
+Is it shared?
+↓
+Can it change?
+↓
+Who reads it?
+↓
+Who writes it?
+↓
+Could concurrent execution violate a business invariant?
+↓
+Now let's discuss solutions.
+```

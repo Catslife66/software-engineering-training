@@ -66,6 +66,8 @@ We'll revisit:
 
 - Queues
 
+- Backpressure
+
 But much deeper.
 
 ## Phase D — Distributed Thinking
@@ -85,6 +87,10 @@ Then we revisit:
 - Distributed Locks
 
 - Idempotency
+
+- Event-Driven Systems
+
+- Message Brokers
 
 ## Phase E — Infrastructure
 
@@ -119,3 +125,42 @@ Instead:
 I'll become your tech lead.
 
 You'll become the backend engineer.
+
+## Training Map
+
+1. Engineer Pattern Recognition
+
+Total: 8 code reviews
+
+Goal:
+
+```
+What state exists?
+↓
+Is it shared?
+↓
+Is it mutable?
+↓
+Who reads and writes it?
+↓
+Can concurrent activity interfere?
+```
+
+2. Business Invariants
+
+Total: 6 design questions
+
+The goal is to stop thinking only about variables and start asking:
+
+What fact must always remain true for the business?
+
+3. Deadlocks
+
+Total: 8 exercises
+
+The structure will be:
+
+- 2 concept exercises
+- 3 code reviews
+- 2 design discussions
+- 1 final diagnosis exercise

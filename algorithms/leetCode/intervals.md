@@ -27,6 +27,8 @@ What am I writing?
 
 Walkthrough - 283.Move Zeros:
 
+nums = [0, 1, 0, 3, 12]
+
 ```
 State Variable 1:
 Name: read
@@ -40,6 +42,14 @@ Responsibility: The position where the next non-zero should be written.
 Moves when: A non-zero has just been written.
 Stops when: There are no more elements to read.
 
+nums[0:write] contains all non-zero values found so far, in their original order.
+
+nums[write:read] contains processed positions whose old values are no longer important.
+This is the disposable region.
+Because every useful non-zero value discovered so far has already been copied into: nums[0:write]
+
+nums[read:] contains the elements not yet processed.
+
 Phase 1: compress non-zero values left
 write = 0
 
@@ -52,6 +62,13 @@ Phase 2: fill the rest with zeroes
 while write < len(nums):
     nums[write] = 0
     write += 1
+```
+
+Visually:
+
+```
+| preserved non-zero values | disposable processed area | unread area |
+0                         write                     read
 ```
 
 ## Pointer Pattern 2 — Start / Read
@@ -237,4 +254,24 @@ or
 
 
 6. Only now write code.
+```
+
+## Engineer Habit
+
+```
+Problem
+↓
+What information will the final answer contain?
+↓
+Where does that information live right now?
+↓
+What information is finished?
+↓
+What information is still changing?
+↓
+What information can be forgotten?
+↓
+Now choose state variables.
+↓
+Only now introduce pointers.
 ```

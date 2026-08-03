@@ -196,7 +196,8 @@ It is an instance field, so every method executing on the same object accesses t
 It is mutable.
 
 4. Does anything immediately catch your attention?
-   Who modifies it.
+
+Who modifies it.
 
 Pattern:
 

@@ -235,12 +235,19 @@ C = ∞
 D = ∞
 
 Update Rule:
+candidate = best_cost[from_node] + weight
+if it's cheaper, best_cost[to_node] = candidate
 Same relaxation in Dijkstra
 
 Termination rule:
-If an entire pass produces no updates,
-all reachable shortest-path costs are settled.
+Early stop
+A whole pass makes no changes.
+or
+After number_of_nodes - 1 passes
+All shortest paths have had enough passes to propagate.
 
+Invariant:e
+After the k-th pass, every shortest path that uses at most k edges has been discovered.
 ```
 
 **Why does Bellman-Ford detect negative cycles?**
@@ -369,4 +376,58 @@ def bellman_ford(number_of_nodes, edges, start):
 
         if not changed:
             break
+```
+
+## Bellman-Ford Negative Cycle Detection
+
+After at most (number_of_nodes - 1) passes, evert ordinary shortest path should already be reflected in best_cost.
+
+So we perform **one extra scan of the entire edge list**.
+
+During this extra scan, if any edge still can product a cheaper cost, the costs have not stabilised.
+
+A reachable negative cycle exists.
+
+Code skeleton:
+
+```
+def bellman_ford(number_of_nodes, edges, start):
+
+    best_cost = {
+        node: float("inf")
+        for node in range(number_of_nodes)
+    }
+    best_cost[start] = 0
+
+    # Normal passes
+    for _ in range(number_of_nodes - 1):
+
+        changed = False
+
+        for from_node, to_node, weight in edges:
+
+            if best_cost[from_node] == float("inf"):
+                continue
+
+            candidate = best_cost[from_node] + weight
+
+            if candidate < best_cost[to_node]:
+                best_cost[to_node] = candidate
+                changed = True
+
+        if not changed:
+            break
+
+    # One extra pass
+    for from_node, to_node, weight in edges:
+
+        if best_cost[from_node] == float("inf"):
+            continue
+
+        candidate = best_cost[from_node] + weight
+
+        if candidate < best_cost[to_node]:
+            return None      # Negative cycle detected
+
+    return best_cost
 ```

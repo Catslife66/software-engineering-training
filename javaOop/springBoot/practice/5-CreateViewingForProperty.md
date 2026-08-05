@@ -136,6 +136,8 @@ public class ViewingService {
 
 ## Step 5 - Controller
 
+|- controller/ViewingController.java
+
 ```
 @RestController
 public class ViewingController{

@@ -270,3 +270,57 @@ public class GlobalExceptionHandler {
     }
 }
 ```
+
+### OptimisticLockFailure
+
+For optimistic locking:
+
+```
+Hibernate throws it
+↓
+@Transactional sees it
+↓
+@Transactional rolls back
+↓
+Doesn't handle it
+↓
+Spring MVC catches it
+↓
+GlobalExceptionHandler converts it
+```
+
+The complete pipeline
+
+```
+Controller
+      │
+      ▼
+@Transactional Service
+      │
+      ▼
+Hibernate
+      │
+      ▼
+Database
+      │
+      ▼
+Optimistic lock failure
+      │
+      ▼
+Hibernate throws ObjectOptimisticLockingFailureException
+      │
+      ▼
+@Transactional marks transaction rollback
+      │
+      ▼
+Exception continues upward
+      │
+      ▼
+Spring catches exception
+      │
+      ▼
+GlobalExceptionHandler
+      │
+      ▼
+409 Conflict
+```

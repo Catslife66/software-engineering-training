@@ -67,28 +67,121 @@ propertyRepository.save(property)
 Cascade means:
 
 ```
-When I perform an operation on parent,
-also perform it on related children.
+When I perform an operation on the parent entity,
+should that operation automatically apply to the related child entities?
 ```
 
-Example:
+For:
 
 ```
-@OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
-private List<Viewing> viewings;
+Property → Viewings
 ```
 
-This would mean:
+the parent is Property, and the children are Viewing objects.
+
+`CascadeType.PERSIST`
+
+Use case:
 
 ```
-save property
-→ also save viewings
+Property property = new Property(...);
+Viewing viewing = new Viewing(...);
 
-delete property
-→ also delete viewings
+property.addViewing(viewing);
+
+propertyRepository.save(property);
 ```
 
-That can be dangerous if you don’t intend it.
+With:
+
+```
+cascade = CascadeType.PERSIST
+```
+
+saving the new property also saves the new viewing.
+
+```
+persist Property
+→ persist new Viewings
+```
+
+Without it, you may need to save the viewing separately.
+
+`CascadeType.MERGE`
+
+A detached parent and its detached children are merged back into the persistence context.
+
+Conceptually:
+
+```
+merge Property
+→ merge related Viewings
+```
+
+This matters more when using detached entities and EntityManager.merge().
+
+In ordinary Spring Data JPA code, `save()` may internally use merge for existing detached entities.
+
+`CascadeType.REMOVE`
+
+Use case:
+
+```
+propertyRepository.delete(property);
+```
+
+With:
+
+```
+cascade = CascadeType.REMOVE
+```
+
+Hibernate also deletes all related viewings:
+
+```
+delete Property
+→ delete all its Viewings
+```
+
+This makes sense when viewings cannot exist without a property.
+
+`CascadeType.ALL`
+
+This is shorthand for all cascade operations:
+
+```
+PERSIST
+MERGE
+REMOVE
+REFRESH
+DETACH
+```
+
+So:
+
+```
+cascade = CascadeType.ALL
+```
+
+means that all those parent operations cascade to children.
+
+For a tightly owned relationship like:
+
+```
+Property → Viewings
+```
+
+ALL can be reasonable.
+
+For:
+
+```
+Agent → Properties
+```
+
+`ALL` is dangerous because it includes `REMOVE`.
+
+Deleting an agent could then delete all properties.
 
 ## Better default mindset
 
@@ -154,6 +247,36 @@ Orphan removal answers:
 If I remove a child from the parent’s collection, should that child be deleted from the database?
 ```
 
+It handles this situation:
+
+```
+property.removeViewing(viewing);
+```
+
+The property still exists, but one viewing has been removed from its collection.
+
+With:
+
+```
+orphanRemoval = true
+```
+
+Hibernate deletes that viewing from the database.
+
+```
+Property remains
+Viewing removed from collection
+→ Viewing row deleted
+```
+
+Without orphan removal, Hibernate may instead try to break the relationship by setting:
+
+```
+property_id = null
+```
+
+if the database mapping allows it.
+
 Example:
 
 ```
@@ -161,6 +284,35 @@ order.getItems().remove(item);
 ```
 
 If orphanRemoval = `true`, Hibernate treats that `OrderItem` as no longer belonging to the Order, so it deletes it from the database.
+
+### Where should `orphanRemoval` go?
+
+Only on the parent collection side:
+
+```
+@Entity
+public class Property {
+
+    @OneToMany(
+        mappedBy = "property",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private List<Viewing> viewings = new ArrayList<>();
+}
+```
+
+Do not put it on the Viewing side.
+
+The Viewing side is:
+
+```
+@ManyToOne
+@JoinColumn(name = "property_id", nullable = false)
+private Property property;
+```
+
+`orphanRemoval` belongs to collection-valued parent relationships such as `@OneToMany`.
 
 ### Good use case
 
@@ -199,3 +351,57 @@ orphanRemoval = delete child when parent no longer references it
 ```
 
 Use it only when the child fully depends on the parent’s lifecycle.
+
+`CascadeType.REMOVE` vs `orphanRemoval`
+
+Cascade REMOVE:
+
+```
+Delete the Property
+→ delete all its Viewings
+```
+
+orphanRemoval:
+
+```
+Keep the Property
+but remove one Viewing from its collection
+→ delete that Viewing
+```
+
+```
+Delete Property itself
+→ repository.delete(property)
+
+Delete Property's children automatically
+→ cascade REMOVE on Property.viewings
+
+Delete one Viewing removed from collection
+→ orphanRemoval on Property.viewings
+```
+
+## Important implementation habit
+
+We should not expose the mutable collection directly and rely on callers to manage both sides.
+
+Add helper methods inside `property`:
+
+```
+public void addViewing(Viewing viewing) {
+    viewings.add(viewing);
+    viewing.setProperty(this);
+}
+
+public void removeViewing(Viewing viewing) {
+    viewings.remove(viewing);
+    viewing.setProperty(null);
+}
+```
+
+These methods keep both Java sides consistent:
+
+```
+Property.viewings
+and
+Viewing.property
+```

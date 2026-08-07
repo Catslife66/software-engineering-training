@@ -83,12 +83,12 @@ public class Agent {
         this.email = email;
     }
 
-    public void addProperty(Property property){
+    void addProperty(Property property){
         properties.add(property);
         property.setAgent(this);
     }
 
-    public void removeProperty(Property property){
+    void removeProperty(Property property){
         properties.remove(property);
         properties.setAgent(null);
     }
@@ -134,12 +134,12 @@ public class Property {
 
     ...
 
-    public void addViewing(Viewing viewing){
+    void addViewing(Viewing viewing){
         viewings.add(viewing);
         viewings.setProperty(this);
     }
 
-    public void removeViewing(Viewing viewing){
+    void removeViewing(Viewing viewing){
         viewings.remove(viewing);
         viewings.setProperty(null);
     }

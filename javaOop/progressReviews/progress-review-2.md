@@ -112,3 +112,17 @@ Testing
 MockMvc
 Integration Tests
 ```
+
+Remaining Checkpoint 3 Topics
+
+```
+□ Java Streams implementation
+□ Helper methods refinement
+□ Bidirectional consistency review
+□ Relationship querying
+□ N+1 problem
+□ Fetch Join
+□ EntityGraph
+□ Final implementation review
+□ Checkpoint retrospective
+```

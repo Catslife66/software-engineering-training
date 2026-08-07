@@ -156,3 +156,61 @@ COUNT DISTINCT
 
 SQL Query
 ```
+
+## Welcome to real reporting
+
+From now on, every report we build will start with three questions.
+
+**Question 1**
+
+What is one output row?
+
+(Day? Customer? Product? Month?)
+
+**Question 2**
+
+What business questions are we answering?
+
+For example:
+
+- How busy were we?
+- How much money did we make?
+- How many customers bought something?
+
+**Question 3**
+
+How would we calculate those metrics with a calculator?
+
+Only after answering those three questions do we write SQL.
+
+## A real KPI dashboard
+
+| Metric              | Business Meaning   | Calculator             |
+| ------------------- | ------------------ | ---------------------- |
+| Orders              | Workload           | Count orders           |
+| Customers           | Customer activity  | Count unique customers |
+| Revenue             | Money earned       | Sum amounts            |
+| Average Order Value | Spending per order | Revenue ÷ Orders       |
+| Largest Order       | Biggest purchase   | Maximum amount         |
+
+## Translate to SQL
+
+| order_id | order_date | customer_id | amount |
+| -------- | ---------- | ----------: | -----: |
+
+Return:
+
+| order_date | orders | customers | revenue | avg_order_value | largest_order |
+| ---------- | -----: | --------: | ------: | --------------: | ------------: |
+
+```
+SELECT order_date,
+       COUNT(order_id) AS orders,
+       COUNT(DISTINCT customer_id) AS customers,
+       SUM(amount) AS revenue,
+       ROUND(AVG(amount), 2) AS avg_order_value,
+       MAX(amount) AS largest_order
+FROM orders
+GROUP BY order_date
+ORDER BY order_date;
+```

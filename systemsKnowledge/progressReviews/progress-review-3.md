@@ -128,7 +128,7 @@ You'll become the backend engineer.
 
 ## Training Map
 
-1. Engineer Pattern Recognition
+1. Engineer Pattern Recognition ✅
 
 Total: 8 code reviews
 
@@ -146,7 +146,7 @@ Who reads and writes it?
 Can concurrent activity interfere?
 ```
 
-2. Business Invariants
+2. Business Invariants ✅
 
 Total: 6 design questions
 
@@ -154,7 +154,13 @@ The goal is to stop thinking only about variables and start asking:
 
 What fact must always remain true for the business?
 
-3. Deadlocks
+3. Engineering Trade-offs
+
+Total: about 5–6 exercises
+
+Trade-offs teach you whether you wanted the lock in the first place.
+
+4. Deadlocks
 
 Total: 8 exercises
 

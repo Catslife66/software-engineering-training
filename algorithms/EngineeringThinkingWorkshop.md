@@ -1,6 +1,6 @@
 # Engineering Thinking Workshop
 
-## Module 0 — Foundations
+## Module 0 — Foundations ✅
 
 Goal:
 

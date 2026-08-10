@@ -1,44 +1,243 @@
 # Prefix Invariants
 
-The invariant always describes the answer for the processed prefix.
+**Purpose**
 
-General form:
+Learn the simplest and most common invariant family.
+
+This family appears everywhere:
+
+- Running maximum
+- Running minimum
+- Running sum
+- Running count
+- Running average
+- First occurrence
+- Last occurrence
+- Any?
+- All?
+
+Later, you'll discover that many "easy" LeetCode problems are actually the same idea.
 
 ```
-state
+Invariant:
+State stores the answer for the processed prefix.
 
-=
+Transition:
+Ask: "What event changes that answer?"
 
-correct answer for everything examined so far
+Code:
+Update the state only when that event occurs.
 ```
 
-This family includes:
+## What is a Prefix?
 
-- Maximum
-- Minimum
-- Sum
-- Count
-- Product
-- XOR
-- Average (with more than one state)
-- Running frequency
+Imagine the array is a ruler.
 
-This is actually one of the biggest families of algorithms.
+Initially:
 
-## Running Value
+```
+|------------------------|
+^
+processed
+```
 
-There is always an answer for the processed part.
+After one element:
+
+```
+[7 | 2 9 5 1]
+```
+
+After three:
+
+```
+[7 2 9 | 5 1]
+```
+
+After five:
+
+```
+[7 2 9 5 1 | ]
+```
+
+The processed region always grows from the left.
+
+Engineers call this region:
+
+**The processed prefix**
+
+The remaining part is:
+
+**The unprocessed suffix**
+
+Why "Prefix"?
+
+Because in computer science:
+
+```
+abcdef
+```
+
+Prefixes are:
+
+```
+a
+ab
+abc
+abcd
+abcde
+abcdef
+```
+
+Always from the beginning.
+
+Arrays are the same.
+
+## The first invariant family
+
+Now something beautiful happens.
+
+Suppose the problem is:
+
+```
+Find the maximum.
+```
+
+We already know the invariant:
+
+```
+largest stores the largest value examined so far.
+```
+
+Let's replace:
+
+```
+examined so far
+```
+
+with
+
+```
+processed prefix
+```
+
+Now it becomes:
+
+```
+largest stores the largest value in the processed prefix.
+```
+
+That's exactly the same idea—but with a more precise term.
+
+## The magic sentence
+
+I want you to remember this sentence for the entire module:
+
+> Answer state = correct answer for the processed prefix.
+
+This is the defining characteristic of a Prefix Invariant.
 
 Examples:
 
+Maximum:
+
+```
+largest = maximum of processed prefix
+```
+
+Sum:
+
+```
+sum = sum of processed prefix
+```
+
+Count positives:
+
+```
+count = number of positive values in processed prefix
+```
+
+Contains duplicate:
+
+```
+exists = whether processed prefix contains a duplicate
+```
+
+## Running Extremum
+
+Used for:
+
 - Maximum
 - Minimum
+
+Template:
+
+```
+Problem
+Find an extremum
+↓
+Information
+Current extremum
+↓
+State
+best
+↓
+Invariant
+best stores the extremum of the processed prefix
+↓
+Transition
+If the current element is a better extremum, update best.
+```
+
+| Step         | Minimum                      | Maximum                      |
+| ------------ | ---------------------------- | ---------------------------- |
+| Final Answer | Minimum value                | Maximum value                |
+| Information  | Minimum value                | Maximum value                |
+| State        | Current extremum             | Current extremum             |
+| Invariant    | Extremum of processed prefix | Extremum of processed prefix |
+| Transition   | Current < minimum            | Current > maximum            |
+
+## Running Accumulation
+
+Examples:
+
 - Sum
 - Count
+- Average (later)
 
+Template:
+
+```
+Problem:
+ccount the number of positive numbers
+↓
+Information:
+the number of positive numbers in an array
+↓
+State:
+count
+↓
 Invariant:
+count stores the number of positive numbers of the processed prefix
+↓
+Transition:
+count +1 if current element is a positive number, otherwise do nothing.
+```
 
-State equals the answer for the processed prefix.
+## First / Last Occurrence
+
+Examples:
+
+- First negative
+- Last negative
+- First duplicate
+
+## Boolean Properties
+
+Examples:
+
+- Any positive?
+- All positive?
+- Contains duplicate?
 
 ## First Occurrence
 

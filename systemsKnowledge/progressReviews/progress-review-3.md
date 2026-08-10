@@ -154,9 +154,9 @@ The goal is to stop thinking only about variables and start asking:
 
 What fact must always remain true for the business?
 
-3. Engineering Trade-offs
+3. Engineering Trade-offs ✅
 
-Total: about 5–6 exercises
+Total: 6 exercises
 
 Trade-offs teach you whether you wanted the lock in the first place.
 

@@ -1,4 +1,4 @@
-# Union-Find
+# Minimum Spanning Tree
 
 Sometimes the problem changes, not the graph.
 
@@ -353,7 +353,79 @@ Step 5 — Return
 return mst_edges, total_cost
 ```
 
-## Path Compression
+Walkthrough:
+
+```
+Thinking:
+Look at the entire graph.
+Take the cheapest safe edge.
+
+State:
+parent
+size
+mst_edges
+total_cost
+
+Data Structure:
+Sorted edge list
+Union-Find
+
+Greedy Rule:
+Cheapest edge that connects two different groups.
+```
+
+Code skeleton:
+
+Assume the graph is given as:
+
+```
+edges = [
+    (u, v, weight),
+    ...
+]
+
+def kruskal(nodes, edges):
+
+    edges.sort(key=lambda edge: edge[2])
+
+    parent = {node: node for node in nodes}
+    size = {node: 1 for node in nodes}
+
+    mst_edges = []
+    total_cost = 0
+
+    def find(node):
+        if parent[node] != node:
+            parent[node] = find(parent[node])
+        return parent[node]
+
+    def union(a, b):
+        root_a = find(a)
+        root_b = find(b)
+
+        if root_a == root_b:
+            return
+
+        if size[root_a] < size[root_b]:
+            parent[root_a] = root_b
+            size[root_b] += size[root_a]
+        else:
+            parent[root_b] = root_a
+            size[root_a] += size[root_b]
+
+    for u, v, weight in edges:
+        if find(u) != find(v):
+            mst_edges.append((u, v, weight))
+            total_cost += weight
+            union(u, v)
+
+    return mst_edges, total_cost
+
+```
+
+## Union-Find
+
+### Path Compression
 
 Without it, find("A") follows:
 
@@ -486,7 +558,7 @@ parent = {
 }
 ```
 
-## Union by Size (or Union by Rank)
+### Union by Size (or Union by Rank)
 
 Imagine this sequence
 
@@ -777,6 +849,382 @@ else:
 
 ## Prim's algorithm
 
+Look at the graph again.
+
+Kruskal's thinking
+
+Kruskal says:
+
+> "I don't care where you start."
+
+It looks at **every edge in the graph**.
+
+```
+C-D = 1
+B-C = 2
+A-B = 3
+A-C = 4
+B-D = 5
+```
+
+It simply asks:
+
+```
+"What's the cheapest edge in the whole graph?"
+```
+
+Prim's thinking
+
+Prim says:
+
+> Only choose an edge that expands the current tree by one new node.
+
+Kruskal
+
+```
+Whole graph
+
+✓ Cheapest edge anywhere
+```
+
+It thinks globally.
+
+Prim
+
+```
+Current tree
+
+A
+
+Available edges:
+
+A-B = 3
+A-C = 4
+```
+
+It thinks locally.
+
+We're standing at:
+
+```
+Tree = {A}
+```
+
+Available edges:
+
+```
+A-B = 3
+A-C = 4
+```
+
+So:
+
+```
+A-B = 3
+```
+
+is the **cheapest expanding edge**, so we add it.
+
+Our tree now becomes:
+
+```
+A ----- B
+```
+
+Next available edges:
+
+```
+A-C = 4
+B-C = 2
+B-D = 5
+```
+
+So:
+
+```
+B-C = 2
+```
+
+Our tree now becomes:
+
+```
+A --3-- B --2-- C
+```
+
+the current node set is:
+
+```
+{A, B, C}
+```
+
+Now the only expanding edges are:
+
+```
+B-D = 5
+C-D = 1
+```
+
+So:
+
+```
+C-D = 1
+```
+
+and the tree becomes:
+
+```
+A --3-- B --2-- C --1-- D
+```
+
+Total cost:
+
+```
+3 + 2 + 1 = 6
+```
+
+In Prim, the heap priority is:
+
+```
+cost of the single edge that would connect a new node to the tree
+```
+
+For example:
+
+```
+(2, "B", "C")
+```
+
+means:
+
+```
+Edge B-C costs 2 and could expand our current tree.
+```
+
+Using our fixed graph, after starting at A, the heap initially contains:
+
+```
+[
+    (3, "A", "B"),
+    (4, "A", "C")
+]
+```
+
+Prim pops:
+
+```
+(3, "A", "B")
+```
+
+and our tree becomes:
+
+```
+{A, B}
+```
+
+Now we explore B's neighbours, just like we explored neighbours in Dijkstra.
+
+So we push:
+
+```
+(2, "B", "C")
+(5, "B", "D")
+```
+
+The heap now contains:
+
+```
+(2, "B", "C")
+(4, "A", "C")
+(5, "B", "D")
+```
+
+The heap now contains two edges leading to C.
+
+```
+(2, "B", "C")
+(4, "A", "C")
+```
+
+Dijkstra
+
+The priority queue might contain:
+
+```
+(8, "C")
+(5, "C")
+```
+
+Two entries for the same node. When we pop the old one, we ignore it.
+
+Prim
+
+Now we have:
+
+```
+(4, "A", "C")
+(2, "B", "C")
+```
+
+Two candidate edges for the same node.
+
+We will pop:
+
+```
+(2, "B", "C")
+```
+
+first because it's cheaper.
+
+Then later we'll eventually pop:
+
+```
+(4, "A", "C")
+```
+
+we check:
+
+```
+if C in in_tree:
+    continue
+```
+
+That gives us Prim’s main loop shape:
+
+```
+while heap:
+    weight, from_node, to_node = heapq.heappop(heap)
+
+    if to_node in in_tree:
+        continue
+
+    # accept this edge
+```
+
+The invariant is:
+
+```
+`in_tree` contains exactly the nodes already connected into the current MST.
+```
+
+Once C joins the tree, the new useful edge from C is:
+
+```
+(1, "C", "D")
+```
+
+At that point the heap contains candidates including:
+
+```
+(1, "C", "D")
+(4, "A", "C")
+(5, "B", "D")
+```
+
+The min-heap pops:
+
+```
+(1, "C", "D")
+```
+
+So D joins the tree.
+
+Now all four nodes are in:
+
+```
+{A, B, C, D}
+```
+
+and the chosen MST edges are:
+
+```
+A-B = 3
+B-C = 2
+C-D = 1
+```
+
+Total cost:
+
+```
+6
+```
+
+Prim has produced the same MST as Kruskal, but by a different strategy:
+
+- Kruskal: cheapest safe edge anywhere.
+- Prim: cheapest edge that expands the current tree.
+
+Walkthrough:
+
+```
+Problem:
+Connect every node with minimum total edge cost.
+
+State:
+in_tree
+mst_edges
+total_cost
+heap
+
+Invariant:
+in_tree is always one connected tree, and mst_edges never contains a cycle.
+
+Frontier:
+All candidate edges that could expand the tree.
+
+Greedy rule:
+Take the cheapest expanding edge.
+
+Stale rule:
+If the destination is already in_tree, skip it.
+
+Termination:
+When every reachable node has joined the tree.
+```
+
+Code skeleton:
+
+Assume `graph` is an adjacency list like:
+
+```
+graph = {
+    "A": [("B", 3), ("C", 4)],
+    "B": [("A", 3), ("C", 2), ("D", 5)],
+    "C": [("A", 4), ("B", 2), ("D", 1)],
+    "D": [("B", 5), ("C", 1)]
+}
+
+import heapq
+
+def prim(graph, start):
+    in_tree = set()
+    mst_edges = []
+    total_cost = 0
+
+    heap = [(0, None, start)]
+
+    while heap:
+        weight, from_node, to_node = heapq.heappop(heap)
+
+        if to_node in in_tree:
+            continue
+
+        in_tree.add(to_node)
+
+        if from_node is not None:
+            mst_edges.append((from_node, to_node, weight))
+            total_cost += weight
+
+        for neighbour_node, edge_weight in graph[to_node]:
+            if neighbour_node not in in_tree:
+                heapq.heappush(
+                    heap,
+                    (edge_weight, to_node, neighbour_node)
+                )
+
+    return mst_edges, total_cost
+
+```
+
 ## Summary
 
 State
@@ -837,3 +1285,23 @@ Same graph.
 Same edge list.
 
 Completely different optimisation problem.
+
+**Prim**
+
+What does Prim repeatedly do?
+
+```
+1. Pop the cheapest edge from the heap.
+2. Explore one node's neighbours.
+3. Push new candidate edges into the heap.
+```
+
+**Kruskal**
+
+What does Kruskal repeatedly do?
+
+```
+1. Sort all edges once.
+2. Scan every edge once.
+3. Use Union-Find to decide whether to keep it.
+```

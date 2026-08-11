@@ -62,7 +62,7 @@ You now understand:
 - A\*
 - Bellman-Ford (optional)
 
-### Module 5 — Union-Find (Disjoint Set)
+### Module 5 — Minimum Spanning Tree (Disjoint Set)
 
 - Disjoint Set
 - Path Compression

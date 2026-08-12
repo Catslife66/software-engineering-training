@@ -760,6 +760,33 @@ In JPA, this is often done with:
 JOIN FETCH
 ```
 
+Example:
+
+```
+Property title
++
+Agent name
+```
+
+we can write:
+
+```
+@Query("""
+    SELECT DISTINCT p
+    FROM Property p
+    JOIN FETCH p.agent
+""")
+List<Property> findAllWithAgent();
+```
+
+`DISTINCT` tells JPA that we want unique Property entities in the result.
+
+Then Hibernate can get:
+
+Properties + Agents
+
+with one SQL query rather than lazily querying agents afterwards.
+
 or a DTO projection.
 
 **Key rule**
@@ -769,6 +796,16 @@ Lazy loading is good until you accidentally lazy-load inside a loop.
 ```
 
 That is the danger.
+
+```
+ManyToOne fetch join
+Property → Agent
+usually straightforward
+
+OneToMany fetch join
+Property → Viewings
+can multiply SQL rows
+```
 
 ## Entity relationships vs DTO projections
 

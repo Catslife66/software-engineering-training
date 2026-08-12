@@ -401,6 +401,42 @@ Good for:
 Simple fixed queries
 ```
 
+The General Formula
+
+Step 1
+
+What repository am I in?
+
+Example:
+
+```
+ViewingRepository
+
+Root: Viewing
+```
+
+Step 2
+
+Draw the path.
+
+```
+Viewing
+    │
+    ▼
+Customer
+    │
+    ▼
+email
+```
+
+Step 3
+
+Convert the path into the method name.
+
+```
+findByCustomerEmail(...)
+```
+
 ### 2. JPQL
 
 ```

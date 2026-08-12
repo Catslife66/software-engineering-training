@@ -63,6 +63,29 @@ def dfs(node):
     dfs(node.right)
 ```
 
+Walkthrough:
+
+```
+Problem:
+Explore everything reachable from a node.
+
+Mental Picture:
+Keep going deeper.
+A
+|
+B
+|
+C
+|
+D
+
+State:
+visited - Nodes that have already been explored.
+
+Core Operation:
+dfs(neighbour)
+```
+
 ### BFS (Breadth-First Search)
 
 > "expand evenly"
@@ -111,7 +134,27 @@ def bfs(root):
 
 _BFS doesn’t backtrack because it explores all possibilities in parallel_
 
-### Example
+Walkthrough:
+
+```
+Problem:
+Explore level by level.
+Find the shortest path when every edge costs the same.
+
+Mental Picture:
+A
+B C
+D E F
+
+State:
+queue - Nodes waiting to be explored.
+visited
+
+Core Operation:
+queue.append(neighbour)
+```
+
+Example
 
 ```
         A
@@ -125,24 +168,96 @@ Possible DFS traversal: A → B → D → E → C → F
 
 BFS traversal: A → B → C → D → E → F
 
-### Example comparison
+Example comparison
 
-Shortest path length only
+**Shortest path length only**
 
 ```
 queue = deque([(start, 0)])
 ```
 
-Shortest path (actual route)
+**Shortest path (actual route)**
 
 ```
 queue = deque([(start, [start])])
 ```
 
-More efficient (real-world)
+**More efficient (real-world)**
 
 ```
 parent[child] = parent
+```
+
+### Find the shortest path in a grid
+
+Checklist:
+
+For shortest path in a grid, ask:
+
+1. What is a node?
+2. What are valid neighbors?
+3. What blocks movement?
+4. What counts as one step?
+5. What do I track in the queue?
+
+For this problem:
+
+1. a cell
+2. up/down/left/right cells
+3. walls (#)
+4. moving to one adjacent cell
+5. position + path or position + distance
+
+Code implementation:
+
+```
+from collections import deque
+
+def bfs_shortest_path(grid, start, goal):
+
+    queue = deque([(start, [start])])
+    visited = set([start])
+
+    while queue:
+        node, path = queue.popleft()
+
+        if node == goal:
+            return path
+
+        for neighbor in get_neighbors(grid, node):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append((neighbor, path + [neighbor]))
+
+    return path
+
+def get_neighbors(grid, node):
+    rows = len(grid)
+    cols = len(grid[0])
+
+    r, c = node
+
+    directions = [
+        (-1, 0),  # up
+        (1, 0),   # down
+        (0, -1),  # left
+        (0, 1)    # right
+    ]
+
+    neighbors = []
+
+    for dr, dc in directions:
+        new_r = r + dr
+        new_c = c + dc
+
+        # Check bounds
+        if 0 <= new_r < rows and 0 <= new_c < cols:
+
+            # Check not a wall
+            if grid[new_r][new_c] != '#':
+                neighbors.append((new_r, new_c))
+
+    return neighbors
 ```
 
 ## Key Principle
@@ -152,3 +267,9 @@ BFS marks visited when **ENQUEUING (adding)**
 DFS marks visited when **VISITING (popping/processing)**
 
 This is a classic distinction.
+
+|                    | DFS                                        | BFS                                                                  |
+| ------------------ | ------------------------------------------ | -------------------------------------------------------------------- |
+| **Problem**        | Explore everything reachable               | Explore level by level; shortest path in an unweighted graph         |
+| **Data Structure** | Stack (or recursion)                       | Queue                                                                |
+| **Exploration**    | Go as deep as possible before backtracking | Explore all neighbours at the current distance before moving farther |

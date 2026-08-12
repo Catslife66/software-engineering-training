@@ -278,6 +278,203 @@ findCitiesWithAveragePriceAbove(
 );
 ```
 
+## @EntityGraph
+
+Suppose we have this entity:
+
+```
+@ManyToOne(fetch = FetchType.LAZY)
+private Agent agent;
+```
+
+We deliberately chose:
+
+```
+LAZY
+```
+
+because most endpoints don't need the agent.
+
+For example:
+
+```
+GET /properties
+```
+
+might return:
+
+- title
+- city
+- price
+
+No agent.
+
+LAZY is perfect.
+
+Now another endpoint:
+
+```
+GET /properties/agent
+```
+
+returns:
+
+```
+title
+city
+agent name
+agent email
+```
+
+This endpoint does need the agent.
+
+Imagine a real project
+
+Your repository starts looking like this.
+
+```
+findAll()
+
+findAllWithAgent()
+
+findAllAvailable()
+
+findAllAvailableWithAgent()
+
+findAllInEdinburgh()
+
+findAllInEdinburghWithAgent()
+
+findByStatus()
+
+findByStatusWithAgent()
+```
+
+We're duplicating repository methods just because of fetch strategy.
+
+That's not ideal.
+
+Instead of changing the query,
+
+Spring lets us change the fetch plan.
+
+```
+@EntityGraph(attributePaths = "agent")
+List<Property> findAll();
+```
+
+Only for that method.
+
+Every other repository method still uses LAZY.
+
+Suppose Property has
+
+```
+private Agent agent;
+
+private List<Viewing> viewings;
+```
+
+Now we write:
+
+```
+@EntityGraph(
+    attributePaths = {
+        "agent",
+        "viewings"
+    }
+)
+List<Property> findAll();
+```
+
+Read it:
+
+```
+Load Properties
+↓
+Also load Agent
+↓
+Also load Viewings
+```
+
+## Compare EntityGraph with JOIN FETCH
+
+`JOIN FETCH`
+
+You explicitly write the JPQL.
+
+```
+SELECT p
+FROM Property p
+JOIN FETCH p.agent
+```
+
+You control the SQL.
+
+`EntityGraph`
+
+You simply tell Spring:
+
+```
+I need the agent.
+```
+
+Spring generates the fetch join for you.
+
+**When would I use JOIN FETCH?**
+
+Usually when:
+
+- complicated joins
+- filtering on joined tables
+- custom JPQL
+- aggregation
+
+Example:
+
+```
+@Query("""
+SELECT p
+FROM Property p
+JOIN FETCH p.agent
+WHERE p.status = 'AVAILABLE'
+""")
+```
+
+**When would I use EntityGraph?**
+
+Usually when:
+
+- The derived query is already good enough.
+
+Example:
+
+```
+findByCity(...)
+```
+
+works nicely.
+
+You simply want:
+
+```
+...and also fetch the agent.
+```
+
+So:
+
+```
+@EntityGraph(attributePaths = "agent")
+List<Property> findByCity(String city);
+```
+
+| JOIN FETCH                 | EntityGraph                          |
+| -------------------------- | ------------------------------------ |
+| JPQL                       | Spring annotation                    |
+| Full SQL control           | Declarative                          |
+| Better for complex queries | Better for simple repository methods |
+| More verbose               | Cleaner                              |
+
 ## Important Engineering Lesson
 
 Whenever a query returns:

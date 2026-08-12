@@ -70,3 +70,13 @@ Topics:
   - environment variables
   - profiles
   - service separation
+
+    • Spring MVC
+    • Validation
+    • Exception Handling
+    • Spring Data JPA
+    • Hibernate
+    • Relationships
+    • Transactions
+    • Security
+    • Testing

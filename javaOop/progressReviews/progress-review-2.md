@@ -68,26 +68,52 @@ Validation
 Exception Handling
 Optimistic Locking
 
-Checkpoint 3 — JPA relationships
-New concepts learned
-✓ OneToMany
-✓ ManyToOne
-✓ Cascade
-✓ FetchType
+Checkpoint 3 — JPA relationships ✅
+Persistence
+- JPA
+- Hibernate
+- Spring Data JPA
+- Entity lifecycle
+- Dirty checking
+- Persistence Context
 
-Implemented
-✓ Agent owns properties
-✓ Property owns viewings
+Relationships
+- @ManyToOne
+- @OneToMany
+- Owning side
+- mappedBy
+- Foreign keys
+- Bidirectional relationships
+- Helper methods
+- Cascade
+- orphanRemoval
 
-Engineering patterns reinforced
-✓ Aggregate root
-✓ Entity relationships
-✓ Bidirectional mapping
+Querying
+- Derived queries
+- Relationship queries
+- Repository design
+- JPQL
+- DTO projection
+- Specifications (earlier)
+- Pagination (earlier)
+Performance
+- Lazy loading
+- N+1 problem
+- JOIN FETCH
+- @EntityGraph
 
-Java skills practised
-✓ Collections
-✓ Constructors
-✓ Helper methods
+Java Fluency
+- Lambda expressions
+- Streams
+- filter
+- map
+- findFirst
+- anyMatch
+- allMatch
+- noneMatch
+- Method references
+- Optional
+- orElseThrow
 
 Checkpoint 4 — transactions
 Transactions
@@ -111,18 +137,4 @@ Checkpoint 7
 Testing
 MockMvc
 Integration Tests
-```
-
-Remaining Checkpoint 3 Topics
-
-```
-□ Java Streams implementation
-□ Helper methods refinement
-□ Bidirectional consistency review
-□ Relationship querying
-□ N+1 problem
-□ Fetch Join
-□ EntityGraph
-□ Final implementation review
-□ Checkpoint retrospective
 ```

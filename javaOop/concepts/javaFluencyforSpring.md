@@ -84,6 +84,41 @@ properties.stream() // "I want to process it."
         .toList(); // "Give me the final result."
 ```
 
+`anyMatch()` - Need one YES.
+
+```
+boolean exists = properties.stream()
+        .anyMatch(property ->
+                property.getCity().equals("Edinburgh"));
+```
+
+`allMatch()` - Need every YES.
+
+```
+properties.stream()
+        .allMatch(property ->
+                property.getStatus()
+                        == PropertyStatus.AVAILABLE);
+```
+
+`noneMatch()` - Need zero YES.
+
+```
+properties.stream()
+        .noneMatch(property ->
+                property.getStatus()
+                        == PropertyStatus.SOLD);
+```
+
+| Business Question | Stream Operation |
+| ----------------- | ---------------- |
+| Keep some objects | `filter()`       |
+| Transform objects | `map()`          |
+| Find one object   | `findFirst()`    |
+| Is there one?     | `anyMatch()`     |
+| Are they all?     | `allMatch()`     |
+| Are there none?   | `noneMatch()`    |
+
 ## 3 - Method References
 
 Earlier you wrote:
@@ -203,5 +238,3 @@ Property property =
 Same logic.
 
 Much safer.
-
-## 5 — Functional Interfaces

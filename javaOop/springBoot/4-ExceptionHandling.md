@@ -347,7 +347,7 @@ That's what we mean by a consistent error contract.
 
 **Validation Exceptions** - MethodArgumentNotValid
 
-In Module 3.3 we had:
+In Module 3 we had:
 
 ```
 @Valid @RequestBody CreatePropertyRequest request
@@ -715,15 +715,18 @@ GET /properties/{id}
 
 Controller:
 
+```
 @GetMapping("/{id}")
 public PropertyResponse getProperty(
-@PathVariable UUID id
+    @PathVariable UUID id
 ) {
-return propertyService.getPropertyById(id);
+    return propertyService.getPropertyById(id);
 }
+```
 
 Service:
 
+```
 public PropertyResponse getPropertyById(UUID id) {
 
     Property property = propertyRepository.findById(id)
@@ -734,6 +737,7 @@ public PropertyResponse getPropertyById(UUID id) {
     return propertyMapper.toResponse(property);
 
 }
+```
 
 Suppose the database doesn't contain the property.
 

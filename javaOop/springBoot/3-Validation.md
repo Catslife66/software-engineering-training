@@ -779,6 +779,8 @@ Use:
 @Valid @RequestBody CreatePropertyRequest request
 ```
 
+---
+
 **Using only @NotNull for strings**
 
 ```
@@ -795,6 +797,8 @@ allows:
 
 For required human-readable text, `@NotBlank` is normally more appropriate.
 
+---
+
 **Putting every business rule into annotations**
 
 Avoid trying to validate database-dependent rules such as:
@@ -809,6 +813,8 @@ Current user must own property.
 
 Those are service/business concerns.
 
+---
+
 **Manual validation inside the controller**
 
 Avoid:
@@ -820,6 +826,8 @@ if (request.getPrice() == null) {
 ```
 
 when Bean Validation can express the rule declaratively.
+
+---
 
 **Validating entities as the API contract**
 

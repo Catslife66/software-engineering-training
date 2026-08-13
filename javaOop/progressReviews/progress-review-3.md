@@ -104,7 +104,7 @@ Custom validation
 Cross-field validation
 ```
 
-Module 3.4 — Exception Handling
+### Module 3.4 — Exception Handling
 
 Topics:
 
@@ -160,7 +160,7 @@ Entity lifecycle callbacks
 @Version
 ```
 
-Module 3.8 — Entity Relationships
+### Module 3.8 — Entity Relationships
 
 Topics:
 

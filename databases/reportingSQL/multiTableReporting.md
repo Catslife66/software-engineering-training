@@ -173,3 +173,176 @@ SELECT category, product_name, total_revenue
 FROM product_rank
 WHERE r = 1;
 ```
+
+## Customer Revenue by Month
+
+The Product Manager asks:
+
+> “For each month, show how much revenue each customer generated.”
+
+Expected:
+
+| month      | customer_id | customer_name | total_revenue |
+| ---------- | ----------: | ------------- | ------------: |
+| 2026-07-01 |         101 | Alice         |           500 |
+| 2026-07-01 |         102 | Bob           |           200 |
+| 2026-07-01 |         103 | Charlie       |           650 |
+
+```
+SELECT DATE_TRUNC('month', o.order_date) AS month,
+       c.customer_id,
+       c.name AS customer_name,
+       SUM(oi.quantity * oi.unit_price) AS total_revenue
+FROM customers c
+JOIN orders o
+  ON o.customer_id = c.customer_id
+JOIN order_items oi
+  ON oi.order_id = o.order_id
+GROUP BY DATE_TRUNC('month', o.order_date),
+         c.customer_id,
+         c.name
+ORDER BY month, c.customer_id;
+```
+
+## Top Customer per Month
+
+The Product Manager asks:
+
+> “For each month, show the customer who generated the most revenue.”
+
+Expected:
+
+| month      | customer_id | customer_name | total_revenue |
+| ---------- | ----------: | ------------- | ------------: |
+| 2026-07-01 |         103 | Charlie       |           650 |
+
+```
+WITH customer_revenue AS (
+    SELECT DATE_TRUNC('month', o.order_date) AS month,
+        c.customer_id,
+        c.name,
+        SUM(oi.quantity * oi.unit_price) AS total_revenue
+    FROM orders o
+    JOIN order_items oi ON oi.order_id = o.order_id
+    JOIN customers c ON c.customer_id = o.customer_id
+    GROUP BY c.customer_id,
+            c.name,
+            DATE_TRUNC('month', o.order_date)
+),
+revenue_rank AS (
+    SELECT month, customer_id, name, total_revenue,
+        RANK() OVER (
+            PARTITION BY month
+            ORDER BY total_revenue DESC
+        ) AS r
+    FROM customer_revenue
+)
+SELECT month, customer_id, name, total_revenue
+FROM revenue_rank
+WHERE r = 1;
+```
+
+## New Customers by Month
+
+The Product Manager asks:
+
+> “For each month, how many customers placed their first-ever order that month?”
+
+orders
+
+| order_id | customer_id | order_date |
+| -------: | ----------: | ---------- |
+|        1 |         101 | 2026-07-02 |
+|        2 |         101 | 2026-07-08 |
+|        3 |         102 | 2026-07-09 |
+|        4 |         103 | 2026-08-11 |
+|        5 |         102 | 2026-08-15 |
+
+Excepted:
+
+| month      | new_customers |
+| ---------- | ------------: |
+| 2026-07-01 |             2 |
+| 2026-08-01 |             1 |
+
+```
+WITH first_order AS (
+    SELECT customer_id,
+           MIN(order_date) AS first_order
+    FROM orders
+    GROUP BY customer_id
+)
+SELECT DATE_TRUNC('month', first_order) AS month,
+       COUNT(customer_id) AS new_customers
+FROM first_order
+GROUP BY DATE_TRUNC('month', first_order)
+ORDER BY month;
+```
+
+## New vs Returning Customers by Month
+
+The Product Manager asks:
+
+> “For each month, show how many customers were new and how many were returning.”
+
+Expected:
+
+| month      | new_customers | returning_customers |
+| ---------- | ------------: | ------------------: |
+| 2026-07-01 |             2 |                   0 |
+| 2026-08-01 |             1 |                   1 |
+
+Key:
+
+- New customer: their first-ever order is in this month.
+- Returning customer: they order in this month, but their first-ever order happened before this month.
+
+```
+WITH first_order AS (
+    SELECT customer_id,
+           MIN(order_date) AS first_order
+    FROM orders
+    GROUP BY customer_id
+),
+first_month AS (
+    SELECT customer_id,
+           DATE_TRUNC('month', first_order) AS first_month
+    FROM first_order
+),
+customer_activity AS (
+    SELECT DISTINCT customer_id,
+           DATE_TRUNC('month', order_date) AS activity_month
+    FROM orders
+),
+customer_status AS (
+    SELECT ca.customer_id,
+           ca.activity_month,
+           fm.first_month,
+           CASE
+               WHEN ca.activity_month = fm.first_month
+               THEN 'new'
+               ELSE 'returning'
+           END AS customer_type
+    FROM customer_activity ca
+    JOIN first_month fm
+      ON fm.customer_id = ca.customer_id
+)
+SELECT activity_month,
+       SUM(
+           CASE
+               WHEN customer_type = 'new'
+               THEN 1
+               ELSE 0
+           END
+       ) AS new_customers,
+       SUM(
+           CASE
+               WHEN customer_type = 'returning'
+               THEN 1
+               ELSE 0
+           END
+       ) AS returning_customers
+FROM customer_status
+GROUP BY activity_month
+ORDER BY activity_month;
+```

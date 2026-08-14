@@ -346,3 +346,189 @@ FROM customer_status
 GROUP BY activity_month
 ORDER BY activity_month;
 ```
+
+Flow:
+
+```
+Problem:
+Classify monthly customers as new or returning
+
+Information needed:
+When did they first order?
+When are they active?
+
+State/data representation:
+first_month
+activity_month
+
+Rule:
+activity_month = first_month → new
+activity_month > first_month → returning
+
+Implementation:
+MIN()
+DATE_TRUNC()
+DISTINCT
+JOIN
+CASE
+```
+
+## Customers Returning After a Gap
+
+Product Manager:
+
+> “For each month, how many customers returned after being inactive for at least one full month?”
+
+Consider this activity:
+
+| customer_id | order_date |
+| ----------: | ---------- |
+|         101 | 2026-01-10 |
+|         101 | 2026-02-12 |
+|         101 | 2026-04-05 |
+|         102 | 2026-01-15 |
+|         102 | 2026-03-20 |
+|         103 | 2026-03-01 |
+|         103 | 2026-04-10 |
+
+For example:
+
+Customer 101:
+
+```
+Jan → active
+Feb → active
+Mar → inactive
+Apr → active
+Therefore April = returned after a gap
+```
+
+Customer 102:
+
+```
+Jan → active
+Feb → inactive
+Mar → active
+Therefore March = returned after a gap
+```
+
+Customer 103:
+
+```
+Mar → active
+Apr → active
+Therefore April ≠ returned after a gap
+```
+
+Expected:
+
+| month      | returned_after_gap |
+| ---------- | -----------------: |
+| 2026-03-01 |                  1 |
+| 2026-04-01 |                  1 |
+
+```
+WITH current_active AS (
+    SELECT DISTINCT customer_id,
+           DATE_TRUNC('month', order_date) AS activity_month
+    FROM orders
+),
+prevs_active AS (
+    SELECT customer_id,
+           activity_month,
+           LAG(activity_month) OVER (
+               PARTITION BY customer_id
+               ORDER BY activity_month
+           ) AS previous_activity_month
+    FROM current_active
+),
+return_groups AS (
+    SELECT customer_id,
+           activity_month,
+           previous_activity_month,
+           CASE
+               WHEN activity_month > previous_activity_month + INTERVAL '1 month'
+               THEN 1
+               ELSE 0
+           END AS is_return_after_gap
+    FROM prevs_active
+)
+SELECT activity_month,
+       SUM(is_return_after_gap) AS returned_after_gap
+FROM return_groups
+GROUP BY activity_month
+HAVING SUM(is_return_after_gap) > 0
+ORDER BY activity_month;
+```
+
+## Month-over-Month Retention
+
+The Product Manager asks:
+
+> “For each month, what percentage of customers who were active last month are also active this month?”
+
+Consider this activity:
+
+| customer_id | order_date |
+| ----------: | ---------- |
+|         101 | 2026-01-10 |
+|         101 | 2026-02-12 |
+|         101 | 2026-03-05 |
+|         102 | 2026-01-15 |
+|         102 | 2026-03-20 |
+|         103 | 2026-02-01 |
+|         103 | 2026-03-10 |
+
+```
+WITH current_active AS (
+    SELECT DISTINCT
+           customer_id,
+           DATE_TRUNC('month', order_date) AS activity_month
+    FROM activities
+),
+prevs_active AS (
+    SELECT customer_id,
+           activity_month,
+           LAG(activity_month) OVER (
+               PARTITION BY customer_id
+               ORDER BY activity_month
+           ) AS previous_activity_month
+    FROM current_active
+),
+retained_groups AS (
+    SELECT customer_id,
+           activity_month,
+           CASE
+               WHEN previous_activity_month + INTERVAL '1 month' = activity_month
+               THEN 1
+               ELSE 0
+           END AS is_retained
+    FROM prevs_active
+),
+retained_count AS (
+    SELECT activity_month,
+           COUNT(*) AS active_customer,
+           SUM(is_retained) AS retained_customer
+    FROM retained_groups
+    GROUP BY activity_month
+),
+monthly_retention AS (
+    SELECT activity_month,
+           active_customer,
+           retained_customer,
+           LAG(active_customer) OVER (
+               ORDER BY activity_month
+           ) AS previous_customer
+    FROM retained_count
+)
+SELECT activity_month,
+       retained_customer,
+       previous_customer,
+       ROUND(
+           retained_customer::numeric / previous_customer,
+           2
+       ) AS retention_rate
+FROM monthly_retention
+WHERE previous_customer IS NOT NULL
+ORDER BY activity_month;
+```

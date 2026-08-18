@@ -711,31 +711,341 @@ A strong answer in a code review would be:
 I don't immediately see a deadlock because there is no circular wait. However, the lock is held while performing slow external I/O. This increases lock duration and contention, reduces concurrency and throughput, and increases response latency. I would investigate whether the external calls need to remain inside the critical section.
 ```
 
-Deadlocks — 7/8
-Avoiding long lock ownership
+## Drill 7 - Deadlock vs Contention vs Starvation
 
-You will review code that:
+Scenario A
 
-acquires a lock,
-calls an external API,
-waits for a database,
-then releases the lock.
+```
+Thread A owns lock
+Thread B waits
+Thread A finishes
+Thread B acquires lock
+```
 
-We will distinguish deadlock risk from contention risk.
+Scenario B
 
-Deadlocks — 8/8
-Final diagnosis
+```
+Thread A holds Lock 1 → waits for Lock 2
+Thread B holds Lock 2 → waits for Lock 1
+```
 
-You will receive:
+Scenario C
 
-three threads,
-three resources,
-a timing sequence,
-and partial logs.
+```
+Thread A repeatedly gets the lock
+Thread B waits
 
-Your task will be to determine:
+Thread A releases it
 
-whether it is a deadlock,
-which resources are involved,
-where the cycle is,
-and what design rule was violated.
+Thread C gets it
+Thread B waits
+
+Thread C releases it
+
+Thread D gets it
+Thread B waits
+...
+
+Thread B could theoretically run,
+but repeatedly fails to get access.
+```
+
+A — Lock contention
+
+```
+A owns lock
+↓
+B waits
+↓
+A finishes
+↓
+A releases lock
+↓
+B acquires lock
+```
+
+Nothing is fundamentally broken.
+
+There is competition for a shared resource, so performance can suffer, but progress continues.
+
+**Lock contention occurs when multiple threads compete for the same lock, causing some threads to wait until the lock becomes available.**
+
+B — Deadlock
+
+Thread A waits for a resource held by Thread B, while Thread B waits for a resource held by Thread A.
+
+That's the key diagnostic pattern:
+
+```
+A waits for B
+↑           ↓
+└───────────┘
+```
+
+Nobody involved in the cycle can make progress.
+
+**Deadlock occurs when threads form a circular dependency on resources, preventing all threads in that cycle from making progress.**
+
+C — Starvation
+
+The system as a whole is still progressing:
+
+```
+Thread A ✓
+Thread C ✓
+Thread D ✓
+Thread E ✓
+
+Thread B ...
+          waiting
+          waiting
+          waiting
+```
+
+Other threads keep acquiring the resource while B repeatedly loses out.
+
+That's why we call it **starvation**: the system isn't frozen, but one participant is being denied the resource it needs.
+
+This connects to a term from our future Scheduling section:
+
+**Fairness**
+
+A fair locking/scheduling policy tries to ensure waiting threads eventually receive access rather than allowing one to wait indefinitely.
+
+---
+
+**The mental model**
+
+Don't identify these problems simply from:
+
+"A thread is waiting."
+
+Ask:
+
+**Who is making progress?**
+
+Then:
+
+```
+CONTENTION
+
+Some thread owns resource
+↓
+Owner progresses
+↓
+Releases resource
+↓
+Waiting threads can progress
+```
+
+versus:
+
+```
+DEADLOCK
+
+A waits for B
+B waits for A
+↓
+Nobody in cycle progresses
+```
+
+versus:
+
+```
+STARVATION
+
+System continues progressing
+↓
+Other threads keep succeeding
+↓
+One particular thread repeatedly cannot obtain resource
+```
+
+Contention reduces performance because threads compete for shared resources, but progress continues.
+Deadlock prevents all participants in a dependency cycle from making progress.
+Starvation occurs when the system continues making progress, but a particular thread is repeatedly denied the resources it needs.
+
+## Drill 8 - Final diagnosis
+
+There are three threads and three resources:
+
+```
+Resource A = Customer lock
+Resource B = Order lock
+Resource C = Inventory lock
+```
+
+The logs show:
+
+```
+Thread 1
+holds Customer
+waiting for Order
+
+Thread 2
+holds Order
+waiting for Inventory
+
+Thread 3
+holds Inventory
+waiting for Customer
+```
+
+Meanwhile, requests involving these resources stop completing.
+
+You're the engineer investigating the incident.
+
+Questions:
+
+1. Is this contention, starvation, or deadlock?
+   This is deadlock.
+
+```
+Thread 1 → waits for Thread 2
+Thread 2 → waits for Thread 3
+Thread 3 → waits for Thread 1
+                    ↓
+              dependency cycle
+```
+
+Nobody in that cycle can make progress.
+
+2. Draw the dependency chain starting from Thread 1.
+
+```
+Thread 1
+holds Customer
+waits for Order
+        ↓
+Thread 2
+holds Order
+waits for Inventory
+        ↓
+Thread 3
+holds Inventory
+waits for Customer
+        ↓
+Thread 1
+```
+
+3. What is the specific structural evidence that proves your diagnosis?
+
+The wait-for dependency graph contains a cycle.
+
+```
+T1 → T2 → T3
+↑           ↓
+└───────────┘
+```
+
+A cycle in the wait-for graph is the structural evidence we're looking for.
+
+4. Which of the four deadlock conditions can you identify?
+   Mutual exclusion
+
+Each resource is exclusively held:
+
+```
+Customer  → Thread 1
+Order     → Thread 2
+Inventory → Thread 3
+```
+
+Hold and wait
+
+Every thread holds something while requesting something else:
+
+```
+T1: holds Customer  → waits for Order
+T2: holds Order     → waits for Inventory
+T3: holds Inventory → waits for Customer
+```
+
+No preemption
+
+```
+The waiting threads cannot simply steal locks from their owners.
+```
+
+Circular wait
+
+```
+Customer
+→ Order
+→ Inventory
+→ Customer
+```
+
+All four conditions exist simultaneously.
+
+5. How could a global lock-ordering rule prevent this?
+
+We could equally establish:
+
+```
+Customer
+↓
+Order
+↓
+Inventory
+```
+
+The important property is:
+
+Every code path must follow the same global ordering.
+
+Suppose we choose:
+
+```
+Customer → Order → Inventory
+```
+
+A thread needing only Order + Inventory:
+
+```
+Order → Inventory
+```
+
+A thread needing Customer + Inventory:
+
+```
+Customer → Inventory
+```
+
+A thread needing all three:
+
+```
+Customer → Order → Inventory
+```
+
+What must never happen is:
+
+```
+Inventory → Customer   ❌
+```
+
+because that reverses our global ordering.
+
+We're not eliminating contention.
+
+We're eliminating circular wait.
+
+```
+Consistent lock ordering
+        ↓
+circular wait prevented
+        ↓
+deadlock prevented
+
+BUT
+
+threads may still compete
+        ↓
+contention can remain
+```
+
+6. Your teammate says "Let's just add more worker threads." Would that solve the problem? Why or why not?
+
+```
+Increasing the worker-thread count would not resolve the incident because the root cause is a deadlock, not insufficient processing capacity. The blocked threads form a circular wait, so adding more threads does not release the resources involved. The correct response is to break or prevent the dependency cycle, for example through consistent lock ordering or deadlock recovery.
+```

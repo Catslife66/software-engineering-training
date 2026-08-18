@@ -170,3 +170,29 @@ The structure will be:
 - 3 code reviews
 - 2 design discussions
 - 1 final diagnosis exercise
+
+---
+
+```
+PHASE A
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Processes                    ✅
+Threads                      ✅
+Concurrency                  ✅
+Synchronization              █████████░
+Engineer Pattern Recognition ✅
+Business Invariants          ✅
+Engineering Trade-offs       ✅
+Deadlocks                    ✅
+
+                         👇 YOU ARE HERE
+
+Scheduling                   🔜 0/6
+Semaphores consolidation     🔜 0/3
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE A COMPLETE
+            ↓
+PHASE B — NETWORK THINKING
+```

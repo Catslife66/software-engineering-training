@@ -62,7 +62,7 @@ Question:
 
 When should the state change?
 
-## Module 1 — Prefix Invariants
+## Module 1 — Prefix Invariants ✅
 
 This is the easiest invariant family.
 

@@ -78,9 +78,7 @@ But the meaning of the queue has changed.
 Invariant:
 
 ```
-Every node in the queue
-has been discovered
-but not processed.
+Every node in the queue has been discovered but not processed.
 ```
 
 **Topological Sort**
@@ -88,24 +86,112 @@ but not processed.
 Invariant:
 
 ```
-Every node in the queue
-has indegree = 0.
+Every node in the queue has indegree = 0.
 ```
 
 or, in plain English:
 
 ```
-Every node in the queue
-has no unfinished prerequisites.
+Every node in the queue has no unfinished prerequisites.
 ```
 
-## Kahn’s Algorithm - Course Schedule I
+A topological ordering is an ordering that respects all such dependencies.
+
+## Kahn’s Algorithm
+
+Concept:
+
+```
+DOMAIN:
+Topological sort / dependency graph
+
+PROBLEM:
+Find an ordering that respects dependencies
+(or determine that no such ordering exists).
+
+STATE:
+graph[node]
+    → nodes depending on this node
+
+indegree[node]
+    → remaining unsatisfied prerequisites
+
+queue
+    → nodes ready to process
+
+order
+    → nodes successfully processed
+
+INVARIANT:
+Every node entering the queue has zero remaining prerequisites.
+
+CORE OPERATION:
+Process a ready node.
+
+UPDATE RULE:
+Process ready node
+→ reduce dependants' indegree
+→ newly-zero nodes become ready.
+
+TERMINATION:
+Processed every node:
+number processed == number of nodes
+    valid topological ordering
+
+Could not process every node:
+number processed < number of nodes
+    cycle exists
+```
+
+Code Skeleton:
+
+```
+from collections import deque
+
+def topological_sort(num_nodes, edges):
+    graph = [[] for _ in range(num_nodes)]
+    indegree = [0] * num_nodes
+
+    for from_node, to_node in edges:
+        graph[from_node].append(to_node)
+        indegree[to_node] += 1
+
+    queue = deque()
+    order = []
+
+    for node in range(num_nodes):
+        if indegree[node] == 0:
+            queue.append(node)
+
+    while queue:
+
+        # take a node whose prerequisites are satisfied
+        node = queue.popleft()
+
+        # record that we've successfully processed it
+        order.append(node)
+
+        # look at nodes that depend on this node
+        for neighbour in graph[node]:
+            # one of their prerequisites has now been satisfied
+            indegree[neighbour] -= 1
+
+            # all prerequisites are satisfied
+            if indegree[neighbour] == 0:
+                # this node is now ready
+                queue.append(neighbour)
+
+    # if the problem asks for the actual topological ordering
+    return order if len(order) == num_nodes else []
+
+    # if the problem asks whether every node can be processed
+    # return len(order) == num_nodes
+
+```
+
+## Course Schedule
 
 _Can I finish all courses?_
-
-```
-Kahn’s Algorithm repeatedly processes tasks whose dependencies have all been satisfied. Completing a task satisfies one dependency for every task that depends on it, which may make additional tasks ready to process. This continues until no more tasks are ready. If every task is processed, the dependency graph is valid. If some tasks remain, they are waiting on each other through a dependency cycle, so no valid ordering exists.
-```
 
 Graph:
 
@@ -264,8 +350,6 @@ class Solution:
         return processed == numCourses
 ```
 
-## Course Schedule II
-
 _If I can finish them, what order should I take them?_
 
 Code Invariant
@@ -361,3 +445,23 @@ def topo_sort(graph):
 ```
 
 Topological sort only works on a graph with no directed cycle.
+
+Domain: Topological Sort
+
+Problem:
+whether a node has any dependencies to satisfy
+
+State:
+graph = []
+indegree = []
+queue = deque()
+
+Data Structure:
+
+1. adjacency list
+2. in-degree count
+3. queue
+
+Core Idea:
+
+Invariant:

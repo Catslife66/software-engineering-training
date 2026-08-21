@@ -532,3 +532,14 @@ FROM monthly_retention
 WHERE previous_customer IS NOT NULL
 ORDER BY activity_month;
 ```
+
+```
+MONTH-OVER-MONTH RETENTION
+
+Question:
+"Of customers active LAST MONTH,
+how many are active THIS MONTH?"
+
+Denominator:
+previous month's active customers
+```

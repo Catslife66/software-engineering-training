@@ -1,140 +1,371 @@
-# Big Picture: Your JPA Journey
+## Phase 1 — Core OOP & Backend Architecture ✅ (Completed)
 
-You've now covered:
+This phase is complete and does not need to be rewritten unless you later want a consolidated set of notes.
 
-## Persistence Layer Fundamentals
+Topics covered:
 
-✅ JPA
+- OOP Principles
+- SOLID
+- Layered Architecture
+- DTO Design
+- Service / Repository Architecture
+- Dependency Injection (concept)
+- Authentication (concept)
+- Authorization (concept)
+- Transaction Thinking
 
-✅ Hibernate
+## Phase 2 — Backend Workflow & Reliability Engineering ✅ (Completed)
 
-✅ Spring Data JPA
+This phase focuses on engineering thinking rather than Spring implementation.
 
-## Entity Mapping
+### 2.1 Business Workflows
 
-✅ @Entity
+- Business transactions
+- Critical path vs side effects
+- Business invariants
+- Workflow decomposition
 
-✅ @Id
+### 2.2 Reliability Engineering
 
-✅ Relationships
+- Consistency
+- Idempotency
+- Retry safety
+- Failure recovery
+- Eventual consistency
 
-✅ Lazy/Eager Loading
+### 2.3 Asynchronous Architecture
 
-## Hibernate Internals
+- Message queues
+- Domain events
+- Outbox Pattern
+- Synchronous vs asynchronous processing
 
-✅ Persistence Context
+### 2.4 Authorization
 
-✅ Managed / Detached / Transient
+- Ownership
+- Business authorization
+- Permission checks
 
-✅ Dirty Checking
+### 2.5 Phase 2 Review
 
-## Repository Design
+- Engineering mental models
+- Trade-offs
+- Common interview discussions
 
-✅ Query Derivation
+## Phase 3 — Real Spring Boot Development (Restart Here)
 
-✅ Optional<T>
+### Module 3.1 — Spring Boot Project & Dependency Injection ✅
 
-✅ Page<T>
-
-✅ Page vs Slice
-
-## Querying
-
-✅ JPQL
-
-✅ DTO Projections
-
-✅ Aggregations
-
-✅ GROUP BY
-
-✅ HAVING
-
-## Search APIs
-
-✅ Pagination
-
-✅ Sorting
-
-✅ Specifications
-
-✅ Dynamic Filtering
+Topics:
 
 ```
-Checkpoint 1 — Basic CRUD structure ✅
+Spring Boot project structure
+@SpringBootApplication
+Beans
+Dependency Injection
+@Component
+@Service
+@Repository
+@Controller
+Bean lifecycle
+```
 
-Checkpoint 2 — Validation + exception handling ✅
-Validation
-Exception Handling
-Optimistic Locking
+### Module 3.2 — REST API ✅
 
-Checkpoint 3 — JPA relationships ✅
-Persistence
-- JPA
-- Hibernate
-- Spring Data JPA
-- Entity lifecycle
-- Dirty checking
-- Persistence Context
+Topics:
 
-Relationships
-- @ManyToOne
-- @OneToMany
-- Owning side
-- mappedBy
-- Foreign keys
-- Bidirectional relationships
-- Helper methods
-- Cascade
-- orphanRemoval
+```
+@RestController
+@RequestMapping
+@GetMapping
+@PostMapping
+@PutMapping
+@DeleteMapping
+@RequestBody
+@PathVariable
+@RequestParam
+ResponseEntity
+HTTP Status Codes
+```
 
-Querying
-- Derived queries
-- Relationship queries
-- Repository design
-- JPQL
-- DTO projection
-- Specifications (earlier)
-- Pagination (earlier)
-Performance
-- Lazy loading
-- N+1 problem
-- JOIN FETCH
-- @EntityGraph
+### Module 3.3 — Validation ✅
 
-Java Fluency
-- Lambda expressions
-- Streams
-- filter
-- map
-- findFirst
-- anyMatch
-- allMatch
-- noneMatch
-- Method references
-- Optional
-- orElseThrow
+Topics:
 
-Checkpoint 4 — transactions
+```
+@Valid
+Validation lifecycle
+@NotNull
+@NotBlank
+@Positive
+@Size
+@Email
+Custom validation
+Cross-field validation
+```
+
+### Module 3.4 — Exception Handling ✅
+
+Topics:
+
+```
+Custom exceptions
+@RestControllerAdvice
+@ExceptionHandler
+Error DTO design
+Consistent API error contracts
+```
+
+### Module 3.5 — Spring Data JPA ✅
+
+Topics:
+
+```
+Repository interfaces
+JpaRepository
+CRUD
+Optional
+Query derivation
+Custom repository methods
+Custom @Query
+```
+
+### Module 3.6 — Hibernate & Persistence Context ✅
+
+Topics:
+
+```
+Entity lifecycle
+Transient
+Managed
+Detached
+Removed
+Persistence Context
+Dirty Checking
+Flush
+Commit
+```
+
+### Module 3.7 — Entity Mapping ✅
+
+Topics:
+
+```
+@Entity
+@Table
+@Id
+@Column
+Enum mapping
+Entity lifecycle callbacks
+@Version
+```
+
+### Module 3.8 — Entity Relationships ✅
+
+Topics:
+
+```
+@ManyToOne
+@OneToMany
+Foreign Keys
+Owning Side
+mappedBy
+Cascade
+orphanRemoval
+Bidirectional consistency
+Helper methods
+```
+
+### Module 3.9 — Transactions & Concurrency ✅
+
+Topics:
+
+```
 Transactions
-Outbox
-Business workflows
+@Transactional
+Transaction boundaries
+Rollback
+Propagation
+Read-only transactions
+Concurrency
+Race conditions
+Optimistic Locking
+@Version
+ObjectOptimisticLockingFailureException
+Pessimistic Locking
+Business Workflows
+Multi-repository transactions
+Transaction design
+Outbox implementation in Spring
+```
 
-Checkpoint 5 — pagination/specifications
-Pagination
-Sorting
-Specifications
-Search API
+### Module 3.10 — Querying ✅
 
-Checkpoint 6 — optimistic locking
-Security
+Topics:
+
+```
+Derived queries
+Relationship queries
+JPQL
+DTO Projection
+Aggregations
+GROUP BY
+HAVING
+```
+
+### Module 3.11 — Fetching & Performance
+
+Topics:
+
+```
+LAZY vs EAGER
+LazyInitializationException
+N+1 Problem
+Fetch Join
+EntityGraph
+```
+
+### Module 3.12 — Pagination & Sorting
+
+Topics:
+
+```
+Pageable
+Page
+Slice
+Sort
+```
+
+### Module 3.13 — Specifications & Dynamic Search
+
+Topics:
+
+```
+Specification<T>
+JpaSpecificationExecutor
+Dynamic filtering
+Combining optional filters
+Search DTO design
+```
+
+### Module 3.14 — PostgreSQL Integration
+
+Topics:
+
+```
+Datasource configuration
+SQL/JPA boundary
+Schema management
+Migration concepts (Flyway/Liquibase overview)
+```
+
+### Module 3.15 — Spring Security
+
+Topics:
+
+```
+Security Filter Chain
 Authentication
 Authorization
-Ownership
-
-Checkpoint 7 — security
-Checkpoint 7
-Testing
-MockMvc
-Integration Tests
+SecurityContext
+Ownership implementation
 ```
+
+### Module 3.16 — Configuration
+
+Topics:
+
+```
+application.yml
+Profiles
+Environment variables
+@Configuration
+@Bean
+```
+
+### Module 3.17 — Testing
+
+Topics:
+
+```
+Unit tests
+Mockito
+Repository tests
+Integration tests
+MockMvc
+```
+
+### Module 3.18 — Production Structure
+
+Topics:
+
+```
+Package organization
+Configuration separation
+Environment handling
+Logging
+Service boundaries
+Production-ready project structure
+```
+
+### Module 3.19 — Phase 3 Consolidated Review
+
+Topics:
+
+```
+End-to-end request flow
+Spring architecture review
+Performance review
+Persistence review
+Security review
+Common interview questions
+BrightMove architecture review
+```
+
+---
+
+## Teaching Rules (Frozen)
+
+These are now part of the classroom itself.
+
+1. The curriculum is frozen.
+
+```
+No topic changes.
+No module changes.
+No moving lessons around.
+```
+
+2. Every lesson follows the same structure.
+
+```
+Purpose
+Core Concepts
+Mental Model
+Spring / Java Implementation
+Request & Data Flow
+BrightMove Example
+Common Mistakes
+Engineering Trade-offs
+Summary
+```
+
+3. One lesson = one response.
+
+```
+No Socratic interruptions.
+No artificial pauses.
+No splitting one lesson across multiple messages.
+```
+
+4. Questions come after the lesson.
+
+The lesson is treated like a chapter in a book.
+
+After reading and taking notes, you ask questions.
+
+5. BrightMove is the continuous example.
+
+BrightMove is not a separate roadmap.
+
+It is the single example project used throughout the entire course.

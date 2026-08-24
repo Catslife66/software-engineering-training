@@ -1,4 +1,4 @@
-# Weighted Graphs
+# Weighted Graphs - Dijkstra's & Bellman-Ford
 
 Graph:
 
@@ -13,9 +13,7 @@ A ----------------> B
 
 A **min-heap** stores items so the smallest-cost item is always available at the top.
 
-## Dijkstra’s Algorithm - selects the node with the minimum known cost.
-
-_Who currently has the smallest known cost?_
+## Dijkstra’s Algorithm
 
 > When we choose the unprocessed node with the smallest known cost, we know there cannot be a cheaper path to it later.
 
@@ -78,30 +76,51 @@ best_cost = {
 min_heap = [(3, "B"), (100, "B")]
 ```
 
-Concept
+Concept:
 
 ```
-Problem:
+DOMAIN:
+Weighted Shortest Path
+Single-source shortest paths in a graph with non-negative edge weights.
+
+REQUIREMENT:
+No negative edge weights
+
+PROBLEM:
 Find the minimum-cost path from a start node to every other node.
 
-State:
+STATE:
 best_cost[node]
-The best known cost from the start to every node.
+    → The best known cost from the start to every node.
+    Initially: best_cost[start] = 0
+    Everyone else: best_cost[node] = infinity
 
-Frontier:
+heap
+    → Candidate paths waiting to be explored
+    An entry: (cost, node)
+
+FRONTIER:
 Discovered nodes whose shortest path has not yet been finalised. / Candidates waiting to be explored.
 
-Data Strucure:
+DATA STRUCTURE:
 Priority Queue
 Always gives us the cheapest discovered route next.
 
-Initialisation:
-everyone else = ∞
+CORE OPERATION:
+Pop cheapest candidate path.
 
-Update rule:
-update the cost if a cheaper cost
+STALE CHECK:
+is this an outdated candidate?
+current_cost > best_cost[node]
+→ ignore it
 
-Invariant:
+UPDATE / RELAXATION:
+candidate = current_cost + edge_weight
+if candidate < best_cost[neighbour]:
+    improve best_cost
+    push new candidate
+
+INVARIANT:
 Once a node leaves the priority queue, no cheaper path to that node can ever be found.
 ```
 
@@ -218,15 +237,23 @@ scan every edge once again
 Concept
 
 ```
-Problem:
+DOMAIN:
+Weighted Shortest Path
+Single-source shortest paths where negative edge weights may exist.
+
+PROBLEM:
 Find the minimum-cost path from a start node to every other node.
 
-Optimisation Objective:
-Minimise total path cost.
+SPECIAL ABILITY:
+Negative edges allowed.
+Can detect reachable negative cycles.
 
-State:
+DATA STRUCTURE:
+Edge list
+
+STATE:
 best_cost[node]
-The best known cost from the start to every node.
+    → The best known cost from the start to every node.
 
 Initialisation:
 A = 0
@@ -234,19 +261,34 @@ B = ∞
 C = ∞
 D = ∞
 
-Update Rule:
+CORE OPERATION:
+→ scan the entire edge list
+→ relax every edge
+
+RELAXATION:
 candidate = best_cost[from_node] + weight
-if it's cheaper, best_cost[to_node] = candidate
+if candidate < best_cost[to_node]:
+    improve it
 Same relaxation in Dijkstra
 
-Termination rule:
+PASS:
+One complete scan of the edge list.
+
+EARLY EXIT:
+A complete pass makes no changes.
+
+NEGATIVE CYCLE:
+After normal passes,
+an edge can still improve.
+
+TERMINATION RULE:
 Early stop
 A whole pass makes no changes.
 or
 After number_of_nodes - 1 passes
 All shortest paths have had enough passes to propagate.
 
-Invariant:e
+INVARIANT:
 After the k-th pass, every shortest path that uses at most k edges has been discovered.
 ```
 

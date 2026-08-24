@@ -431,3 +431,98 @@ Finish the last group.
 That **final cleanup step** is common in grouping problems because a group often finishes either when we see a boundary or when input ends.
 
 ### Drill - Merge Intervals
+
+Problem:
+
+```
+[[1,3], [2,6], [8,10], [15,18]]
+```
+
+Output:
+
+```
+[[1,6], [8,10], [15,18]]
+```
+
+The mental model is similar to Summary Ranges:
+
+> We are tracking one current group and deciding whether the next item belongs to it.
+
+```
+1. Information: What information must be preserved while scanning?
+The merged interval for the current overlapping group.
+
+2. What does current_start mean?
+current_start is the start of the current merged interval.
+
+3. What does current_end mean?
+current_end is the furthest end reached by the current merged interval.
+
+4. What exact condition tells us the next interval belongs to the current group?
+if next_start <= current_end:
+    same group
+else:
+    current group is finished
+
+5. Transition:
+Case 1 — Same group
+next_start <= current_end
+Then expand current group
+current_end = max(current_end, next_end)
+
+Case 2 — New group
+next_start > current_end
+
+Then finish current group
+        ↓
+append it
+
+next interval becomes
+the new current group
+
+6. Invariant:
+Before examining intervals[read], [current_start, current_end] represents the merged result of the current overlapping group from the processed prefix.
+
+Current group = valid but still open to change.
+Finished group = safe to append and never change again.
+```
+
+### Drill - Insert Interval
+
+Problem:
+
+```
+intervals = [[1,2], [3,5], [6,7], [8,10], [12,16]]
+newInterval = [4,8]
+```
+
+Expected result:
+
+```
+[[1,2], [3,10], [12,16]]
+```
+
+The important difference from Merge Intervals is this:
+
+> We are not merging all intervals together. We are inserting one special interval into an already sorted, non-overlapping list.
+
+So there are three phases.
+
+```
+1. intervals completely before newInterval
+2. intervals overlapping newInterval
+3. intervals completely after newInterval
+```
+
+That means the evolving state is not a write pointer.
+
+It is the interval we are currently building:
+
+```
+new_start
+new_end
+```
+
+The invariant during the merge phase is:
+
+[new_start, new_end] represents newInterval merged with every overlapping interval processed so far.

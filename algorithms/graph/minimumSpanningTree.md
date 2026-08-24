@@ -1,4 +1,4 @@
-# Minimum Spanning Tree
+# Minimum Spanning Tree - Kruskal & Prim
 
 Sometimes the problem changes, not the graph.
 

@@ -28,7 +28,7 @@ Handbook complete.
 
 - Atomic Operations
 
-### 🔜 Scheduling
+### ✅ Scheduling
 
 - CPU Scheduler
 

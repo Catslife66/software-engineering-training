@@ -27,7 +27,7 @@ We will begin with:
 
 “What regions exist, and what does each region mean?”
 
-## Read / Write
+## Pattern 1 - Read / Write
 
 ```
 read ---> scans information
@@ -309,7 +309,7 @@ accepted → copy and grow write;
 rejected → only advance read.
 ```
 
-## Start / Read
+## Pattern 2 - Start / Read
 
 The key question becomes:
 
@@ -509,9 +509,9 @@ The important difference from Merge Intervals is this:
 So there are three phases.
 
 ```
-1. intervals completely before newInterval
-2. intervals overlapping newInterval
-3. intervals completely after newInterval
+1. Preserve intervals before the evolving interval
+2. Merge overlapping intervals into the evolving interval
+3. Preserve intervals after it
 ```
 
 That means the evolving state is not a write pointer.
@@ -525,4 +525,436 @@ new_end
 
 The invariant during the merge phase is:
 
-[new_start, new_end] represents newInterval merged with every overlapping interval processed so far.
+`[new_start, new_end]` represents `newInterval` merged with every overlapping interval processed so far.
+
+Now look at the three possible cases for the current interval [start, end].
+
+If:
+
+```
+end < new_start
+```
+
+then the current interval is completely before the new interval. It is already finished, so we append it.
+
+If:
+
+```
+start <= new_end
+```
+
+and we are no longer in the “before” case, then it overlaps the evolving new interval. So we expand:
+
+```
+new_start = min(new_start, start)
+new_end = max(new_end, end)
+```
+
+If:
+
+```
+start > new_end
+```
+
+then the current interval is completely after the evolving interval. At that moment, the evolving interval is finished and can be appended.
+
+The mental model is therefore:
+
+```
+| finished intervals | evolving inserted interval | unread intervals |
+```
+
+Trace:
+
+```
+[1,2]
+2 < 4
+→ before
+→ append [1,2]
+
+[3,5]
+3 <= 8
+→ overlaps
+→ evolving interval becomes [3,8]
+
+[6,7]
+6 <= 8
+→ overlaps
+→ evolving interval stays [3,8]
+
+[8,10]
+8 <= 8
+→ overlaps
+→ evolving interval becomes [3,10]
+
+[12,16]
+12 > 10
+→ after
+→ append finished [3,10]
+→ append [12,16]
+```
+
+Code skeleton:
+
+```
+res = []
+read = 0
+new_start, new_end = newInterval
+
+# before
+while (
+    read < len(intervals)
+    and intervals[read][1] < new_start
+):
+    res.append(intervals[read])
+    read += 1
+
+# overlap
+while (
+    read < len(intervals)
+    and intervals[read][0] <= new_end
+):
+    new_start = min(new_start, intervals[read][0])
+    new_end = max(new_end, intervals[read][1])
+    read += 1
+
+# evolving interval is now finished
+res.append([new_start, new_end])
+
+# after
+while read < len(intervals):
+    res.append(intervals[read])
+    read += 1
+
+return res
+```
+
+## Pattern 3 - Two Readers + One Writer
+
+The classic problem here is:
+
+**Merge Sorted Array**
+
+Example:
+
+```
+nums1 = [1, 3, 5, 0, 0, 0]
+nums2 = [2, 4, 6]
+```
+
+The final nums1 should become:
+
+```
+[1, 2, 3, 4, 5, 6]
+```
+
+This family is different from Read/Write.
+
+In Read/Write, one reader scanned one source:
+
+```
+source → read
+destination → write
+```
+
+Here we have two sources:
+
+```
+nums1
+nums2
+```
+
+So we need to know:
+
+Which source currently has the next value that belongs in the output?
+
+That naturally gives us two readers.
+
+---
+
+**Why merge from the back?**
+
+Suppose we tried to build from the front.
+
+Initially:
+
+```
+nums1 = [1, 3, 5, _, _, _]
+nums2 = [2, 4, 6]
+```
+
+If we write 2 into index 1 of nums1, we destroy the original 3 before we've processed it.
+
+That's an information-preservation problem.
+
+But the unused space is at the **back**:
+
+```
+[1, 3, 5, _, _, _]
+                  ↑
+               free space
+```
+
+So we work backwards.
+
+We compare the **largest unread values** and place the larger one into the final free position.
+
+---
+
+**The three positions**
+
+Suppose:
+
+```
+nums1 = [1, 3, 5, _, _, _]
+                ↑        ↑
+               p1      write
+
+nums2 = [2, 4, 6]
+             ↑
+            p2
+```
+
+Their meanings:
+
+- p1 = largest unread value remaining in the original part of nums1
+
+- p2 = largest unread value remaining in nums2
+
+- write = next output position to fill
+
+Notice again: the pointers are just positions. The real idea is **what information each position represents**.
+
+---
+
+**Regions**
+
+During execution, nums1 has roughly this shape:
+
+```
+| unread nums1 values | free/unsafe area | finished merged suffix |
+                                      write+1              end
+```
+
+The finished suffix is important:
+
+> Everything to the right of write is already in its final correct position and must never change again.
+
+This is different from our earlier prefix invariants.
+
+Now the finished answer grows from the right.
+
+```
+Information:
+The remaining unread values from both arrays must be preserved until each one is copied into its final position.
+
+State:
+p1 = largest unread value remaining in the original part of nums1
+p2 = largest unread value remaining in nums2
+write = next output position to fill
+
+Transition:
+while p1 >= 0 and p2 >= 0:
+    compare nums1[p1] and nums2[p2]
+    write the larger one
+    move that reader
+    move write
+
+if nums2 still has values:
+    copy them into nums1
+
+Invariant:
+Before each comparison, nums1[write+1:] contains the largest elements from both arrays that have already been merged, in correct sorted order.
+```
+
+## Pattern 4 - Opposite-Direction Pointers
+
+Previously, pointers mostly moved in the **same general direction** through data.
+
+Now we’ll have:
+
+```
+left  →          ←  right
+```
+
+Two pointers start at opposite ends and move toward each other.
+
+The key question is:
+
+> What relationship between the left side and right side are we trying to maintain or test?
+
+**Problem — Reverse an Array In Place**
+
+Example:
+
+```
+[1, 2, 3, 4, 5]
+```
+
+Final result:
+
+```
+[5, 4, 3, 2, 1]
+```
+
+Imagine:
+
+```
+[1, 2, 3, 4, 5]
+ ↑           ↑
+left       right
+```
+
+What should happen to 1 and 5?
+
+They belong in each other’s positions.
+
+So we swap them:
+
+```
+[5, 2, 3, 4, 1]
+    ↑     ↑
+   left right
+```
+
+Now the outer positions are finished.
+
+That gives us the important region picture:
+
+```
+| finished reversed | unknown middle | finished reversed |
+```
+
+The finished regions grow inward from both ends.
+
+```
+Information:
+Each original value must end up in its mirrored position on the opposite side.
+
+State:
+left = the next position from the left that has not yet been placed correctly.
+right = the next position from the right that has not yet been placed correctly.
+
+Transition:
+while left < right:
+    nums[left] ↔ nums[right]
+
+Invariant:
+Before each swap, every position outside `[left, right]` already contains its correct final reversed value.
+```
+
+### Drill - Valid Palindrome
+
+Example:
+
+```
+"racecar"
+```
+
+We want to know whether the string reads the same forwards and backwards.
+
+```
+Transition:
+if s[left] != s[right]:
+    return False
+
+otherwise:
+    left moves right
+    right moves left
+
+Invariant:
+Before each comparison, every mirrored pair outside [left, right] has already been confirmed equal.
+```
+
+### Drill - Two Sum II (Sorted Array)
+
+Example:
+
+```
+nums = [2, 7, 11, 15]
+target = 9
+```
+
+We want the pair:
+
+```
+2 + 7 = 9
+```
+
+Because the array is sorted, opposite-direction pointers become useful:
+
+```
+[2, 7, 11, 15]
+ ↑            ↑
+left        right
+```
+
+The key difference from palindrome checking is this:
+
+We do not always move both pointers.
+
+Instead, the **sum tells us which side is wrong**.
+
+If:
+
+```
+nums[left] + nums[right] < target
+```
+
+the sum is too small.
+
+Because the array is sorted, moving right left would only make the sum smaller or equal. So that cannot help.
+
+We must increase the smaller side:
+
+```
+left moves right
+```
+
+If:
+
+```
+nums[left] + nums[right] > target
+```
+
+the sum is too large.
+
+Moving left right would make the sum even larger or equal. So we must decrease the larger side:
+
+```
+right moves left
+```
+
+And if:
+
+```
+nums[left] + nums[right] == target
+```
+
+we found the answer.
+
+```
+Information:
+Find two values whose sum equals target.
+
+State:
+left points to the smallest remaining candidate.
+right points to the largest remaining candidate.
+
+Transition:
+sum too small
+→ prove left candidate impossible
+→ eliminate left
+
+sum too large
+→ prove right candidate impossible
+→ eliminate right
+
+sum correct
+→ answer found
+
+Invariant:
+If a valid pair still exists, it must lie within the remaining search region [left, right].
+```
+
+## Pattern 5 - Fast / Slow Pointers

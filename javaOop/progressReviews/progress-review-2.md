@@ -52,7 +52,7 @@ This phase focuses on engineering thinking rather than Spring implementation.
 - Trade-offs
 - Common interview discussions
 
-## Phase 3 — Real Spring Boot Development (Restart Here)
+## Phase 3 — Real Spring Boot Development
 
 ### Module 3.1 — Spring Boot Project & Dependency Injection ✅
 
@@ -213,7 +213,7 @@ GROUP BY
 HAVING
 ```
 
-### Module 3.11 — Fetching & Performance
+### Module 3.11 — Fetching & Performance ✅
 
 Topics:
 
@@ -225,7 +225,7 @@ Fetch Join
 EntityGraph
 ```
 
-### Module 3.12 — Pagination & Sorting
+### Module 3.12 — Pagination & Sorting ✅
 
 Topics:
 
@@ -236,7 +236,7 @@ Slice
 Sort
 ```
 
-### Module 3.13 — Specifications & Dynamic Search
+### Module 3.13 — Specifications & Dynamic Search ✅
 
 Topics:
 
@@ -253,10 +253,35 @@ Search DTO design
 Topics:
 
 ```
-Datasource configuration
-SQL/JPA boundary
-Schema management
-Migration concepts (Flyway/Liquibase overview)
+3.14A — How Spring Boot reaches PostgreSQL
+        DataSource
+        JDBC driver
+        Hibernate
+        connection settings
+
+3.14B — application.yml
+        datasource URL
+        username/password
+        Hibernate configuration
+
+3.14C — Schema management
+        ddl-auto
+        create/update/validate
+        why production is different
+
+3.14D — Database migrations
+        Flyway/Liquibase concept
+        versioned schema changes
+
+3.14E — SQL/JPA boundary
+        what Hibernate manages
+        what PostgreSQL manages
+        where native SQL/database features fit
+
+3.14F — Small implementation/practice
+        configure BrightMove
+        trace startup
+        reason about common failures
 ```
 
 ### Module 3.15 — Spring Security

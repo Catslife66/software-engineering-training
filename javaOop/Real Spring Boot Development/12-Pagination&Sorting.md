@@ -634,6 +634,133 @@ However, in public APIs you may want tighter control over:
 
 rather than exposing arbitrary entity properties directly.
 
+There are three common ways to control it.
+
+**A. Use Spring defaults**
+
+You can define defaults:
+
+```
+@GetMapping
+public Page<PropertyResponse> getProperties(
+        @PageableDefault(
+            page = 0,
+            size = 20,
+            sort = "createdAt",
+            direction = Sort.Direction.DESC
+        )
+        Pageable pageable
+) {
+    ...
+}
+```
+
+This says:
+
+```
+No page supplied
+→ page 0
+
+No size supplied
+→ 20
+
+No sort supplied
+→ createdAt DESC
+```
+
+Useful, but this doesn't fully solve validation such as:
+
+```
+size must be <= 100
+```
+
+**B. Configure a global maximum page size**
+
+Spring MVC's pageable argument resolver can be configured with a maximum page size.
+
+Conceptually:
+
+```
+Client requests size=100000
+
+↓
+
+Spring limits/rejects according to configuration
+```
+
+This is useful when the same pagination policy applies across the whole application.
+
+**C. Use your own pagination request DTO**
+
+For a carefully controlled API, this is the approach I think is clearest for you.
+
+For example:
+
+```
+public record PaginationRequest(
+
+        @Min(0)
+        int page,
+
+        @Min(1)
+        @Max(100)
+        int size
+
+) {}
+```
+
+Then:
+
+```
+@GetMapping
+public PageResponse<PropertyResponse> getProperties(
+        @Valid PaginationRequest pagination
+) {
+    Pageable pageable = PageRequest.of(
+            pagination.page(),
+            pagination.size()
+    );
+
+    ...
+}
+```
+
+Now the flow is:
+
+```
+HTTP query parameters
+    ↓
+PaginationRequest
+    ↓
+@Valid
+    ↓
+page >= 0
+size between 1 and 100
+    ↓
+PageRequest
+```
+
+This gives you complete control.
+
+You could eventually also add:
+
+```
+String sort;
+String direction;
+```
+
+but I'd usually validate sort values against an allowed set rather than allow arbitrary entity property names.
+
+So the practical rule is:
+
+```
+Simple/internal API
+→ Pageable directly + defaults/configuration
+
+Carefully controlled public API
+→ validated request DTO → build Pageable yourself
+```
+
 ---
 
 **Returning Page Directly From the API**
@@ -1450,7 +1577,8 @@ public record PageResponse<T>(
         boolean hasNext,
         boolean hasPrevious
 ) {
-
+    // A generic static factory method that converts a Spring Page<T> into our own PageResponse<T>.
+    // This is similar to a Mapper.
     public static <T> PageResponse<T> from(
             Page<T> page
     ) {

@@ -67,11 +67,29 @@ Focus:
 
 ## Phase 2 — Real-world Reporting SQL
 
+- report grain
+- business metric -> data requirements
+- multi-table reporting
+- new vs returning customers
+- return-after-gap analysis
+- month-over-month retention
 - cohort analysis
-- retention queries
 - funnels
-- conversion metrics
-- SaaS/business analytics
+- conversion
+- integrated business reporting
+
+| Module   | Topic                   | Core question                                              | Status        |
+| -------- | ----------------------- | ---------------------------------------------------------- | ------------- |
+| **2.1**  | Reporting Foundations   | What does one output row mean?                             | ✅ Complete   |
+| **2.2**  | Multi-Table Reporting   | Where does each piece of information live?                 | ✅ Complete   |
+| **2.3**  | Customer Lifecycle      | Is this customer new, returning, or reactivated?           | ✅ First pass |
+| **2.4**  | Retention               | Did customers come back?                                   | ✅ First pass |
+| **2.5**  | Cohort Analysis         | What happened to customers who started together?           | 🟡 Current    |
+| **2.6**  | Funnel Analysis         | How far do users progress through a process?               | ⏳            |
+| **2.7**  | Conversion Metrics      | What proportion completed the desired action?              | ⏳            |
+| **2.8**  | SaaS / Business Metrics | How do real products measure growth and behaviour?         | ⏳            |
+| **2.9**  | Integrated Reporting    | Can we design a report from an ambiguous business request? | ⏳            |
+| **2.10** | Phase Review            | Can we derive unfamiliar reports independently?            | ⏳            |
 
 ## Phase 3 — Database Internals (later)
 

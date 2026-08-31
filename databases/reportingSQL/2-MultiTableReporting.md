@@ -754,7 +754,9 @@ GROUP BY c.customer_id, c.name
 ORDER BY c.customer_id;
 ```
 
-## Drill
+## Excercises
+
+### Drill 1
 
 Problem Card
 
@@ -853,3 +855,110 @@ LEFT JOIN order_summary os ON os.salesperson_id = s.salesperson_id
 GROUP BY s.salesperson_id, s.name
 ORDER BY s.salesperson_id;
 ```
+
+### Drill 2
+
+Business request
+
+The Product Manager asks:
+
+> For each product category, show July 2026 revenue, unique customers, average category-specific order value, and the largest category-specific order value. Include categories with no July sales.
+
+Business definitions
+
+- Revenue = sum of quantity × unit_price for that category.
+- Unique customers = distinct customers who bought at least one product in that category during July.
+- Category-specific order value = the value contributed by that category within one order.
+- Average category-specific order value = average of those category-order values.
+- Largest category-specific order value = maximum category-order value.
+- Categories with no qualifying July sales must still appear.
+- For those categories:
+  - revenue = 0
+  - unique customers = 0
+  - average category-order value = NULL
+  - largest category-order value = NULL
+
+Schema
+
+```
+products
+────────────────────
+product_id      PK
+product_name
+category
+
+
+orders
+────────────────────
+order_id        PK
+customer_id
+order_date
+status
+
+
+order_items
+────────────────────
+order_id        FK
+product_id      FK
+quantity
+unit_price
+```
+
+Relationships:
+
+```
+orders
+   │
+   │ 1:N
+   ▼
+order_items
+   │
+   │ N:1
+   ▼
+products
+```
+
+Required output
+
+```
+category | total_revenue | unique_customers | avg_category_order_value | largest_category_order_value
+```
+
+```
+WITH categories AS (
+    SELECT DISTINCT category
+    FROM products
+),
+category_orders AS (
+    SELECT
+        p.category,
+        o.order_id,
+        o.customer_id,
+        SUM(oi.quantity * oi.unit_price) AS category_order_value
+    FROM orders o
+    JOIN order_items oi
+      ON oi.order_id = o.order_id
+    JOIN products p
+      ON p.product_id = oi.product_id
+    WHERE o.order_date >= DATE '2026-07-01'
+      AND o.order_date <  DATE '2026-08-01'
+      AND o.status = 'COMPLETED'
+    GROUP BY
+        p.category,
+        o.order_id,
+        o.customer_id
+)
+SELECT
+    c.category,
+    COALESCE(SUM(co.category_order_value), 0) AS total_revenue,
+    COUNT(DISTINCT co.customer_id) AS unique_customers,
+    ROUND(AVG(co.category_order_value), 2) AS avg_category_order_value,
+    MAX(co.category_order_value) AS largest_category_order_value
+FROM categories c
+LEFT JOIN category_orders co
+  ON co.category = c.category
+GROUP BY c.category
+ORDER BY c.category;
+```
+
+The key: also include categories with no July sales

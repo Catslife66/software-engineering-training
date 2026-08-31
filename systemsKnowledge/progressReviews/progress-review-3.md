@@ -1,50 +1,18 @@
 ## Phase A — Foundations of Systems Thinking
 
-### ✅ Processes
+- Processes ✅
 
-Handbook complete.
+- Threads ✅
 
-### ✅ Threads
+- Concurrency ✅
 
-Handbook complete.
+- Synchronization ✅
 
-### ✅ Concurrency
-
-Handbook complete.
-
-### 🔜 Synchronization
-
-- Locks
-
-- Mutexes
-
-- Semaphores
-
-- Thread Safety
-
-- Deadlocks
-
-- Lock Contention
-
-- Atomic Operations
-
-### ✅ Scheduling
-
-- CPU Scheduler
-
-- Fairness
-
-- Preemption
-
-- Starvation
-
-- Priority
+- Scheduling ✅
 
 ## Phase B — Network Thinking
 
-We'll revisit:
-
-- TCP
+- TCP ✅
 
 - UDP
 

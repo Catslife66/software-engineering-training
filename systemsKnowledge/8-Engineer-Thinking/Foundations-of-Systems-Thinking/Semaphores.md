@@ -775,29 +775,122 @@ You're the backend engineer.
 
 Explain:
 
+```
 1. Where does the bottleneck appear to be?
+The application has spare CPU capacity, but its worker threads are blocked waiting for a saturated downstream dependency.
+
+CPU utilisation = 40%
+→ CPU has spare capacity
+
+workers heavily occupied
+→ but they're not necessarily using CPU
+
+Recommendation API:
+100 ms → 5 seconds
+→ major degradation
+
+Worker threads are occupied, but mostly blocked on I/O. So the bottleneck appears to be the downstream dependency, not our CPU.
+
 2. Why might increasing the worker-thread pool make the situation worse?
+Increasing capacity upstream can overload a constrained downstream dependency.
+
+more concurrency
+↓
+downstream saturation
+↓
+slower API responses
+↓
+our workers remain blocked longer
+↓
+worker saturation
+↓
+higher end-to-end latency
+
 3. How could a semaphore help?
+Keep concurrency within a level the downstream dependency can sustainably handle.
+
+Before calling the recommendation API:
+request
+↓
+acquire permit
+↓
+call recommendation API
+↓
+response
+↓
+release permit
+
+Therefore maximum concurrent recommendation calls = 50. That's bounded concurrency.
+
+The semaphore acts as admission control:
+200 workers
+     ↓
+[ Semaphore: 50 permits ]
+     ↓
+Recommendation API
+
 4. What would happen to request 51 when all 50 permits are in use?
+Request 51 cannot acquire one.
+
+It waits until:
+another request completes
+↓
+release()
+↓
+permit becomes available
+↓
+request 51 acquires it
+↓
+proceeds
+
 5. Does introducing the semaphore actually increase the recommendation service's capacity?
+A semaphore does not increase downstream capacity. It prevents upstream concurrency from exceeding downstream capacity. Coordination mechanisms do not create additional capacity.
+
 6. What new problem appears if incoming traffic continuously exceeds those 50 concurrent slots?
+Suppose:
 
-Try naturally using:
+system completes: 100 requests/sec
+incoming traffic: 500 requests/sec
+
+Every second:
+
++500 arrive
+-100 finish
+───────────
++400 waiting
+
+Then:
+
+1 second  → 400 waiting
+10 sec    → 4,000 waiting
+1 minute  → 24,000 waiting
+...
+
+That's the real problem:
+
+The waiting backlog grows because arrival rate exceeds sustainable processing rate.
+
+And that produces:
+growing backlog
+↓
+longer waiting time
+↓
+higher end-to-end latency
+↓
+more memory / thread / connection pressure
+↓
+eventual upstream resource exhaustion
+
+Now we're touching backpressure.
+```
 
 ```
-bounded concurrency
-concurrency limit
-permits
-acquire
-release
-downstream dependency
-resource saturation
-admission control
-backpressure
-response latency
-```
+The application CPU is only at 40%, so CPU capacity does not appear to be the immediate bottleneck. The recommendation service's latency has increased from 100 ms to 5 seconds, and application workers are heavily occupied waiting for that downstream dependency. Increasing the worker-thread pool could therefore make the problem worse by generating even more concurrent calls against an already saturated service.
 
-As before: reason first. I'll refine your engineer language afterward.
+I would introduce bounded concurrency around the recommendation service. For example, a semaphore with 50 permits would act as admission control, allowing at most 50 concurrent calls. Each request must acquire a permit before calling the dependency and release it afterward. If all permits are in use, additional requests must wait.
+
+The semaphore does not increase the dependency's capacity; it prevents our application from exceeding that capacity. If incoming demand continuously exceeds sustainable throughput, however, the waiting backlog will grow, increasing end-to-end latency and creating backpressure. We would then need an overload strategy rather than simply increasing concurrency.
+```
 
 ## 8. Technology Spotlight — Java Semaphore
 

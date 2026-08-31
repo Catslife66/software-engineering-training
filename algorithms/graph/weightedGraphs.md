@@ -106,6 +106,12 @@ DATA STRUCTURE:
 Priority Queue
 Always gives us the cheapest discovered route next.
 
+HEAP ENTRY:
+(path_cost, node)
+
+PRIORITY:
+cheapest candidate PATH COST
+
 CORE OPERATION:
 Pop cheapest candidate path.
 

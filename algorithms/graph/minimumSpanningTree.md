@@ -1163,3 +1163,20 @@ visited
 ```
 
 Prim grows one tree using the cheapest expanding edge. Kruskal builds a forest using the cheapest globally safe edge, while Union-Find tells Kruskal whether two nodes are already connected.
+
+```
+                         GRAPH PROBLEMS
+                              │
+          ┌───────────────────┼────────────────────┐
+          │                   │                    │
+      EXPLORATION         DEPENDENCIES         WEIGHTED GRAPH
+          │                   │                    │
+      DFS / BFS              Kahn          ┌───────┴────────┐
+                                            │                │
+                                      SHORTEST PATH          MST
+                                            │                │
+                                      Dijkstra          Prim
+                                      Bellman-Ford      Kruskal
+                                                            │
+                                                       Union-Find
+```

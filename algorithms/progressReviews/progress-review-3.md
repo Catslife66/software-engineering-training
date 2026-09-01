@@ -59,7 +59,6 @@ You now understand:
 - Priority Queue
 - Min Heap
 - Dijkstra
-- A\*
 - Bellman-Ford (optional)
 
 ### Module 5 — Minimum Spanning Tree (Disjoint Set)

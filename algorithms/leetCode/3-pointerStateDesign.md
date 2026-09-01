@@ -957,4 +957,608 @@ Invariant:
 If a valid pair still exists, it must lie within the remaining search region [left, right].
 ```
 
+### Drill - Container With Most Water
+
+Problem:
+
+```
+heights = [1,8,6,2,5,4,8,3,7]
+```
+
+Choose two vertical lines. The water area is:
+
+```
+width × shorter height
+```
+
+So for positions left and right:
+
+```
+area = (right - left) × min(height[left], height[right])
+```
+
+We start at the widest possible pair:
+
+```
+left                   right
+ ↓                       ↓
+[1, 8, 6, 2, 5, 4, 8, 3, 7]
+```
+
+The key question is not:
+
+Which pointer should move?
+
+It is:
+
+> Which boundary can be safely discarded because keeping it cannot lead to a better area?
+
+Suppose:
+
+```
+height[left] = 1
+height[right] = 7
+```
+
+The area is limited by the shorter side:
+
+```
+min(1, 7) = 1
+```
+
+Now imagine keeping the left height 1 and moving right inward.
+
+What happens?
+
+The width gets smaller, while the limiting height is still at most `1`.
+
+So any container that keeps this left boundary has area:
+
+```
+smaller width × at most 1
+```
+
+It cannot beat the current area.
+
+Therefore the left boundary is proven useless and can be eliminated:
+
+```
+left += 1
+```
+
+That is the elimination argument.
+
+Likewise, if:
+
+```
+height[right] < height[left]
+```
+
+then the right boundary is the limiting side, so we safely move:
+
+```
+right -= 1
+```
+
+The rule is therefore:
+
+```
+shorter side is left
+→ eliminate left
+
+shorter side is right
+→ eliminate right
+```
+
+Why not move the taller side? Because reducing width while keeping the same shorter limiting side cannot improve the area.
+
+The invariant/search-space view is:
+
+`best` stores the largest area found so far, and any pair that could still beat it must lie inside the current `[left, right]` region.
+
+Solution:
+
+```
+def maxArea(self, height: List[int]) -> int:
+        left = 0
+        right = len(height) - 1
+        best = 0
+
+        while left < right:
+            area = (right - left) * min(height[left], height[right])
+            best = max(area, best)
+
+            if height[left] < height[right]:
+                left += 1
+            else:
+                right -= 1
+
+        return best
+```
+
 ## Pattern 5 - Fast / Slow Pointers
+
+We'll start with the classic problem:
+
+Determine whether a linked list contains a cycle.
+
+Imagine:
+
+```
+A → B → C → D → E
+        ↑       ↓
+        ← ← ← ←
+```
+
+After reaching E, instead of ending, the list points back to C.
+
+So following next forever gives:
+
+```
+A → B → C → D → E → C → D → E → C ...
+```
+
+We need to determine:
+
+> Does this list eventually end, or are we trapped in a loop?
+
+One naive solution would be to remember every node we've visited in a `HashSet`.
+
+But fast/slow pointers give us another way.
+
+We create two observers:
+
+```
+slow → moves 1 node each iteration
+fast → moves 2 nodes each iteration
+```
+
+For now, don't worry about why that detects a cycle.
+
+First establish the state.
+
+Suppose:
+
+```
+A → B → C → D → E
+```
+
+Initially:
+
+```
+slow
+fast
+ ↓
+ A → B → C → D → E
+```
+
+After one iteration:
+
+```
+     slow
+      ↓
+ A → B → C → D → E
+         ↑
+        fast
+```
+
+So:
+
+```
+slow = B
+fast = C
+```
+
+After another:
+
+```
+slow = C
+fast = E
+```
+
+The pointers are not building an output region like Read/Write.
+
+They are tracking two positions moving through the same structure at different rates.
+
+If a linked list with **no cycle**, what will eventually happen to fast?
+
+Eventually:
+
+```
+fast == null
+      ↓
+no cycle
+```
+
+**What if there is a cycle?**
+
+Once slow and fast enter that cycle, neither can ever reach null.
+
+But something else happens.
+
+Think of it like two runners on a circular running track:
+
+```
+slow → 1 step each turn
+fast → 2 steps each turn
+```
+
+Suppose fast is behind slow somewhere on the circle.
+
+Every iteration:
+
+```
+slow advances: +1
+fast advances: +2
+```
+
+So relative to slow, fast gains:
+
+```
+2 - 1 = 1 position
+```
+
+every iteration.
+
+Eventually fast must catch slow.
+
+That's the fundamental reason Floyd's cycle detection works.
+
+### Drill - Cycly detection
+
+Example:
+
+```
+A → B → C → D
+↑           |
+└───────────┘
+```
+
+Start:
+
+```
+slow = A
+fast = A
+```
+
+We don't immediately say “cycle!” because they started at the same place.
+
+Iteration 1:
+
+```
+slow: A → B
+fast: A → B → C
+
+slow = B
+fast = C
+```
+
+Iteration 2:
+
+```
+slow: B → C
+fast: C → D → A
+
+slow = C
+fast = A
+```
+
+Iteration 3:
+
+```
+slow: C → D
+fast: A → B → C
+
+slow = D
+fast = C
+```
+
+Iteration 4:
+
+```
+slow: D → A
+fast: C → D → A
+
+slow = A
+fast = A
+```
+
+They meet.
+
+Therefore:
+
+```
+fast reaches null
+        ↓
+     no cycle
+
+slow == fast after movement
+        ↓
+      cycle
+```
+
+**Different movement rates expose repetition in a cyclic structure.**
+
+For linked-list cycle detection:
+
+```
+slow = head
+fast = head
+
+while fast != null and fast.next != null:
+    slow = slow.next
+    fast = fast.next.next
+
+    if slow == fast:
+        cycle exists
+
+no cycle
+```
+
+Notice the safety condition:
+
+```
+fast != null
+AND
+fast.next != null
+```
+
+We need both because fast tries to move two steps.
+
+If either step doesn't exist, we've reached the end of a normal linked list.
+
+### Drill - Find the Middle of a Linked List
+
+Example:
+
+```
+A → B → C → D → E → null
+```
+
+Again:
+
+```
+slow moves 1 step
+fast moves 2 steps
+```
+
+Start:
+
+```
+slow = A
+fast = A
+```
+
+Each iteration:
+
+```
+slow travels 1
+fast travels 2
+```
+
+So their travelled distances always have this relationship:
+
+```
+fast_distance = 2 × slow_distance
+```
+
+When fast has travelled roughly the entire list:
+
+```
+fast_distance ≈ list length
+```
+
+therefore:
+
+```
+slow_distance ≈ list length / 2
+```
+
+So `slow` is around the middle.
+
+This gives us a second use of Fast/Slow:
+
+```
+Cycle detection
+→ compare positions
+→ eventually meet if cyclic
+
+Find middle
+→ compare travel rates
+→ slow has travelled half as far when fast finishes
+```
+
+**One subtle case: even-length lists**
+
+Consider:
+
+```
+A → B → C → D → E → F → null
+```
+
+There are technically two middle nodes:
+
+```
+C and D
+```
+
+With the usual fast/slow implementation, slow ends at:
+
+```
+D
+```
+
+the **second middle**.
+
+We don't need to dive deeply into that implementation detail yet, but it's useful to know.
+
+```
+Information:
+middle node of the linked list.
+
+State:
+slow and fast
+
+Invariant/relationship:
+After each iteration, fast has travelled twice as many steps as slow.
+
+Transition:
+slow moves 1 step, fast moves 2.
+
+Termination meaning:
+when fast reaches the end, slow has travelled about half the list, so slow is at the middle.
+```
+
+### Drill - Happy Number
+
+Given a number, repeatedly replace it with the sum of the squares of its digits.
+
+Take:
+
+```
+19
+```
+
+Calculate:
+
+```
+1² + 9² = 82
+8² + 2² = 68
+6² + 8² = 100
+1² + 0² + 0² = 1
+```
+
+We reached 1, so 19 is a happy number.
+
+Another number might instead do this:
+
+```
+n → ... → 4 → ... → 4 → ... → 4
+```
+
+It enters a cycle and never reaches 1.
+
+So there are two possible structures:
+
+```
+Happy:
+19 → 82 → 68 → 100 → 1
+
+
+Not happy:
+n → A → B → C → D
+        ↑         ↓
+        ← ← ← ← ←
+```
+
+It's effectively a linked list with a cycle.
+
+But there are no actual nodes or next pointers.
+
+Instead, we have a function:
+
+```
+next_number(n)
+```
+
+that tells us where to go next.
+
+For example:
+
+```
+19 → 82
+```
+
+means:
+
+```
+next_number(19) == 82
+```
+
+So conceptually:
+
+```
+Linked list:
+node → node.next
+
+Happy Number:
+number → next_number(number)
+```
+
+**Why Fast/Slow works**
+
+We can create:
+
+```
+slow = n
+fast = n
+```
+
+Then:
+
+```
+slow moves once:
+slow = next_number(slow)
+
+fast moves twice:
+fast = next_number(next_number(fast))
+```
+
+Same movement relationship as Floyd's cycle detection.
+
+Eventually:
+
+**Happy case**
+
+The sequence reaches:
+
+```
+1 → 1 → 1 → 1 ...
+```
+
+So the pointers eventually meet at 1.
+
+**Unhappy case**
+
+The sequence enters some other cycle.
+
+Fast eventually catches slow inside that cycle.
+
+So when they meet, we ask:
+
+```
+Did they meet at 1?
+```
+
+If yes:
+
+```
+happy
+```
+
+Otherwise:
+
+```
+cycle that doesn't contain 1
+→ not happy
+```
+
+### Summary
+
+> Two observers follow the same transition function at different rates. Their positional relationship reveals information about the structure being traversed.
+
+| Problem               | Transition       | What different rates reveal                                   |
+| --------------------- | ---------------- | ------------------------------------------------------------- |
+| Linked List Cycle     | `node.next`      | Whether traversal enters a cycle                              |
+| Middle of Linked List | `node.next`      | Halfway position                                              |
+| Happy Number          | `next_number(n)` | Whether repeated state transitions reach `1` or another cycle |
+
+```
+Fast / Slow
+=
+same transition
++
+different movement rates
++
+use their relationship to infer structure
+```

@@ -962,3 +962,134 @@ ORDER BY c.category;
 ```
 
 The key: also include categories with no July sales
+
+### Drill 3
+
+Business request:
+
+For every product category, show August 2026 revenue, number of unique customers, average category-specific order value, and the salesperson who generated the highest category revenue. Include categories with no August sales.
+
+Business definitions:
+
+- Revenue = quantity × unit_price
+- Unique customers = distinct customers who bought something in that category during August
+- Category-specific order value = the amount that a category contributed within one order
+- Average category-specific order value = average of those category-order values
+- Top salesperson = salesperson with the highest total revenue for that category during August
+- Categories with no August activity must still appear
+- For categories with no activity:
+  - revenue = 0
+  - unique customers = 0
+  - average category order value = NULL
+  - top salesperson = NULL
+
+Required output:
+
+```
+category
+total_revenue
+unique_customers
+avg_category_order_value
+top_salesperson
+```
+
+Schemas:
+
+```
+salespeople
+────────────────────
+salesperson_id
+name
+
+orders
+────────────────────
+order_id
+customer_id
+salesperson_id
+order_date
+status
+
+order_items
+────────────────────
+order_id
+product_id
+quantity
+unit_price
+
+products
+────────────────────
+product_id
+product_name
+category
+```
+
+```
+WITH categories AS (
+    SELECT DISTINCT category
+    FROM products
+),
+order_revenues AS (
+  SELECT o.order_id,
+    o.salesperson_id,
+    s.name,
+    o.customer_id,
+    p.category,
+    SUM(oi.quantity*oi.unit_price) AS order_category_revenue,
+  FROM orders o
+  JOIN order_items oi ON oi.order_id = o.order_id
+  JOIN products p ON p.product_id = oi.product_id
+  JOIN salespeople s ON s.salesperson_id = o.salesperson_id
+  WHERE o.order_date >= DATE '2026-08-01'
+      AND o.order_date <  DATE '2026-09-01'
+      AND o.status = 'COMPLETED'
+  GROUP BY o.order_id, o.salesperson_id, s.name, o.customer_id, p.category
+),
+category_metrics AS (
+  SELECT
+        category,
+        SUM(order_category_revenue) AS total_revenue,
+        COUNT(DISTINCT customer_id) AS unique_customers,
+        AVG(order_category_revenue) AS category_revenue,
+  FROM order_revenues
+  GROUP BY category
+),
+salseperson_category_revenue AS (
+  SELECT
+      category,
+      salesperson_id,
+      name,
+      SUM(order_category_revenue) AS salesperson_revenue
+  FROM order_revenues
+  GROUP BY category, salesperson_id, name
+),
+ranked_salespeople AS (
+  SELECT
+    category,
+    salesperson_id,
+    name,
+    salesperson_revenue,
+    ROW_NUMBER() OVER (
+      PARTITION BY category
+      ORDER BY salesperson_revenue DESC
+    ) AS rn
+    FROM salseperson_category_revenue
+),
+category_winner AS (
+  SELECT
+    category,
+    salesperson_id,
+    name AS top_salesperson
+    FROM ranked_salespeople
+    WHERE rn = 1
+)
+SELECT
+    c.category,
+    COALESCE(cm.total_revenue, 0) AS total_revenue,
+    COALESCE(cm.unique_customers, 0) AS unique_customers,
+    cm.avg_category_order_value,
+    cw.top_salesperson
+FROM categories c
+LEFT JOIN category_metrics cm ON cm.category = c.category
+LEFT JOIN category_winner cw ON cw.category = c.category
+ORDER BY c.category;
+```

@@ -248,7 +248,7 @@ Combining optional filters
 Search DTO design
 ```
 
-### Module 3.14 — PostgreSQL Integration
+### Module 3.14 — PostgreSQL Integration ✅
 
 Topics:
 
@@ -289,11 +289,67 @@ Topics:
 Topics:
 
 ```
-Security Filter Chain
-Authentication
-Authorization
-SecurityContext
-Ownership implementation
+A. Security Mental Model
+   What Spring Security actually does
+   Authentication vs Authorization
+   Request security pipeline
+
+B. SecurityFilterChain
+   Filters
+   protected vs public endpoints
+   request authorization rules
+
+C. Authentication
+   credentials
+   Authentication object
+   AuthenticationManager
+   AuthenticationProvider
+
+D. User Loading
+   UserDetails
+   UserDetailsService
+   database-backed users
+
+E. Password Security
+   PasswordEncoder
+   BCrypt
+   registration vs login
+
+F. SecurityContext
+   authenticated principal
+   SecurityContextHolder
+   accessing the current user
+
+G. Authorization
+   roles
+   authorities
+   request-level authorization
+   method-level authorization
+
+H. Ownership Authorization
+   "Can this user modify THIS Property?"
+   identity vs role vs ownership
+
+I. JWT / Session Integration
+   how authentication persists between requests
+   where JWT fits into Spring Security
+
+J. Error Handling
+   401 Unauthorized
+   403 Forbidden
+   authentication failures
+
+K. BrightMove Integration
+   registration
+   login
+   authenticated requests
+   protected Property operations
+   ownership checks
+
+L. Security Review
+   complete request trace
+   common mistakes
+   final canonical notes
 ```
 
 ### Module 3.16 — Configuration

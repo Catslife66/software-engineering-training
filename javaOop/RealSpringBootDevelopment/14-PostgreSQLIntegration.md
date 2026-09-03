@@ -1,7 +1,5 @@
 # PostgreSQL Integration
 
-# PostgreSQL Integration
-
 Until now, we have mostly worked above the database layer:
 
 ```

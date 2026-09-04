@@ -993,7 +993,7 @@ avg_category_order_value
 top_salesperson
 ```
 
-Schemas:
+Schema:
 
 ```
 salespeople
@@ -1093,3 +1093,407 @@ LEFT JOIN category_metrics cm ON cm.category = c.category
 LEFT JOIN category_winner cw ON cw.category = c.category
 ORDER BY c.category;
 ```
+
+Metric map:
+
+```
+Final grain
+→ one category
+
+Metric A: total revenue
+Needs → category-order values → SUM
+
+Metric B: unique customers
+Needs → customer_id preserved → COUNT DISTINCT
+
+Metric C: average category-order value
+Needs → one row per category-order → AVG
+
+Metric D: top salesperson
+Needs → category-salesperson totals → rank → winner
+```
+
+Then you can see that some metrics share the same intermediate table, while others need a separate branch.
+
+### Drill 4
+
+Business request:
+
+For each salesperson, show their total revenue, number of unique customers, average order value, and highest-value product category from completed orders during August 2026.
+
+Definitions:
+
+- Total revenue = sum of quantity × unit_price
+- Unique customers = distinct customers who placed qualifying orders with that salesperson
+- Average order value = average value of the salesperson's individual qualifying orders
+- Highest-value product category = category in which that salesperson generated the most total revenue
+- Only `COMPLETED` August orders count.
+- We only need salespeople who had qualifying activity in this exercise, so there is no missing-population / `LEFT JOIN` complication.
+
+Schema:
+
+```
+orders
+─────────────────
+order_id
+salesperson_id
+customer_id
+order_date
+status
+
+order_items
+─────────────────
+order_id
+product_id
+quantity
+unit_price
+
+products
+─────────────────
+product_id
+category
+```
+
+Required output:
+
+```
+salesperson_id
+total_revenue
+unique_customers
+average_order_value
+highest_value_category
+```
+
+```
+Final grain
+→ one salesperson
+
+Scope
+→ completed August 2026 orders
+
+SHARED BASE
+one row = one order-item line
+keep:
+salesperson_id
+customer_id
+order_id
+category
+line_revenue
+
+
+BRANCH A — salesperson metrics
+Need:
+one row per order first
+→ order_value
+
+Then:
+one salesperson
+→ SUM(order_value)
+→ COUNT(DISTINCT customer_id)
+→ AVG(order_value)
+
+
+BRANCH B — highest-value category
+Need:
+one salesperson + one category
+→ SUM(line_revenue)
+
+Then:
+rank categories within each salesperson
+→ keep rank 1
+
+
+FINAL
+salesperson metrics
+JOIN
+category winner
+ON salesperson_id
+
+WITH order_details AS (
+  SELECT
+    o.order_id,
+    o.salesperson_id,
+    o.customer_id,
+    oi.quantity * oi.unit_price AS line_revenue,
+    p.category
+  FROM orders o
+  JOIN order_items oi ON oi.order_id = o.order_id
+  JOIN products p ON p.product_id = oi.product_id
+  WHERE o.order_date >= DATE '2026-08-01'
+    AND o.order_date < DATE '2026-09-01'
+    AND o.order_status = 'COMPLETED'
+)
+order_values AS (
+  SELECT
+    order_id,
+    salesperson_id,
+    customer_id,
+    SUM(line_revenue) AS order_value
+  FROM order_details
+  GROUP BY order_id, salesperson_id, customer_id
+),
+salesperson_metrics AS (
+  SELECT
+    salesperson_id,
+    SUM(order_value) AS total_revenue,
+    COUNT(DISTINCT customer_id) AS unique_customers,
+    AVG(order_value) AS average_order_value
+  FROM order_values
+  GROUP BY salesperson_id
+),
+category_revenues AS (
+  SELECT
+      salesperson_id,
+      category,
+      SUM(line_revenue) AS category_revenue,
+  FROM order_details
+  GROUP BY salesperson_id, category
+),
+ranked_salesperson_category AS (
+  SELECT
+    salesperson_id,
+    category,
+    category_revenue,
+    ROW_NUMBER() OVER(
+      PARTITION BY salesperson_id
+      ORDER BY category_revenue
+    ) AS rn
+  FROM category_revenues
+),
+top_category AS (
+  SELECT
+    salesperson_id,
+    category AS highest_value_category
+  FROM ranked_salesperson_category
+  WHERE rn = 1
+)
+SELECT
+  sm.salesperson_id,
+  sm.total_revenue,
+  sm.unique_customers,
+  ROUND(sm.average_order_value, 2) AS average_order_value,
+  tc.highest_value_category
+FROM salesperson_metrics sm
+JOIN top_category tc ON tc.salesperson_id = sm.salesperson_id
+ORDER by sm.salesperson_id
+```
+
+## What exactly is one value being averaged?
+
+For common reporting metrics:
+
+| Business metric              | One value being averaged              | Required grain before `AVG()` |
+| ---------------------------- | ------------------------------------- | ----------------------------- |
+| Average order value          | one order's value                     | one order                     |
+| Average customer spend       | one customer's total spend            | one customer                  |
+| Average category-order value | one category's value within one order | category + order              |
+| Average monthly revenue      | one month's total revenue             | one month                     |
+| Average salesperson revenue  | one salesperson's total revenue       | one salesperson               |
+
+Metric map:
+
+```
+Metric: average order value
+
+Average WHAT?
+→ individual order values
+
+Required intermediate grain:
+→ one order
+
+Calculation:
+→ AVG(order_value)
+```
+
+Example:
+
+```
+orders
+order_id | customer_id | salesperson_id | order_date
+
+order_items
+order_id | product_id | quantity | unit_price
+
+products
+product_id | category
+```
+
+A — Average order value
+
+For each salesperson, show their average order value.
+
+```
+Average WHAT?
+→ order value
+
+One value represents:
+→ one individual order's total value
+
+Required grain before AVG:
+→ salesperson + order
+
+Required grain before AVG:
+→ GROUP BY salesperson
+  AVG(order_value)
+```
+
+```
+WITH order_revenues AS (
+  SELECT
+    o.order_id,
+    o.salesperson_id,
+    SUM(oi.quantity * oi.unit_price) AS order_value
+  FROM orders o
+  JOIN order_items oi ON oi.order_id = o.order_id
+  GROUP BY o.order_id, o.salesperson_id
+)
+SELECT
+  o.salesperson_id,
+  AVG(order_value) AS avg_order_value
+FROM order_revenues
+GROUP BY o.salesperson_id
+```
+
+B — Average customer spend
+
+For each salesperson, show the average amount spent per unique customer.
+
+Notice this is not average order value. A customer may have several orders.
+
+```
+Average WHAT?
+→  customer spend
+
+One value represents:
+→ total amount ONE customer spent with ONE salesperson
+
+Required grain before AVG:
+→ salesperson + customer
+
+Required grain before AVG:
+→ GROUP BY salesperson
+  AVG(customer_spend)
+```
+
+```
+WITH order_revenues AS (
+  SELECT
+    o.salesperson_id,
+    o.customer_id,
+    SUM(oi.quantity*oi.unit_price) AS order_revenue
+  FROM orders o
+  JOIN order_items oi ON oi.order_id = o.order_id
+  GROUP by o.salesperson_id, o.customer_id
+)
+SELECT
+  salesperson_id,
+  AVG(order_revenue) AS avg_customer_spend
+FROM order_revenues
+GROUP BY salesperson_id
+```
+
+C — Average category-specific order value
+
+For each category, show its average category-specific order value.
+
+An order can contain multiple products from the same category.
+
+```
+Average WHAT?
+→ category-specific order value
+
+One value represents:
+→ ONE category's contribution to ONE order
+
+Required grain before AVG:
+→ category + order
+
+Required grain before AVG:
+→ GROUP BY category
+  AVG(category_order_value)
+```
+
+```
+WITH order_revenues AS (
+  SELECT
+    o.order_id,
+    p.category,
+    SUM(oi.quantity*oi.unit_price) AS order_revenue
+  FROM orders o
+  JOIN order_items oi ON oi.order_id = o.order_id
+  JOIN products p ON p.product_id = oi.product_id
+  GROUP by o.order_id,  p.category
+)
+SELECT
+  category,
+  AVG(order_revenue) AS avg_catetory_order
+FROM order_revenues
+GROUP BY category
+```
+
+D — Average monthly customer revenue
+
+For each customer, show their average monthly revenue across the months in which they were active.
+
+```
+Average WHAT?
+→ monthly customer revenue
+
+One value represents:
+→ one customer's total revenue in one month
+
+Required grain before AVG:
+→ customer + month
+
+Required grain before AVG:
+→ GROUP BY customer
+  AVG(monthly_revenue)
+```
+
+With an average, there are often **two grains** hiding in the business request:
+
+```
+"For each SALESPERSON,
+ show average ORDER value."
+          ↑              ↑
+     final grain    observation grain
+```
+
+and:
+
+```
+"For each CATEGORY,
+ show average CATEGORY-ORDER value."
+          ↑                   ↑
+     final grain         observation grain
+```
+
+The Average Rule
+
+Whenever you see:
+
+> For each X, show average Y
+
+separate it immediately:
+
+```
+X = final grouping entity
+
+Y = observation being averaged
+```
+
+Then construct:
+
+```
+Intermediate grain
+→ X + Y
+
+calculate value of Y
+        ↓
+Final grain
+→ X
+
+AVG(Y_value)
+```
+
+**Final grain tells me where the average ends. Observation grain tells me where the average must begin.**

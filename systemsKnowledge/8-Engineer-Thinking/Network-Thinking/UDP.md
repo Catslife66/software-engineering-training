@@ -781,25 +781,24 @@ Suppose the `x=105` update disappears, but `x=110` and `x=115` arrive promptly.
 
 As the engineer, explain:
 
-1. Which transport would you initially consider for System A, and why?
-2. Why might UDP-style communication make sense for System B?
-3. Why could retransmitting the old x=105 update actually be undesirable?
-4. What guarantees are we giving up by choosing UDP?
-5. Does UDP mean the application cannot implement reliability where it needs it?
-6. Complete this engineer statement in your own words:
-   > Choosing between TCP and UDP isn't simply choosing between reliable and unreliable communication. It is...
-
-Try naturally using:
-
 ```
-reliable delivery
-ordered delivery
-datagram
-packet loss
-retransmission
-timeliness
-latency
-application-level responsibility
+1. Which transport would you initially consider for System A, and why?
+I would initially choose TCP because the application requires reliable, ordered delivery of the transfer message. However, TCP only provides transport-level reliability; the banking system still needs application-level mechanisms to protect the financial business invariants.
+
+2. Why might UDP-style communication make sense for System B?
+For online games, low latency is more important than perfect delivery.
+
+3. Why could retransmitting the old x=105 update actually be undesirable?
+The newer state supersedes the missing update, so retransmitting stale state may add latency without providing useful information.
+
+4. What guarantees are we giving up by choosing UDP?
+UDP avoids TCP's built-in retransmission, ordered-delivery and connection-management mechanisms, which can make it suitable for latency-sensitive communication where the application prefers current data over recovery of stale data.
+
+5. Does UDP mean the application cannot implement reliability where it needs it?
+Choosing UDP moves responsibility for any required reliability, ordering or recovery to the application or a higher-level protocol.
+
+6. Complete this engineer statement in your own words:
+Choosing between TCP and UDP is about matching transport guarantees to application requirements. TCP is appropriate when reliable, ordered delivery is important, while UDP is useful when the application can tolerate loss or wants greater control over reliability and timeliness.
 ```
 
 ## 8. Technology Spotlight — QUIC

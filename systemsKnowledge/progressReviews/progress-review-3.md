@@ -14,9 +14,9 @@
 
 - TCP ✅
 
-- UDP
+- UDP ✅
 
-- HTTP
+- HTTP ✅
 
 - HTTPS
 

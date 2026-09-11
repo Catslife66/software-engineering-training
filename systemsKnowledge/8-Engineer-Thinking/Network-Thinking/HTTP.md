@@ -768,7 +768,7 @@ analytics
 
 happen asynchronously.
 
-This can reduce response latency—but introduces messaging/reliability complexity.
+This can reduce response latency — but introduces messaging/reliability complexity.
 
 Again:
 
@@ -983,8 +983,10 @@ Server B can also resolve authentication.
 
 This helps explain why stateless request processing works well with:
 
+```
 load balancing
 horizontal scaling
+```
 
 We'll revisit that in Phase C.
 
@@ -1022,33 +1024,50 @@ You're reviewing the API.
 
 Explain:
 
+```
 1. What concerns you about using GET to cancel an order?
+GET is defined as a safe method, so clients and infrastructure should be able to invoke it without requesting a state-changing operation.
+
 2. Is retrying GET /api/products/10 generally less dangerous than blindly retrying POST /api/payments? Why?
+GET is generally safer to retry from a business-side-effect perspective, but uncontrolled retries can still create operational load.
+
 3. Suppose the payment service charges the customer successfully but the HTTP response is lost. What does the timeout tell the client?
+A timeout tells us only the caller did not receive the expected response within the configured time limit.
+
 4. What business problem can a blind payment retry create?
+recharging for the same order.
+
 5. What property would we like the payment operation to have so retries can be handled safely?
+The payment operation should be idempotent. For example, the client can provide an idempotency key representing the logical payment intent, allowing retries to return the existing result rather than creating another charge.
+
 6. Why is an HTTP call fundamentally different from calling an ordinary local Java method?
-7. A developer says:
-   "HTTP is stateless, so our application shouldn't store user sessions or orders."
+A local call might fail with an exception.
 
-What's wrong with that statement?
+A remote call introduces a particularly nasty possibility:
+Caller:
+"I don't know what happened."
+Remote service:
+"I successfully completed it."
 
-Try naturally using:
+So one of the most important rules in distributed systems is:
+A remote call is not just a slower local method call.
+It has fundamentally different failure semantics.
 
-```
-safe
-idempotent
-API contract
-status code
-timeout
-partial failure
-retry
-remote call
-statelessness
-business invariant
+7. A developer says "HTTP is stateless, so our application shouldn't store user sessions or orders.", what's wrong with that statement?
+The server doesn't depend on HTTP itself implicitly remembering the previous request's conversational state. The request provides or identifies the context needed to resolve its processing.
 ```
 
-As always, reason first. We'll refine your engineer language afterward.
+```
+Using GET to cancel an order violates the expected semantics of a safe HTTP method. Although it's technically possible to implement in Java, clients and infrastructure may assume GET requests don't perform requested state-changing operations.
+
+Retrying a product GET is generally safer than blindly retrying a payment because the GET is normally read-only, whereas repeating a non-idempotent payment request could create another charge. However, safe requests still consume system resources, so uncontrolled GET retries can create operational load.
+
+If a payment request times out, the client only knows that it didn't receive the expected response within the configured time. It cannot conclude that the payment failed. The remote operation may already have succeeded, leaving the business outcome ambiguous from the caller's perspective. Payment operations should therefore support safe retries—for example, through idempotency keys.
+
+A remote HTTP call is fundamentally different from a local Java method call because it crosses a network boundary and introduces latency, serialization, timeouts, remote availability and partial failures. A remote operation may succeed even when the caller observes failure.
+
+Finally, HTTP statelessness doesn't mean the application cannot maintain state. It means HTTP itself doesn't implicitly maintain conversational application state between requests. Business state can still live in databases, caches and other services, while each request supplies or identifies the context required for processing.
+```
 
 ## 8. Technology Spotlight — HTTP Versions
 
@@ -1265,7 +1284,7 @@ other services
 
 4. A remote HTTP call has latency and partial-failure modes that a local method call does not.
 
-5. A timeout tells us that the caller stopped waiting—not necessarily that the business operation failed.
+5. A timeout tells us that the caller stopped waiting — not necessarily that the business operation failed.
 
 6. Retries must consider idempotency and business invariants.
 

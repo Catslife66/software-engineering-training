@@ -1204,6 +1204,10 @@ Eventually fast must catch slow.
 
 That's the fundamental reason Floyd's cycle detection works.
 
+Invariant / relationship:
+
+After each iteration, fast advances through the same state-transition path at twice slow's rate.
+
 ### Drill - Cycly detection
 
 Example:

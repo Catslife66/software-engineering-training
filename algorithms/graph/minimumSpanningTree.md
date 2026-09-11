@@ -857,11 +857,11 @@ PROBLEM:
 Connect all nodes with minimum total edge weight, without cycles.
 
 STATE:
-parent
-→ representing connected groups
+parent[node]
+→ parent link toward the representative/root of node's connected group
 
-size
-→ size of each root's connected group
+size[root]
+→ number of nodes in the connected group represented by root
 
 mst_edges
 → accepted MST edges

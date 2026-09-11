@@ -87,7 +87,7 @@ Problems:
 - Any?
 - All?
 
-## Module 2 — Pointer State Design
+## Module 2 — Pointer State Design ✅
 
 Families:
 
@@ -125,15 +125,15 @@ Families:
 
 ## Module 3 — Window State
 
-Sliding Window
-
-New question:
-
-What information belongs to the current window?
-
-- Fixed Window
-- Variable Window
-- Window Invariants
+1. What is a window?
+2. Fixed-size windows
+3. Incremental window state
+4. Variable-size windows
+5. Expand / shrink reasoning
+6. Window invariants
+7. Frequency state inside windows
+8. When sliding window does NOT work
+9. Integration / derivation
 
 ## Module 4 — Stack State
 

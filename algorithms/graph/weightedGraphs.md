@@ -156,7 +156,7 @@ def dijkstra(graph, start):
 
             if new_cost < best_cost[neighbour]:
                 best_cost[neighbour] = new_cost
-                heapq.heappush(min_heap, (new_cost, neighbour))
+                heapq.heappush(heap, (new_cost, neighbour))
 
     return best_cost
 ```

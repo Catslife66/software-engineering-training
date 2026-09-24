@@ -123,7 +123,7 @@ Families:
 
 - Happy Number
 
-## Module 3 — Window State
+## Module 3 — Window State ✅
 
 1. What is a window?
 2. Fixed-size windows
@@ -133,7 +133,6 @@ Families:
 6. Window invariants
 7. Frequency state inside windows
 8. When sliding window does NOT work
-9. Integration / derivation
 
 ## Module 4 — Stack State
 

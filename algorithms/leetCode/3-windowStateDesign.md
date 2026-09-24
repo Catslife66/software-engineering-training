@@ -298,3 +298,321 @@ This is another example of an engineering principle we've already encountered:
 > **Don't maintain independent state when it can be derived reliably from existing state.**
 
 ## Incremental Window State
+
+So far our window state has been:
+
+```
+win_sum
+```
+
+But a window can preserve many kinds of information.
+
+Suppose:
+
+```
+nums = [2, 7, 4, 8, 6, 3]
+k = 3
+```
+
+The problem is:
+
+> Find the size-3 window containing the most even numbers.
+
+For example:
+
+```
+[2, 7, 4] → 2 evens
+[7, 4, 8] → 2 evens
+[4, 8, 6] → 3 evens   ← best
+[8, 6, 3] → 2 evens
+```
+
+We could recount every window from scratch. But we shouldn't need to.
+
+```
+Window invariant:
+even_count equals the number of even values in the current size-k window.
+
+Best-answer invariant:
+max_count equals the greatest even_count among all completed windows seen so far.
+
+Transition:
+value leaves
+    ↓
+was it contributing to even_count?
+    ↓ yes
+even_count -= 1
+
+value enters
+    ↓
+does it contribute to even_count?
+    ↓ yes
+even_count += 1
+```
+
+## Variable-Size Windows
+
+So far:
+
+```
+Fixed window:
+size is predetermined
+
+[left ........ right]
+       size = k
+```
+
+Now imagine:
+
+> Find the longest contiguous subarray whose sum is at most 10.
+
+Assume all numbers are positive.
+
+```
+nums = [2, 3, 7, 1, 2, 4]
+```
+
+There is no fixed k.
+
+The window might be:
+
+```
+[2]
+[2, 3]
+[2, 3, 7]   ← invalid: sum = 12
+```
+
+Something different must happen when the window becomes invalid.
+
+Variable sliding window has two movements:
+
+```
+right expands the window
+left shrinks the window
+```
+
+Think:
+
+```
+                right →
+        EXPAND
+
+        [ current window ]
+
+             SHRINK
+        ← left
+```
+
+`right` asks:
+
+> Can I include more information?
+
+`left` asks:
+
+> If the window violates the requirement, what can I remove to restore validity?
+
+Walkthrough:
+
+```
+Start:
+[2]
+sum = 2
+
+Expand:
+[2, 3]
+sum = 5
+
+Expand again:
+[2, 3, 7]
+sum = 12
+
+But our requirement is:
+sum <= 10
+
+So the window is invalid.
+
+Remove from the left:
+[3, 7]
+sum = 10
+
+Valid again.
+
+Now right can continue expanding:
+[3, 7, 1]
+sum = 11
+
+Invalid again.
+
+Shrink:
+[7, 1]
+sum = 8
+
+Valid.
+```
+
+```
+Information:
+the longest contiguous subarray whose sum is at most 10
+
+Window state:
+win_sum = sum of current window
+
+Best-answer state:
+max_length = longest valid window length seen so far
+
+Pointer meanings:
+left = first index of current window
+right = last index of current window
+
+Validity condition:
+win_sum <= 10
+
+Expand transition:
+win_sum += nums[right]
+
+Shrink transition:
+while win_sum > 10:
+    win_sum -= nums[left]
+    left += 1
+
+Invariant:
+after shrinking finishes, the current window [left, right] is valid: win_sum <= 10
+```
+
+Code Skeleton:
+
+```
+left = 0
+win_sum = 0
+max_length = 0
+
+for right in range(len(nums)):
+    win_sum += nums[right]
+
+    while win_sum > 10:
+        win_sum -= nums[left]
+        left += 1
+
+    max_length = max(max_length, right - left + 1)
+```
+
+## Expand / Shrink Reasoning
+
+The central structure is:
+
+```
+expand right
+    ↓
+update window state
+    ↓
+window invalid?
+    ↓ yes
+shrink left until valid
+    ↓
+evaluate valid window
+```
+
+The important thing is that **expansion and shrinking have different jobs**.
+
+`right` explores new possibilities.
+`left` repairs the window when the constraint has been violated.
+
+## Window Invariants
+
+```
+1. Boundary invariant
+   [left, right] defines the current contiguous window
+
+2. Window-state invariant
+   win_sum equals exactly the sum of nums[left:right+1]
+
+3. Answer invariant
+   best stores the best valid candidate examined so far
+```
+
+## Frequency State Inside Windows
+
+Consider:
+
+> Find the longest substring containing at most 2 distinct characters.
+
+Example:
+
+```
+s = "eceba"
+```
+
+```
+Information:
+longest substring containing at most 2 distinct characters
+
+Window state:
+freq = frequency of each character in the current window
+
+Best-answer state:
+max_len = longest valid window seen so far
+
+Validity:
+len(freq) <= 2
+
+Entering:
+increment frequency of s[right]
+
+Leaving:
+decrement frequency of s[left]
+delete character when its frequency reaches 0
+
+Window invariant:
+freq represents exactly the character frequencies inside s[left:right+1]
+```
+
+## When Sliding Window Does NOT Work
+
+Consider what happens if negatives are allowed:
+
+```
+nums = [8, 5, -6, 2]
+target = 10
+```
+
+At:
+
+```
+[8, 5]
+sum = 13
+```
+
+our previous reasoning would say:
+
+Invalid. Move left because future expansion cannot make this valid.
+
+But the next value is -6:
+
+```
+[8, 5, -6]
+sum = 7
+```
+
+The same left boundary became valid again!
+
+So the proof we used earlier has collapsed.
+
+With positive values:
+
+```
+expand → sum cannot decrease
+```
+
+With negative values:
+
+```
+expand → sum might increase OR decrease
+```
+
+Therefore we can no longer safely conclude:
+
+> “This left boundary can never work again.”
+
+And that's the deeper requirement behind many variable sliding-window algorithms:
+
+> Moving a boundary must change the relevant condition predictably enough that we can safely discard possibilities.

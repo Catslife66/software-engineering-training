@@ -405,27 +405,6 @@ This is why Bellman-Ford runs **at most**:
 number_of_nodes - 1
 ```
 
-```
-def bellman_ford(number_of_nodes, edges, start):
-
-    best_cost = {
-        node: float('inf') for node in range(number_of_nodes)
-    }
-    best_cost[start] = 0
-
-    for _ in range(number_of_nodes - 1):
-        changed = False
-        for from_node, to_node, weight in edges:
-            candidate = best_cost[from_node] + weight
-
-            if candidate < best_cost[to_node]:
-                best_cost[to_node] = candidate
-                changed = True
-
-        if not changed:
-            break
-```
-
 ## Bellman-Ford Negative Cycle Detection
 
 After at most (number_of_nodes - 1) passes, evert ordinary shortest path should already be reflected in best_cost.
@@ -478,4 +457,49 @@ def bellman_ford(number_of_nodes, edges, start):
             return None      # Negative cycle detected
 
     return best_cost
+```
+
+---
+
+## Edges vs Paths
+
+suppose:
+
+```
+A --4--> B --2--> C --3--> D
+ \------10------> C
+```
+
+An edge is one direct connection:
+
+```
+A → B, weight 4
+B → C, weight 2
+C → D, weight 3
+A → C, weight 10
+```
+
+A path is a sequence of edges:
+
+```
+A → B → C → D
+```
+
+Its cost is:
+
+```
+4 + 2 + 3 = 9
+```
+
+So:
+
+```
+edge
+→ one connection
+
+path
+→ sequence of one or more edges
+
+path cost
+→ sum of the weights of those edges
 ```

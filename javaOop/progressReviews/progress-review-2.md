@@ -284,7 +284,7 @@ Topics:
         reason about common failures
 ```
 
-### Module 3.15 — Spring Security
+### Module 3.15 — Spring Security ✅
 
 Topics:
 

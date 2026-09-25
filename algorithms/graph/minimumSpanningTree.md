@@ -858,7 +858,7 @@ Connect all nodes with minimum total edge weight, without cycles.
 
 STATE:
 parent[node]
-→ parent link toward the representative/root of node's connected group
+→ the node's parent link toward the root
 
 size[root]
 → number of nodes in the connected group represented by root
@@ -885,11 +885,15 @@ Accepted edges form a cycle-free forest that can still be extended into an MST.
 CYCLE CHECK:
 find(a) == find(b)
 → already connected
-→ skip
+→ reject
+→ because this would create cycle
 
 find(a) != find(b)
-→ different groups
-→ accept + union
+→ different components
+→ accept
+→ record edge
+→ add cost
+→ union components
 ```
 
 Code Skeleton
